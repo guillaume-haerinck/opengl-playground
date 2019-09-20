@@ -11,6 +11,12 @@ http://igm.univ-mlv.fr/~lnoel/index.php?section=teaching&teaching=opengl&teachin
 
 You need to install [Cmake](https://cmake.org/) to build the project, and [Conan](https://conan.io/) to download dependencies.
 
+Then you can add the server which contains the dependencies of the project :
+
+```bash
+conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+```
+
 ### Build
 
 You can handle the `CMakeLists.txt` in any way you like, it will download the dependecies by itself. 
