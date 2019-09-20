@@ -1,0 +1,6 @@
+[requires]
+sdl2/2.0.9@bincrafters/stable
+
+[generators]
+txt
+cmake
