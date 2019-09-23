@@ -1,6 +1,6 @@
 from conans import ConanFile, CMake
 
-class RollGoalWasm(ConanFile):
+class OpenGlPlaygroundWasm(ConanFile):
     settings = {"os": ["Emscripten"]}
     requires = ["entt/3.0.0@skypjack/stable",
       "glm/0.9.8.5@bincrafters/stable", 

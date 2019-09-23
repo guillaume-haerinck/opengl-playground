@@ -37,11 +37,14 @@ void App::update() {
 	// Update main debug window
 	{
 		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame(getWindow());
+		ImGui_ImplSDL2_NewFrame(m_window);
 		ImGui::NewFrame();
+
 		ImGui::Begin("Main debug window");
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
+
+		ImGui::EndFrame();
 	}
 
 	// Render debug gui
@@ -50,23 +53,7 @@ void App::update() {
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
-	SDL_Event e;
-	while (SDL_PollEvent(&e)) {
-		switch (e.type) {
-		case SDL_QUIT:
-			exit();
-			break;
-	
-		case SDL_KEYDOWN:
-			break;
-
-		case SDL_KEYUP:
-			break;
-
-		case SDL_MOUSEBUTTONDOWN:
-			break;
-		}
-	}
+	handleSDLEvents();
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -117,6 +104,26 @@ void App::initImgui() const {
     ImGui_ImplSDL2_InitForOpenGL(m_window, m_glContext);
 	ImGui_ImplOpenGL3_Init("#version 300 es");
 	ImGui::StyleColorsDark();
+}
+
+void App::handleSDLEvents() {
+	SDL_Event e;
+	while (SDL_PollEvent(&e)) {
+		switch (e.type) {
+		case SDL_QUIT:
+			exit();
+			break;
+	
+		case SDL_KEYDOWN:
+			break;
+
+		case SDL_KEYUP:
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+			break;
+		}
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

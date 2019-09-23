@@ -10,4 +10,4 @@ compiler.cppstd=17
 
 [build_requires]
 emsdk_installer/1.38.29@bincrafters/stable
-ninja_installer/1.8.2@bincrafters/stable
+ninja_installer/1.9.0@bincrafters/stable

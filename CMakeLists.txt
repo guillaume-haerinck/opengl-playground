@@ -6,7 +6,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(opengl-playground C CXX)
 set(CMAKE_CXX_STANDARD 17)
-set(default_build_type "Release")
 
 # Setup Conan
 if (EMSCRIPTEN)
@@ -69,6 +68,6 @@ target_link_libraries(
     IMGUI
 )
 
-if (NOT WIN32)
+if (UNIX)
     target_link_libraries(${PROJECT_NAME} -ldl)
 endif()
