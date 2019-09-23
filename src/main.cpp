@@ -1,64 +1,43 @@
 #include <glad/glad.h>
-#include <SDL2/SDL.h>
-#include <iostream>
+#include "app.h"
+#ifdef __EMSCRIPTEN__
+	#include <emscripten.h>
+#endif
+#ifdef _WIN32
+	#define _CRTDBG_MAP_ALLOC
+	#include <crtdbg.h>
+#endif
+
+
+
+void gameLoop(void* data);
 
 int main(int argc, char *argv[]) {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
-		std::cerr << "[SDL2] Unable to initialize SDL: " << SDL_GetError() << std::endl;
-	}
-	SDL_GL_LoadLibrary(NULL);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
-	SDL_GL_SetSwapInterval(1);
+	#ifdef _WIN32 // Check memory leaks
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	#endif
 
-	SDL_Window* window = SDL_CreateWindow(
-		"OpenGL Playground",
-		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-		500, 500,
-		SDL_WINDOW_OPENGL
-    );
-	if (window == nullptr) {
-        std::cerr << "[SDL2] Window is null: " << SDL_GetError() << std::endl;
-    }
+	App* app = new App();
 
-    SDL_GLContext glContext = SDL_GL_CreateContext(window);
-    if (glContext == nullptr) {
-        std::cerr << "[SDL2] OpenGL context is null: " <<  SDL_GetError() << std::endl;
-    }
+	#ifdef __EMSCRIPTEN__
+		emscripten_set_main_loop_arg(gameLoop, (void *) app, 0, 0);
+	#else
+		while (app->isRunning()) {
+			gameLoop((void *) app);
+		}
+	#endif
 
-	if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
-		std::cerr << "[Glad] Glad not init" << std::endl;
-	}
+	delete app;
+	return 0;
+}
 
-    // Game loop
-    bool isRunning = true;
-    while (isRunning) {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void gameLoop(void* data) {
+	// TODO handle deltatime and sleep
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        SDL_Event e;
-        while (SDL_PollEvent(&e)) {
-            switch (e.type) {
-            case SDL_QUIT:
-                isRunning = false;
-                break;
-        
-            case SDL_KEYDOWN:
-                break;
+	App* app = static_cast<App*>(data);
 
-            case SDL_KEYUP:
-                break;
+	app->update();
 
-            case SDL_MOUSEBUTTONDOWN:
-                break;
-            }
-        }
-
-		SDL_GL_SwapWindow(window);
-    }
-
-    return 0;
+	SDL_GL_SwapWindow(app->getWindow());
 }

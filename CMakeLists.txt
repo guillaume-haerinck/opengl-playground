@@ -6,16 +6,23 @@
 cmake_minimum_required(VERSION 3.10)
 project(opengl-playground C CXX)
 set(CMAKE_CXX_STANDARD 17)
+set(default_build_type "Release")
 
-# Download dependencies
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+# Setup Conan
+if (EMSCRIPTEN)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s USE_WEBGL2=1 -std=c++17")
+else()
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     message(STATUS "Downloading conan.cmake")
     file(DOWNLOAD
         "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake"
         "${CMAKE_BINARY_DIR}/conan.cmake")
+    endif()
+    include(${CMAKE_BINARY_DIR}/conan.cmake)
+    conan_cmake_run(CONANFILE conanfile.txt BASIC_SETUP BUILD missing)
 endif()
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-conan_cmake_run(CONANFILE conanfile.txt BASIC_SETUP BUILD missing)
 
 # /////////////////////////////////////////////////////////////////////////////
 # ////////////////////////////// PROJECT FILES ////////////////////////////////
@@ -32,6 +39,8 @@ find_package(OpenGL REQUIRED)
 # ------------------------- BUILD DEPENDENCIES IF NEEDED ----------------------
 
 add_library(GLAD STATIC "lib/glad/src/glad.c")
+add_library(STB_IMAGE STATIC "lib/stb_image/stb_image.cpp")
+add_library(IMGUI STATIC "lib/imgui/imgui_impl_opengl3.cpp" "lib/imgui/imgui_impl_sdl.cpp")
 
 # /////////////////////////////////////////////////////////////////////////////
 # ///////////////////////////////// INCLUDES //////////////////////////////////
@@ -56,6 +65,8 @@ target_link_libraries(
     ${CONAN_LIBS}
     ${OPENGL_LIBRARIES}
     GLAD
+    STB_IMAGE
+    IMGUI
 )
 
 if (NOT WIN32)
