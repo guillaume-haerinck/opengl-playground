@@ -49,6 +49,24 @@ void App::update() {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
+
+	SDL_Event e;
+	while (SDL_PollEvent(&e)) {
+		switch (e.type) {
+		case SDL_QUIT:
+			exit();
+			break;
+	
+		case SDL_KEYDOWN:
+			break;
+
+		case SDL_KEYUP:
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+			break;
+		}
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
