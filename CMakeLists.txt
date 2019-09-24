@@ -6,6 +6,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(opengl-playground C CXX)
 set(CMAKE_CXX_STANDARD 17)
+set(default_build_type "Release")
 
 # Setup Conan
 if (EMSCRIPTEN)

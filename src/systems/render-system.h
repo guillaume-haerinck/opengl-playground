@@ -1,7 +1,7 @@
 #pragma once
 
 #include "i-system.h"
-#include "core/Context.h"
+#include "core/context.h"
 
 class RenderSystem : public ISystem {
 public:
