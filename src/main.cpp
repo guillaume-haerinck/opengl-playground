@@ -1,4 +1,3 @@
-#include <glad/glad.h>
 #include "app.h"
 #ifdef __EMSCRIPTEN__
 	#include <emscripten.h>
@@ -38,9 +37,5 @@ int main(int argc, char *argv[]) {
 void mainLoop(void* arg) {
 	MainLoopArg* args = (MainLoopArg*) arg;
 	// TODO handle deltatime and sleep
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	args->app->update();
-
-	SDL_GL_SwapWindow(args->app->getWindow());
 }

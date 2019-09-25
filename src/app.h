@@ -1,7 +1,9 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <memory>
 #include "core/context.h"
+#include "examples/i-example.h"
 
 /**
  * @brief Base root of the app
@@ -23,11 +25,22 @@ private:
     void initImgui() const;
 
     void handleSDLEvents();
+    void renderMenu();
+
+    template<typename T>
+	void resetAppTo() {
+        m_isContextInit = false;
+		m_activeExemple.reset();
+		m_activeExemple = std::make_unique<T>(m_ctx);
+        m_isContextInit = true;
+	}
 
 private:
     SDL_Window* m_window;
     SDL_GLContext m_glContext;
     Context m_ctx;
+    std::unique_ptr<IExample> m_activeExemple;
     static bool m_instanciated;
+    static bool m_isContextInit;
     bool m_running;
 };

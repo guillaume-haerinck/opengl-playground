@@ -7,7 +7,10 @@
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include "examples/basics/basic-triangle/basic-triangle.h"
+
 bool App::m_instanciated = false;
+bool App::m_isContextInit = false;
 
 App::App() : m_running(true)
 {
@@ -18,6 +21,9 @@ App::App() : m_running(true)
 
 	initSDL();
     initImgui();
+
+	m_ctx.rcommand = std::make_unique<RenderCommand>();
+	resetAppTo<basicExample::BasicTriangle>();
 }
 
 App::~App() {
@@ -34,26 +40,33 @@ App::~App() {
 
 
 void App::update() {
-	// Update main debug window
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Update GUI
 	{
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame(m_window);
 		ImGui::NewFrame();
 
-		ImGui::Begin("Main debug window");
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::End();
+		renderMenu();
+		m_activeExemple->ImGuiUpdate();
 
 		ImGui::EndFrame();
 	}
 
-	// Render debug gui
+	// Update geometry
+	{
+		m_activeExemple->Update();
+	}
+
+	// Render GUI
 	{
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	handleSDLEvents();
+	SDL_GL_SwapWindow(m_window);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -124,6 +137,40 @@ void App::handleSDLEvents() {
 			break;
 		}
 	}
+}
+
+
+void App::renderMenu() {
+	ImGui::Begin("Main debug window");
+
+	ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+	if (ImGui::CollapsingHeader("Help")) {
+		ImGui::Text("Camera controls :");
+		ImGui::BulletText("Orbit - Left mouse button / Middle mouse button");
+		ImGui::BulletText("Pan - Right mouse button");
+		ImGui::BulletText("Zoom - Mousewheel");
+		ImGui::BulletText("Reset - Left mouse double click");
+	}
+
+	ImGui::Spacing();
+
+	ImGui::Text("Exemples:");
+	if (ImGui::CollapsingHeader("Basic")) {
+		if (ImGui::Button("Basic triangle")) { resetAppTo<basicExample::BasicTriangle>(); }
+	}
+
+	// if (ImGui::CollapsingHeader("Intermediate")) {}
+
+	// if (ImGui::CollapsingHeader("Advanced")) {}
+
+	// if (ImGui::CollapsingHeader("Blinn Phong shading")) { }
+
+	// if (ImGui::CollapsingHeader("Toon shading")) {}
+
+	// if (ImGui::CollapsingHeader("PBR shading")) {}
+
+	ImGui::End();
 }
 
 /////////////////////////////////////////////////////////////////////////////
