@@ -52,7 +52,7 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int c
 }
 
 
-scomp::VertexShader RenderCommand::createVertexShader(const unsigned char* filePath, VertexInputDescription vib) const
+scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, VertexInputDescription vib) const
 {
 	const char* vsSource = R"(#version 300 es
 			layout(location = 0) in vec2 position;
@@ -65,7 +65,7 @@ scomp::VertexShader RenderCommand::createVertexShader(const unsigned char* fileP
 	return scomp::VertexShader();
 }
 
-scomp::FragmentShader RenderCommand::createFragmentShader(const unsigned char* filePath) const
+scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) const
 {
 	const char* fragSource = R"(#version 300 es
 			layout(location = 0) out lowp vec4 color;

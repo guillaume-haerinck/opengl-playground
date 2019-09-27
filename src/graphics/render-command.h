@@ -43,12 +43,12 @@ public:
 	 * @param filepath - The relative path from the .exe to the .cso containing the shader
 	 * @param ied - The input layout, do not forget to provide the vao from the vertex buffer
 	 */
-	scomp::VertexShader createVertexShader(const unsigned char* filePath, VertexInputDescription vib) const;
+	scomp::VertexShader createVertexShader(const char* filePath, VertexInputDescription vib) const;
 
 	/**
 	 * @param filePath - The relative path from the .exe to the .cso containing the shader
 	 */
-	scomp::FragmentShader createFragmentShader(const unsigned char* filePath) const;
+	scomp::FragmentShader createFragmentShader(const char* filePath) const;
 
 	/**
 	 * 
