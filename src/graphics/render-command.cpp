@@ -29,28 +29,58 @@ comp::AttributeBuffer RenderCommand::createAttributeBuffer(void* vertices, unsig
 	return buffer;
 }
 
+comp::VertexBuffer RenderCommand::createVertexBuffer(comp::AttributeBuffer* attributeBuffers, unsigned int count) const {
+	GLuint va;
+	GLCall(glGenVertexArrays(1, &va));
+	GLCall(glBindVertexArray(va));
+
+	for (size_t i = 0; i < count; i++) {
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, attributeBuffers[i].bufferId));
+	}
+
+	GLCall(glBindVertexArray(0));
+
+	comp::VertexBuffer vb = {};
+	vb.vertexArrayId = va;
+		
+	return vb;
+}
+
 comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int count) const
 {
 	return comp::IndexBuffer();
 }
 
-comp::VertexArray RenderCommand::createVertexArray(comp::VertexBuffer* vbArray, unsigned int vbCount) const {
-	return comp::VertexArray();
-}
 
-scomp::ConstantBuffer RenderCommand::createConstantBuffer(unsigned int byteWidth) const
+scomp::VertexShader RenderCommand::createVertexShader(const unsigned char* filePath, VertexInputDescription vib) const
 {
-	return scomp::ConstantBuffer();
-}
+	const char* vsSource = R"(#version 300 es
+			layout(location = 0) in vec2 position;
 
-scomp::VertexShader RenderCommand::createVertexShader(unsigned char* filePath) const
-{
+			void main() {
+				gl_Position = vec4(position, 0.0, 1.0);
+			}
+	)";
+
 	return scomp::VertexShader();
 }
 
-scomp::PixelShader RenderCommand::createPixelShader(unsigned char* filePath) const
+scomp::FragmentShader RenderCommand::createFragmentShader(const unsigned char* filePath) const
 {
-	return scomp::PixelShader();
+	const char* fragSource = R"(#version 300 es
+			layout(location = 0) out lowp vec4 color;
+
+			void main() {
+				color = vec4(1, 0, 0, 1);
+			}
+	)";
+
+	return scomp::FragmentShader();
+}
+
+comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::FragmentShader ps) const
+{
+	return comp::Pipeline();
 }
 
 void RenderCommand::bindVertexBuffer(comp::VertexBuffer vb) const
@@ -65,11 +95,7 @@ void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) 
 {
 }
 
-void RenderCommand::bindVertexShader(scomp::VertexShader vs)
-{
-}
-
-void RenderCommand::bindPixelShader(scomp::PixelShader ps)
+void RenderCommand::bindPipeline(comp::Pipeline pipeline) const
 {
 }
 

@@ -6,106 +6,63 @@
 #include <debug_break/debug_break.h>
 
 #include "graphics/gl-exception.h"
+#include "graphics/vertex-input-description.h"
+#include "components/graphics/mesh.h"
+#include "components/graphics/pipeline.h"
+#include "components/physics/transform.h"
 
 namespace basicExample {
-	void checkShaderError(unsigned int id, unsigned int type) {
-		// Error handling
-		int result;
-		glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-		if (result == GL_FALSE) {
-			int length;
-			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-			char* message = (char *)alloca(length * sizeof(char));
-			glGetShaderInfoLog(id, length, &length, message);
-			auto const typeString = [type]() {
-				switch (type) {
-					case GL_VERTEX_SHADER: return "fragment";
-					case GL_FRAGMENT_SHADER: return "vertex";
-					default: return "unknown type";
-				}
-			}();
-
-			spdlog::error("[Shader] Failed to compile {} shader", typeString);
-			spdlog::error("[Shader] {}", message);
-			debug_break();
-			GLCall(glDeleteShader(id));
-		}
-	}
-
 	BasicTriangle::BasicTriangle(Context& context) : m_ctx(context) {
-		// Vertex array
-		GLuint va;
-		GLCall(glGenVertexArrays(1, &va));
-		GLCall(glBindVertexArray(va));
-
-		// Attribute buffer
+		// Vertex buffer
 		float positions[] = {
-			-1.0f, -1.0f, 0.0f,
-			1.0f, -1.0f, 0.0f,
-			0.0f,  1.0f, 0.0f
+			-1.0f, -1.0f,
+			 1.0f, -1.0f,
+			 0.0f,  1.0f
 		};
 		comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer(&positions, ARRAYSIZE(positions), sizeof(float));
+		comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(&positionBuffer, 1);
 
-		// Vertex buffer layout
-		GLCall(glEnableVertexAttribArray(0));
-		GLCall(glVertexAttribPointer(
-			0,                  // attribute 0
-			3,                  // number of vertices
-			GL_FLOAT,           // type
-			GL_FALSE,           // IsNormalized
-			0,                  // stride
-			(void*) 0           // array buffer offset
-		));
+		// Index buffer
+		unsigned int indices[] = { 0, 1, 2 };
+		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, ARRAYSIZE(indices));
 
-		const char* vsSource = R"(#version 300 es
-			layout(location = 0) in vec3 position;
+		// Pipeline
+		VertexInputDescription inputDescription = {
+			{ ShaderDataType::Float2, "Position" }
+		};
+		inputDescription.vertexArrayId = vertexBuffer.vertexArrayId;
+		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("todo", inputDescription);
+		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("todo");
+		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(vs, fs);
 
-			void main() {
-				gl_Position = vec4(position, 1.0);
-			}
-		)";
+		// Mesh
+		comp::Mesh mesh = {};
+		mesh.vb = vertexBuffer;
+		mesh.ib = indexBuffer;
 
-		const char* fragSource = R"(#version 300 es
-			layout(location = 0) out lowp vec4 color;
+		// Transform
+		comp::Transform transform = {};
 
-			void main() {
-				color = vec4(1, 0, 0, 1);
-			}
-		)";
-
-		// Create pipeline
-		{
-			unsigned int program = glCreateProgram();
-			unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
-			GLCall(glShaderSource(vs, 1, &vsSource, nullptr));
-			GLCall(glCompileShader(vs));
-			checkShaderError(vs, GL_VERTEX_SHADER);
-
-			unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
-			GLCall(glShaderSource(fs, 1, &fragSource, nullptr));
-			GLCall(glCompileShader(fs));
-			checkShaderError(fs, GL_FRAGMENT_SHADER);
-
-			GLCall(glAttachShader(program, vs));
-			GLCall(glAttachShader(program, fs));
-			GLCall(glLinkProgram(program));
-			GLCall(glValidateProgram(program));
-
-			GLCall(glDeleteShader(vs));
-			GLCall(glDeleteShader(fs));
-
-			GLCall(glUseProgram(program));
-		}
+		// Assign data to entity
+		auto entity = m_ctx.registry.create();
+		m_ctx.registry.assign<comp::Mesh>(entity, mesh);
+		m_ctx.registry.assign<comp::Pipeline>(entity, pipeline);
+		m_ctx.registry.assign<comp::Transform>(entity, transform);
 	}
 
 	BasicTriangle::~BasicTriangle() {}
 
 	void BasicTriangle::Update() {
-		GLCall(glDrawArrays(GL_TRIANGLES, 0, 3));
+		m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>()
+			.each([&](comp::Mesh& mesh, comp::Pipeline& pipeline, comp::Transform& transform) {
+			// Bind
+			m_ctx.rcommand->bindPipeline(pipeline);
+			m_ctx.rcommand->bindVertexBuffer(mesh.vb);
+			m_ctx.rcommand->bindIndexBuffer(mesh.ib);
 
-		for (auto& system : m_systems) {
-			system->Update();
-		}
+			// Draw call
+			m_ctx.rcommand->drawIndexed(3);
+		});
 	}
 
 	void BasicTriangle::ImGuiUpdate() {

@@ -28,6 +28,7 @@ namespace comp {
 		std::vector<unsigned int> byteWidths;
 		std::vector<unsigned int> offsets;
 		std::vector<std::string> names;
+		unsigned int vertexArrayId;
 	};
 
 	struct VertexArray {
