@@ -42,6 +42,7 @@ App::~App() {
 void App::update() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	/*
 	// Update GUI
 	{
 		ImGui_ImplOpenGL3_NewFrame();
@@ -64,6 +65,9 @@ void App::update() {
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
+	*/
+
+	m_activeExemple->Update();
 
 	handleSDLEvents();
 	SDL_GL_SwapWindow(m_window);

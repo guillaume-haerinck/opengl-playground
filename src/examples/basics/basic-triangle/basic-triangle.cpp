@@ -2,10 +2,36 @@
 
 #include <imgui.h>
 #include <glad/glad.h>
+#include <spdlog/spdlog.h>
+#include <debug_break/debug_break.h>
 
 #include "graphics/gl-exception.h"
 
 namespace basicExample {
+	void checkShaderError(unsigned int id, unsigned int type) {
+		// Error handling
+		int result;
+		glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+		if (result == GL_FALSE) {
+			int length;
+			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+			char* message = (char *)alloca(length * sizeof(char));
+			glGetShaderInfoLog(id, length, &length, message);
+			auto const typeString = [type]() {
+				switch (type) {
+					case GL_VERTEX_SHADER: return "fragment";
+					case GL_FRAGMENT_SHADER: return "vertex";
+					default: return "unknown type";
+				}
+			}();
+
+			spdlog::error("[Shader] Failed to compile {} shader", typeString);
+			spdlog::error("[Shader] {}", message);
+			debug_break();
+			GLCall(glDeleteShader(id));
+		}
+	}
+
 	BasicTriangle::BasicTriangle(Context& context) : m_ctx(context) {
 		// Vertex array
 		GLuint va;
@@ -35,9 +61,7 @@ namespace basicExample {
 			(void*) 0           // array buffer offset
 		));
 
-		const char* vsSource = R"(
-			#version 300 es
-
+		const char* vsSource = R"(#version 300 es
 			layout(location = 0) in vec3 position;
 
 			void main() {
@@ -45,8 +69,7 @@ namespace basicExample {
 			}
 		)";
 
-		const char* fragSource = R"(
-			#version 300 es
+		const char* fragSource = R"(#version 300 es
 			layout(location = 0) out lowp vec4 color;
 
 			void main() {
@@ -60,10 +83,12 @@ namespace basicExample {
 			unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
 			GLCall(glShaderSource(vs, 1, &vsSource, nullptr));
 			GLCall(glCompileShader(vs));
+			checkShaderError(vs, GL_VERTEX_SHADER);
 
 			unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
 			GLCall(glShaderSource(fs, 1, &fragSource, nullptr));
 			GLCall(glCompileShader(fs));
+			checkShaderError(fs, GL_FRAGMENT_SHADER);
 
 			GLCall(glAttachShader(program, vs));
 			GLCall(glAttachShader(program, fs));
