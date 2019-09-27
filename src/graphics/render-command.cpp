@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
 #include <debug_break/debug_break.h>
+#include <stdio.h>
+
 #include "graphics/gl-exception.h"
 
 RenderCommand::RenderCommand()
@@ -64,6 +66,15 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int c
 
 
 scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, const VertexInputDescription& vib) const {
+	FILE* file = fopen("res/test.txt", "rb");
+	if (!file) {
+		spdlog::error("Cannot load file");
+	}
+	
+	while (!feof(file)) {
+		spdlog::info("{}", fgetc(file));
+	}
+	
 	const char* vsSource = R"(#version 300 es
 		layout(location = 0) in vec2 position;
 
