@@ -39,19 +39,15 @@ namespace basicExample {
 		GLCall(glBindVertexArray(va));
 
 		// Attribute buffer
-		const GLfloat positions[] = {
+		float positions[] = {
 			-1.0f, -1.0f, 0.0f,
 			1.0f, -1.0f, 0.0f,
 			0.0f,  1.0f, 0.0f
 		};
-		GLuint vb;
-		GLCall(glGenBuffers(1, &vb));
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, vb));
-		GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
+		comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer(&positions, ARRAYSIZE(positions), sizeof(float));
 
-		// 1rst attribute buffer : positions
+		// Vertex buffer layout
 		GLCall(glEnableVertexAttribArray(0));
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, vb));
 		GLCall(glVertexAttribPointer(
 			0,                  // attribute 0
 			3,                  // number of vertices

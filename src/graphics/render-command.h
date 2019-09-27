@@ -32,6 +32,12 @@ public:
 	comp::IndexBuffer createIndexBuffer(void* indices, unsigned int count) const;
 
 	/**
+	 * @param vbArray 
+	 * @param vbCount
+	 */
+	comp::VertexArray createVertexArray(comp::VertexBuffer* vbArray, unsigned int vbCount) const;
+
+	/**
 	 * @param byteWidth - The total size in bytes of the buffer (must be a multiple of 16)
 	 *
 	 * @note - You have to store it within a shader component, and it will be bound with it.

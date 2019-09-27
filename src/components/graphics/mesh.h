@@ -30,6 +30,10 @@ namespace comp {
 		std::vector<std::string> names;
 	};
 
+	struct VertexArray {
+		unsigned int bufferId;
+	};
+
 	/**
 	 * @brief Data used to prevent vertex duplication
 	 */
