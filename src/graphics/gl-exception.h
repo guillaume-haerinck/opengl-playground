@@ -24,8 +24,6 @@ namespace glexp {
      * @param functionName
      * @param filename
      * @param line
-     * @return true
-     * @return false
      */
     bool doesFunctionWorks(const char* functionName, const char* filename, int line);
 
