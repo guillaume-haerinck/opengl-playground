@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glad/glad.h>
+
 #include "components/graphics/mesh.h"
 #include "components/graphics/pipeline.h"
 #include "scomponents/graphics/constant-buffers.h"
@@ -43,7 +45,7 @@ public:
 	 * @param filepath - The relative path from the .exe to the .cso containing the shader
 	 * @param ied - The input layout, do not forget to provide the vao from the vertex buffer
 	 */
-	scomp::VertexShader createVertexShader(const char* filePath, VertexInputDescription vib) const;
+	scomp::VertexShader createVertexShader(const char* filePath, const VertexInputDescription& vib) const;
 
 	/**
 	 * @param filePath - The relative path from the .exe to the .cso containing the shader
@@ -53,7 +55,7 @@ public:
 	/**
 	 * 
 	 */
-	comp::Pipeline createPipeline(scomp::VertexShader vs, scomp::FragmentShader ps) const;
+	comp::Pipeline createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs) const;
 
     ///////////////////////////////////////////////////////////////////////////
 	////////////////////////////////// BINDING ////////////////////////////////
@@ -81,4 +83,8 @@ public:
 
     void draw(unsigned int count) const;
 	void drawIndexed(unsigned int count) const;
+
+private:
+	bool hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const;
+	GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) const;
 };
