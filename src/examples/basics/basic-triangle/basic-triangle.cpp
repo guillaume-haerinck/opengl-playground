@@ -20,7 +20,7 @@ namespace basicExample {
 		};
 		GLuint vb;
 		GLCall(glGenBuffers(1, &vb));
-		GLCall(glBindBuffer(GL_PACK_ALIGNMENT, vb));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, vb));
 		GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
 
 		// 1rst attribute buffer : positions
@@ -53,6 +53,28 @@ namespace basicExample {
 				color = vec4(1, 0, 0, 1);
 			}
 		)";
+
+		// Create pipeline
+		{
+			unsigned int program = glCreateProgram();
+			unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
+			GLCall(glShaderSource(vs, 1, &vsSource, nullptr));
+			GLCall(glCompileShader(vs));
+
+			unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
+			GLCall(glShaderSource(fs, 1, &fragSource, nullptr));
+			GLCall(glCompileShader(fs));
+
+			GLCall(glAttachShader(program, vs));
+			GLCall(glAttachShader(program, fs));
+			GLCall(glLinkProgram(program));
+			GLCall(glValidateProgram(program));
+
+			GLCall(glDeleteShader(vs));
+			GLCall(glDeleteShader(fs));
+
+			GLCall(glUseProgram(program));
+		}
 	}
 
 	BasicTriangle::~BasicTriangle() {}
