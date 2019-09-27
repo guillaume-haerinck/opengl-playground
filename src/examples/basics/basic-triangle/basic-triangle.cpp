@@ -19,12 +19,12 @@ namespace basicExample {
 			 1.0f, -1.0f,
 			 0.0f,  1.0f
 		};
-		comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer(&positions, ARRAYSIZE(positions), sizeof(float));
+		comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer(&positions, std::size(positions), sizeof(float));
 		comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(&positionBuffer, 1);
 
 		// Index buffer
 		unsigned int indices[] = { 0, 1, 2 };
-		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, ARRAYSIZE(indices));
+		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices));
 
 		// Pipeline
 		VertexInputDescription inputDescription = {
@@ -58,7 +58,7 @@ namespace basicExample {
 			// Bind
 			m_ctx.rcommand->bindPipeline(pipeline);
 			m_ctx.rcommand->bindVertexBuffer(mesh.vb);
-			// m_ctx.rcommand->bindIndexBuffer(mesh.ib);
+			m_ctx.rcommand->bindIndexBuffer(mesh.ib);
 
 			// Draw call
 			m_ctx.rcommand->draw(3);
