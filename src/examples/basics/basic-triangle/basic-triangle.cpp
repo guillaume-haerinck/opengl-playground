@@ -38,7 +38,7 @@ namespace basicExample {
 		// Mesh
 		comp::Mesh mesh = {};
 		mesh.vb = vertexBuffer;
-		// mesh.ib = indexBuffer;
+		mesh.ib = indexBuffer;
 
 		// Transform
 		comp::Transform transform = {};
@@ -61,7 +61,7 @@ namespace basicExample {
 			m_ctx.rcommand->bindIndexBuffer(mesh.ib);
 
 			// Draw call
-			m_ctx.rcommand->draw(3);
+			m_ctx.rcommand->drawIndexed(mesh.ib.count);
 		});
 	}
 

@@ -14,6 +14,7 @@ RenderCommand::~RenderCommand()
 }
 
 void RenderCommand::clear() const {
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 comp::AttributeBuffer RenderCommand::createAttributeBuffer(void* vertices, unsigned int count, unsigned int stride) const {
@@ -48,9 +49,17 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(comp::AttributeBuffer* attr
 	return vb;
 }
 
-comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int count) const
-{
-	return comp::IndexBuffer();
+comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int count) const {
+	unsigned int id;
+	GLCall(glGenBuffers(1, &id));
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id));
+	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+
+	comp::IndexBuffer buffer = {};
+	buffer.bufferId = id;
+	buffer.count = count;
+
+	return buffer;
 }
 
 
@@ -140,8 +149,8 @@ void RenderCommand::bindVertexBuffer(comp::VertexBuffer vb) const {
 	GLCall(glBindVertexArray(vb.vertexArrayId));
 }
 
-void RenderCommand::bindIndexBuffer(comp::IndexBuffer ib) const
-{
+void RenderCommand::bindIndexBuffer(comp::IndexBuffer ib) const {
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib.bufferId));
 }
 
 void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) const
@@ -161,6 +170,7 @@ void RenderCommand::draw(unsigned int count) const {
 }
 
 void RenderCommand::drawIndexed(unsigned int count) const {
+	GLCall(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*) 0));
 }
 
 bool RenderCommand::hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const {
