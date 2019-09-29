@@ -2,12 +2,14 @@
 
 #include <glad/glad.h>
 #include <assert.h>
+#include <debug_break/debug_break.h>
 
 /**
  * @brief Assertion and logger handling for opengl functions
  */
 #ifndef NDEBUG
-    #define GLCall(x) glexp::clear(); x; assert(glexp::doesFunctionWorks(#x, __FILE__, __LINE__))
+    #define BreakAssert(x) if (!x) { debug_break(); assert(false); }
+    #define GLCall(x) glexp::clear(); x; BreakAssert(glexp::doesFunctionWorks(#x, __FILE__, __LINE__))
 #else
     #define GLCall(x) x
 #endif

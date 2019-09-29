@@ -66,11 +66,26 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int c
 
 
 scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, const VertexInputDescription& vib) const {
-	const char* vsSource = readShaderFile(filePath);
+	FILE* file = fopen(filePath, "rb");
+	if (!file) {
+		spdlog::error("[createVertexShader] Cannot load file : {}", filePath);
+		debug_break();
+		assert(false);
+	}
+
+	const unsigned int MAX_SHADER_SIZE = 1000; // Prevent dynamic allocation
+	char shaderSrc[MAX_SHADER_SIZE];
+	size_t count = fread(shaderSrc, 1, MAX_SHADER_SIZE - 1, file);
+
+    assert(count < MAX_SHADER_SIZE - 1); // File was too long
+
+    shaderSrc[count] = '\0';
+    fclose(file);
 
 	// Compile shader
+	const char* src = shaderSrc;
 	unsigned int vsId = glCreateShader(GL_VERTEX_SHADER);
-	GLCall(glShaderSource(vsId, 1, &vsSource, nullptr));
+	GLCall(glShaderSource(vsId, 1, &src, nullptr));
 	GLCall(glCompileShader(vsId));
 	hasShaderCompiled(vsId, GL_VERTEX_SHADER);
 
@@ -100,11 +115,26 @@ scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, cons
 }
 
 scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) const {
-	const char* fragSource = readShaderFile(filePath);
+	FILE* file = fopen(filePath, "rb");
+	if (!file) {
+		spdlog::error("[createFragmentShader] Cannot load file : {}", filePath);
+		debug_break();
+		assert(false);
+	}
+
+	const unsigned int MAX_SHADER_SIZE = 1000; // Prevent dynamic allocation
+	char shaderSrc[MAX_SHADER_SIZE];
+	size_t count = fread(shaderSrc, 1, MAX_SHADER_SIZE - 1, file);
+
+    assert(count < MAX_SHADER_SIZE - 1); // File was too long
+
+    shaderSrc[count] = '\0';
+    fclose(file);
 
 	// Compile shader
+	const char* src = shaderSrc;
 	unsigned int fsId = glCreateShader(GL_FRAGMENT_SHADER);
-	GLCall(glShaderSource(fsId, 1, &fragSource, nullptr));
+	GLCall(glShaderSource(fsId, 1, &src, nullptr));
 	GLCall(glCompileShader(fsId));
 	hasShaderCompiled(fsId, GL_FRAGMENT_SHADER);
 
@@ -208,24 +238,4 @@ GLenum RenderCommand::ShaderDataTypeToOpenGLBaseType(ShaderDataType type) const 
 
 	assert(false && "Unknown ShaderDataType!");
 	return 0;
-}
-
-const char* RenderCommand::readShaderFile(const char* filePath) const {
-	FILE* file = fopen(filePath, "rb");
-	if (!file) {
-		spdlog::error("[readShaderFile] Cannot load file : {}", filePath);
-		debug_break();
-		assert(false);
-	}
-
-	const unsigned int MAX_SHADER_SIZE = 1000; // Prevent dynamic allocation
-	char shaderSrc[MAX_SHADER_SIZE];
-	size_t count = fread(shaderSrc, 1, MAX_SHADER_SIZE - 1, file);
-
-    assert(count < MAX_SHADER_SIZE - 1); // File was too long
-
-    shaderSrc[count] = '\0';
-    fclose(file);
-
-	return shaderSrc;
 }

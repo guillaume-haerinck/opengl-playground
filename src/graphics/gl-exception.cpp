@@ -1,7 +1,6 @@
 #include "gl-exception.h"
 
 #include <spdlog/spdlog.h>
-#include <debug_break/debug_break.h>
 
 void glexp::clear() {
 	while (glGetError() != GL_NO_ERROR);
@@ -11,7 +10,6 @@ bool glexp::doesFunctionWorks(const char *functionName, const char *filename, in
 	GLenum error;
 	while ((error = glGetError()) != GL_NO_ERROR) {
 		spdlog::error("[OpenGL Error] {}: {} {} {}", glErrorString(error), functionName, filename, line);
-        debug_break();
 		return false;
 	}
 	return true;
