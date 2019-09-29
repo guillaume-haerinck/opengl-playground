@@ -5,6 +5,8 @@
 #include <spdlog/spdlog.h>
 #include <debug_break/debug_break.h>
 
+
+#include "systems/render-system.h"
 #include "graphics/gl-exception.h"
 #include "graphics/vertex-input-description.h"
 #include "components/graphics/mesh.h"
@@ -13,6 +15,11 @@
 
 namespace basicExample {
 	RotatingCube::RotatingCube(Context& context) : m_ctx(context) {
+        // Init
+		m_systems = {
+			std::make_shared<RenderSystem>(context)
+		};
+
 		// Vertex buffer
 		float positions[] = {
 			-0.5f, -0.5f,
@@ -53,16 +60,9 @@ namespace basicExample {
 	RotatingCube::~RotatingCube() {}
 
 	void RotatingCube::update() {
-		m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>()
-			.each([&](comp::Mesh& mesh, comp::Pipeline& pipeline, comp::Transform& transform) {
-			// Bind
-			m_ctx.rcommand->bindPipeline(pipeline);
-			m_ctx.rcommand->bindVertexBuffer(mesh.vb);
-			m_ctx.rcommand->bindIndexBuffer(mesh.ib);
-
-			// Draw call
-			m_ctx.rcommand->drawIndexed(mesh.ib.count);
-		});
+		for (auto& system : m_systems) {
+			system->Update();
+		}
 	}
 
 	void RotatingCube::imGuiUpdate() {

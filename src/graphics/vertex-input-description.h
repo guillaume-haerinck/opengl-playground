@@ -63,10 +63,10 @@ struct BufferElement {
 
 class VertexInputDescription {
 public:
-	VertexInputDescription() {}
+	VertexInputDescription() : vertexArrayId(0) {}
 
 	VertexInputDescription(const std::initializer_list<BufferElement>& elements)
-		: m_Elements(elements)
+		: m_Elements(elements), vertexArrayId(0)
 	{
 		CalculateOffsetsAndStride();
 	}

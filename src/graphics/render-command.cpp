@@ -90,6 +90,7 @@ scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, cons
 	hasShaderCompiled(vsId, GL_VERTEX_SHADER);
 
 	// Assign vertex input description to vao
+	assert(vib.vertexArrayId != 0 && "You must set the vertexArray with the VertexInputDescription");
 	unsigned int vbIndex = 0;
 	GLCall(glBindVertexArray(vib.vertexArrayId));
 	for (const auto& element : vib) {
