@@ -31,6 +31,7 @@ private:
 	void resetAppTo() {
         m_isContextInit = false;
 		m_activeExemple.reset();
+        m_ctx.registry.reset();
 		m_activeExemple = std::make_unique<T>(m_ctx);
         m_isContextInit = true;
 	}

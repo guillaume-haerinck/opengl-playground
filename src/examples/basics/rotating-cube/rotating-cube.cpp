@@ -15,9 +15,9 @@ namespace basicExample {
 	RotatingCube::RotatingCube(Context& context) : m_ctx(context) {
 		// Vertex buffer
 		float positions[] = {
-			-1.0f, -1.0f,
-			 1.0f, -1.0f,
-			 0.0f,  1.0f
+			-0.5f, -0.5f,
+			 0.5f, -0.5f,
+			 0.0f,  0.5f
 		};
 		comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer(&positions, std::size(positions), sizeof(float));
 		comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(&positionBuffer, 1);

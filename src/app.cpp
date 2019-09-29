@@ -25,7 +25,7 @@ App::App() : m_running(true)
     initImgui();
 
 	m_ctx.rcommand = std::make_unique<RenderCommand>();
-	resetAppTo<basicExample::BasicTriangle>();
+	resetAppTo<basicExample::RotatingCube>();
 }
 
 App::~App() {
