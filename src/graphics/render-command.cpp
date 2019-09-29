@@ -66,22 +66,7 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int c
 
 
 scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, const VertexInputDescription& vib) const {
-	FILE* file = fopen("res/test.txt", "rb");
-	if (!file) {
-		spdlog::error("Cannot load file");
-	}
-	
-	while (!feof(file)) {
-		spdlog::info("{}", fgetc(file));
-	}
-	
-	const char* vsSource = R"(#version 300 es
-		layout(location = 0) in vec2 position;
-
-		void main() {
-			gl_Position = vec4(position, 0.0, 1.0);
-		}
-	)";
+	const char* vsSource = readShaderFile(filePath);
 
 	// Compile shader
 	unsigned int vsId = glCreateShader(GL_VERTEX_SHADER);
@@ -115,13 +100,7 @@ scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, cons
 }
 
 scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) const {
-	const char* fragSource = R"(#version 300 es
-		layout(location = 0) out lowp vec4 color;
-
-		void main() {
-			color = vec4(1, 0, 0, 1);
-		}
-	)";
+	const char* fragSource = readShaderFile(filePath);
 
 	// Compile shader
 	unsigned int fsId = glCreateShader(GL_FRAGMENT_SHADER);
@@ -229,4 +208,24 @@ GLenum RenderCommand::ShaderDataTypeToOpenGLBaseType(ShaderDataType type) const 
 
 	assert(false && "Unknown ShaderDataType!");
 	return 0;
+}
+
+const char* RenderCommand::readShaderFile(const char* filePath) const {
+	FILE* file = fopen(filePath, "rb");
+	if (!file) {
+		spdlog::error("[readShaderFile] Cannot load file : {}", filePath);
+		debug_break();
+		assert(false);
+	}
+
+	const unsigned int MAX_SHADER_SIZE = 1000; // Prevent dynamic allocation
+	char shaderSrc[MAX_SHADER_SIZE];
+	size_t count = fread(shaderSrc, 1, MAX_SHADER_SIZE - 1, file);
+
+    assert(count < MAX_SHADER_SIZE - 1); // File was too long
+
+    shaderSrc[count] = '\0';
+    fclose(file);
+
+	return shaderSrc;
 }

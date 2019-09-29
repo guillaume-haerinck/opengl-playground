@@ -15,8 +15,8 @@ namespace basicExample {
 		BasicTriangle(Context& context);
 		virtual ~BasicTriangle();
 
-		virtual void Update() override;
-		virtual void ImGuiUpdate() override;
+		virtual void update() override;
+		virtual void imGuiUpdate() override;
 
 	private:
 		Context& m_ctx;

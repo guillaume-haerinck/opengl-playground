@@ -31,8 +31,8 @@ namespace basicExample {
 			{ ShaderDataType::Float2, "Position" }
 		};
 		inputDescription.vertexArrayId = vertexBuffer.vertexArrayId;
-		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("todo", inputDescription);
-		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("todo");
+		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/basic-triangle/basic-triangle.vert", inputDescription);
+		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/basic-triangle/basic-triangle.frag");
 		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(vs, fs);
 
 		// Mesh
@@ -52,7 +52,7 @@ namespace basicExample {
 
 	BasicTriangle::~BasicTriangle() {}
 
-	void BasicTriangle::Update() {
+	void BasicTriangle::update() {
 		m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>()
 			.each([&](comp::Mesh& mesh, comp::Pipeline& pipeline, comp::Transform& transform) {
 			// Bind
@@ -65,7 +65,7 @@ namespace basicExample {
 		});
 	}
 
-	void BasicTriangle::ImGuiUpdate() {
+	void BasicTriangle::imGuiUpdate() {
 		ImGui::Begin("Exemple properties");
 		ImGui::Text("First example window");
 		ImGui::End();

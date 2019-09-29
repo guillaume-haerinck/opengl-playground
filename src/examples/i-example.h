@@ -10,10 +10,10 @@ public:
 	/**
 	 * @brief Update the geometry and sends it to the render queue
 	 */
-	virtual void Update() = 0;
+	virtual void update() = 0;
 	
 	/**
 	 * @brief Update ImGui Interface
 	 */
-	virtual void ImGuiUpdate() = 0;
+	virtual void imGuiUpdate() = 0;
 };

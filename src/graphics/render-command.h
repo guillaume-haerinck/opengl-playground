@@ -87,4 +87,5 @@ public:
 private:
 	bool hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const;
 	GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) const;
+	const char* readShaderFile(const char* filepath) const;
 };

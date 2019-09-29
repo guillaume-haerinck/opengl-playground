@@ -67,7 +67,7 @@ void App::update() {
 	}
 	*/
 
-	m_activeExemple->Update();
+	m_activeExemple->update();
 
 	handleSDLEvents();
 	SDL_GL_SwapWindow(m_window);
