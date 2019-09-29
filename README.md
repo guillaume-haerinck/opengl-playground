@@ -2,7 +2,7 @@
 
 Small opengl renderer with an Entity Component System (ECS) architecture.
 
-Supports WASM build so it can be played on any web-browser like Chrome, Firefox or safari.
+Supports WASM build so it can be played on any web-browser like Chrome, Firefox or safari. Just run the content of the `www` folder on a web server.
 
 ## Table of Contents
 
