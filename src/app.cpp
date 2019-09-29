@@ -9,6 +9,7 @@
 
 #include "graphics/gl-exception.h"
 #include "examples/basics/basic-triangle/basic-triangle.h"
+#include "examples/basics/rotating-cube/rotating-cube.h"
 
 bool App::m_instanciated = false;
 bool App::m_isContextInit = false;
@@ -153,6 +154,7 @@ void App::renderMenu() {
 	ImGui::Text("Exemples:");
 	if (ImGui::CollapsingHeader("Basic")) {
 		if (ImGui::Button("Basic triangle")) { resetAppTo<basicExample::BasicTriangle>(); }
+		if (ImGui::Button("Rotating cube")) { resetAppTo<basicExample::RotatingCube>(); }
 	}
 
 	// if (ImGui::CollapsingHeader("Intermediate")) {}
