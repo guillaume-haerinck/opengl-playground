@@ -7,6 +7,7 @@
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include "graphics/gl-exception.h"
 #include "examples/basics/basic-triangle/basic-triangle.h"
 
 bool App::m_instanciated = false;
@@ -40,36 +41,26 @@ App::~App() {
 
 
 void App::update() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	/*
-	// Update GUI
-	{
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame(m_window);
-		ImGui::NewFrame();
-
-		renderMenu();
-		m_activeExemple->ImGuiUpdate();
-
-		ImGui::EndFrame();
-	}
-
-	// Update geometry
-	{
-		m_activeExemple->Update();
-	}
-
-	// Render GUI
-	{
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	}
-	*/
-
-	m_activeExemple->update();
-
+	// Feed inputs
 	handleSDLEvents();
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(m_window);
+	ImGui::NewFrame();
+
+	// Render our data
+	m_activeExemple->update();
+	GLCall(glBindVertexArray(0));
+
+	// Update imgui
+	renderMenu();
+	m_activeExemple->imGuiUpdate();
+
+	// Render imgui
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 	SDL_GL_SwapWindow(m_window);
 }
 

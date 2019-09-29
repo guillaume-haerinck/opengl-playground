@@ -197,7 +197,7 @@ Module['FS_createPath']('/res/shaders/basics', 'basic-triangle', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 102, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.frag"}, {"start": 102, "audio": 0, "end": 215, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.vert"}], "remote_package_size": 215, "package_uuid": "f5912f49-561a-4fbc-bc0d-1f0c36bf1ea0"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 102, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.frag"}, {"start": 102, "audio": 0, "end": 215, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.vert"}], "remote_package_size": 215, "package_uuid": "d90bf722-eb4c-41d0-b4bf-94cfd1326244"});
 
 })();
 
@@ -1404,11 +1404,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 87408,
+    STACK_BASE = 103360,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5330288,
-    DYNAMIC_BASE = 5330288,
-    DYNAMICTOP_PTR = 87152;
+    STACK_MAX = 5346240,
+    DYNAMIC_BASE = 5346240,
+    DYNAMICTOP_PTR = 103104;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1860,8 +1860,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 62464,
-    'maximum': 62464,
+    'initial': 63488,
+    'maximum': 63488,
     'element': 'anyfunc'
   });
   env['__memory_base'] = 1024; // tell the memory segments where to place themselves
@@ -1919,7 +1919,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 86384;
+// STATICTOP = STATIC_BASE + 102336;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -1930,7 +1930,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 87392
+var tempDoublePtr = 103344
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -3411,11 +3411,11 @@ function copyTempDouble(ptr) {
   
   var ERRNO_CODES={EPERM:1,ENOENT:2,ESRCH:3,EINTR:4,EIO:5,ENXIO:6,E2BIG:7,ENOEXEC:8,EBADF:9,ECHILD:10,EAGAIN:11,EWOULDBLOCK:11,ENOMEM:12,EACCES:13,EFAULT:14,ENOTBLK:15,EBUSY:16,EEXIST:17,EXDEV:18,ENODEV:19,ENOTDIR:20,EISDIR:21,EINVAL:22,ENFILE:23,EMFILE:24,ENOTTY:25,ETXTBSY:26,EFBIG:27,ENOSPC:28,ESPIPE:29,EROFS:30,EMLINK:31,EPIPE:32,EDOM:33,ERANGE:34,ENOMSG:42,EIDRM:43,ECHRNG:44,EL2NSYNC:45,EL3HLT:46,EL3RST:47,ELNRNG:48,EUNATCH:49,ENOCSI:50,EL2HLT:51,EDEADLK:35,ENOLCK:37,EBADE:52,EBADR:53,EXFULL:54,ENOANO:55,EBADRQC:56,EBADSLT:57,EDEADLOCK:35,EBFONT:59,ENOSTR:60,ENODATA:61,ETIME:62,ENOSR:63,ENONET:64,ENOPKG:65,EREMOTE:66,ENOLINK:67,EADV:68,ESRMNT:69,ECOMM:70,EPROTO:71,EMULTIHOP:72,EDOTDOT:73,EBADMSG:74,ENOTUNIQ:76,EBADFD:77,EREMCHG:78,ELIBACC:79,ELIBBAD:80,ELIBSCN:81,ELIBMAX:82,ELIBEXEC:83,ENOSYS:38,ENOTEMPTY:39,ENAMETOOLONG:36,ELOOP:40,EOPNOTSUPP:95,EPFNOSUPPORT:96,ECONNRESET:104,ENOBUFS:105,EAFNOSUPPORT:97,EPROTOTYPE:91,ENOTSOCK:88,ENOPROTOOPT:92,ESHUTDOWN:108,ECONNREFUSED:111,EADDRINUSE:98,ECONNABORTED:103,ENETUNREACH:101,ENETDOWN:100,ETIMEDOUT:110,EHOSTDOWN:112,EHOSTUNREACH:113,EINPROGRESS:115,EALREADY:114,EDESTADDRREQ:89,EMSGSIZE:90,EPROTONOSUPPORT:93,ESOCKTNOSUPPORT:94,EADDRNOTAVAIL:99,ENETRESET:102,EISCONN:106,ENOTCONN:107,ETOOMANYREFS:109,EUSERS:87,EDQUOT:122,ESTALE:116,ENOTSUP:95,ENOMEDIUM:123,EILSEQ:84,EOVERFLOW:75,ECANCELED:125,ENOTRECOVERABLE:131,EOWNERDEAD:130,ESTRPIPE:86};
   
-  var _stdin=87168;
+  var _stdin=103120;
   
-  var _stdout=87184;
+  var _stdout=103136;
   
-  var _stderr=87200;var FS={root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,trackingDelegate:{},tracking:{openFlags:{READ:1,WRITE:2}},ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,handleFSError:function(e) {
+  var _stderr=103152;var FS={root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,trackingDelegate:{},tracking:{openFlags:{READ:1,WRITE:2}},ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,handleFSError:function(e) {
         if (!(e instanceof FS.ErrnoError)) throw e + ' : ' + stackTrace();
         return ___setErrNo(e.errno);
       },lookupPath:function(path, opts) {
@@ -10394,6 +10394,75 @@ function copyTempDouble(ptr) {
       return 0;
     }
 
+  function _glActiveTexture(x0) { GLctx['activeTexture'](x0) }
+
+  function _glAttachShader(program, shader) {
+      GLctx.attachShader(GL.programs[program],
+                              GL.shaders[shader]);
+    }
+
+  function _glBindBuffer(target, buffer) {
+  
+      if (target == 0x88EB /*GL_PIXEL_PACK_BUFFER*/) {
+        // In WebGL 2 glReadPixels entry point, we need to use a different WebGL 2 API function call when a buffer is bound to
+        // GL_PIXEL_PACK_BUFFER_BINDING point, so must keep track whether that binding point is non-null to know what is
+        // the proper API function to call.
+        GLctx.currentPixelPackBufferBinding = buffer;
+      } else if (target == 0x88EC /*GL_PIXEL_UNPACK_BUFFER*/) {
+        // In WebGL 2 gl(Compressed)Tex(Sub)Image[23]D entry points, we need to
+        // use a different WebGL 2 API function call when a buffer is bound to
+        // GL_PIXEL_UNPACK_BUFFER_BINDING point, so must keep track whether that
+        // binding point is non-null to know what is the proper API function to
+        // call.
+        GLctx.currentPixelUnpackBufferBinding = buffer;
+      }
+      GLctx.bindBuffer(target, GL.buffers[buffer]);
+    }
+
+  function _glBindTexture(target, texture) {
+      GLctx.bindTexture(target, GL.textures[texture]);
+    }
+
+  function _glBlendEquation(x0) { GLctx['blendEquation'](x0) }
+
+  function _glBlendEquationSeparate(x0, x1) { GLctx['blendEquationSeparate'](x0, x1) }
+
+  function _glBlendFunc(x0, x1) { GLctx['blendFunc'](x0, x1) }
+
+  function _glBlendFuncSeparate(x0, x1, x2, x3) { GLctx['blendFuncSeparate'](x0, x1, x2, x3) }
+
+  function _glBufferData(target, size, data, usage) {
+      if (GL.currentContext.supportsWebGL2EntryPoints) { // WebGL 2 provides new garbage-free entry points to call to WebGL. Use those always when possible.
+        if (data) {
+          GLctx.bufferData(target, HEAPU8, usage, data, size);
+        } else {
+          GLctx.bufferData(target, size, usage);
+        }
+      } else {
+        // N.b. here first form specifies a heap subarray, second form an integer size, so the ?: code here is polymorphic. It is advised to avoid
+        // randomly mixing both uses in calling code, to avoid any potential JS engine JIT issues.
+        GLctx.bufferData(target, data ? HEAPU8.subarray(data, data+size) : size, usage);
+      }
+    }
+
+  function _glCompileShader(shader) {
+      GLctx.compileShader(GL.shaders[shader]);
+    }
+
+  function _glCreateProgram() {
+      var id = GL.getNewId(GL.programs);
+      var program = GLctx.createProgram();
+      program.name = id;
+      GL.programs[id] = program;
+      return id;
+    }
+
+  function _glCreateShader(shaderType) {
+      var id = GL.getNewId(GL.shaders);
+      GL.shaders[id] = GLctx.createShader(shaderType);
+      return id;
+    }
+
   function _glDeleteBuffers(n, buffers) {
       for (var i = 0; i < n; i++) {
         var id = HEAP32[(((buffers)+(i*4))>>2)];
@@ -10414,6 +10483,30 @@ function copyTempDouble(ptr) {
       }
     }
 
+  function _glDeleteProgram(id) {
+      if (!id) return;
+      var program = GL.programs[id];
+      if (!program) { // glDeleteProgram actually signals an error when deleting a nonexisting object, unlike some other GL delete functions.
+        GL.recordError(0x0501 /* GL_INVALID_VALUE */);
+        return;
+      }
+      GLctx.deleteProgram(program);
+      program.name = 0;
+      GL.programs[id] = null;
+      GL.programInfos[id] = null;
+    }
+
+  function _glDeleteShader(id) {
+      if (!id) return;
+      var shader = GL.shaders[id];
+      if (!shader) { // glDeleteShader actually signals an error when deleting a nonexisting object, unlike some other GL delete functions.
+        GL.recordError(0x0501 /* GL_INVALID_VALUE */);
+        return;
+      }
+      GLctx.deleteShader(shader);
+      GL.shaders[id] = null;
+    }
+
   function _glDeleteTextures(n, textures) {
       for (var i = 0; i < n; i++) {
         var id = HEAP32[(((textures)+(i*4))>>2)];
@@ -10425,8 +10518,236 @@ function copyTempDouble(ptr) {
       }
     }
 
+  function _glDetachShader(program, shader) {
+      GLctx.detachShader(GL.programs[program],
+                              GL.shaders[shader]);
+    }
+
+  function _glDisable(x0) { GLctx['disable'](x0) }
+
+
+  function _glEnable(x0) { GLctx['enable'](x0) }
+
+  function _glEnableVertexAttribArray(index) {
+      GLctx.enableVertexAttribArray(index);
+    }
+
+  function _glGenBuffers(n, buffers) {
+      __glGenObject(n, buffers, 'createBuffer', GL.buffers
+        );
+    }
+
+  function _glGenTextures(n, textures) {
+      __glGenObject(n, textures, 'createTexture', GL.textures
+        );
+    }
+
+  function _glGetAttribLocation(program, name) {
+      return GLctx.getAttribLocation(GL.programs[program], UTF8ToString(name));
+    }
+
+  function _glGetIntegerv(name_, p) {
+      emscriptenWebGLGet(name_, p, 'Integer');
+    }
+
+  function _glGetProgramInfoLog(program, maxLength, length, infoLog) {
+      var log = GLctx.getProgramInfoLog(GL.programs[program]);
+      if (log === null) log = '(unknown error)';
   
-  var ___tm_timezone=(stringToUTF8("GMT", 87296, 4), 87296);function _gmtime_r(time, tmPtr) {
+      if (maxLength > 0 && infoLog) {
+        var numBytesWrittenExclNull = stringToUTF8(log, infoLog, maxLength);
+        if (length) HEAP32[((length)>>2)]=numBytesWrittenExclNull;
+      } else {
+        if (length) HEAP32[((length)>>2)]=0;
+      }
+    }
+
+  function _glGetProgramiv(program, pname, p) {
+      if (!p) {
+        // GLES2 specification does not specify how to behave if p is a null pointer. Since calling this function does not make sense
+        // if p == null, issue a GL error to notify user about it.
+        GL.recordError(0x0501 /* GL_INVALID_VALUE */);
+        return;
+      }
+  
+      if (program >= GL.counter) {
+        GL.recordError(0x0501 /* GL_INVALID_VALUE */);
+        return;
+      }
+  
+      var ptable = GL.programInfos[program];
+      if (!ptable) {
+        GL.recordError(0x0502 /* GL_INVALID_OPERATION */);
+        return;
+      }
+  
+      if (pname == 0x8B84) { // GL_INFO_LOG_LENGTH
+        var log = GLctx.getProgramInfoLog(GL.programs[program]);
+        if (log === null) log = '(unknown error)';
+        HEAP32[((p)>>2)]=log.length + 1;
+      } else if (pname == 0x8B87 /* GL_ACTIVE_UNIFORM_MAX_LENGTH */) {
+        HEAP32[((p)>>2)]=ptable.maxUniformLength;
+      } else if (pname == 0x8B8A /* GL_ACTIVE_ATTRIBUTE_MAX_LENGTH */) {
+        if (ptable.maxAttributeLength == -1) {
+          program = GL.programs[program];
+          var numAttribs = GLctx.getProgramParameter(program, 0x8B89/*GL_ACTIVE_ATTRIBUTES*/);
+          ptable.maxAttributeLength = 0; // Spec says if there are no active attribs, 0 must be returned.
+          for (var i = 0; i < numAttribs; ++i) {
+            var activeAttrib = GLctx.getActiveAttrib(program, i);
+            ptable.maxAttributeLength = Math.max(ptable.maxAttributeLength, activeAttrib.name.length+1);
+          }
+        }
+        HEAP32[((p)>>2)]=ptable.maxAttributeLength;
+      } else if (pname == 0x8A35 /* GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH */) {
+        if (ptable.maxUniformBlockNameLength == -1) {
+          program = GL.programs[program];
+          var numBlocks = GLctx.getProgramParameter(program, 0x8A36/*GL_ACTIVE_UNIFORM_BLOCKS*/);
+          ptable.maxUniformBlockNameLength = 0;
+          for (var i = 0; i < numBlocks; ++i) {
+            var activeBlockName = GLctx.getActiveUniformBlockName(program, i);
+            ptable.maxUniformBlockNameLength = Math.max(ptable.maxUniformBlockNameLength, activeBlockName.length+1);
+          }
+        }
+        HEAP32[((p)>>2)]=ptable.maxUniformBlockNameLength;
+      } else {
+        HEAP32[((p)>>2)]=GLctx.getProgramParameter(GL.programs[program], pname);
+      }
+    }
+
+  function _glGetShaderInfoLog(shader, maxLength, length, infoLog) {
+      var log = GLctx.getShaderInfoLog(GL.shaders[shader]);
+      if (log === null) log = '(unknown error)';
+      if (maxLength > 0 && infoLog) {
+        var numBytesWrittenExclNull = stringToUTF8(log, infoLog, maxLength);
+        if (length) HEAP32[((length)>>2)]=numBytesWrittenExclNull;
+      } else {
+        if (length) HEAP32[((length)>>2)]=0;
+      }
+    }
+
+  function _glGetShaderiv(shader, pname, p) {
+      if (!p) {
+        // GLES2 specification does not specify how to behave if p is a null pointer. Since calling this function does not make sense
+        // if p == null, issue a GL error to notify user about it.
+        GL.recordError(0x0501 /* GL_INVALID_VALUE */);
+        return;
+      }
+      if (pname == 0x8B84) { // GL_INFO_LOG_LENGTH
+        var log = GLctx.getShaderInfoLog(GL.shaders[shader]);
+        if (log === null) log = '(unknown error)';
+        HEAP32[((p)>>2)]=log.length + 1;
+      } else if (pname == 0x8B88) { // GL_SHADER_SOURCE_LENGTH
+        var source = GLctx.getShaderSource(GL.shaders[shader]);
+        var sourceLength = (source === null || source.length == 0) ? 0 : source.length + 1;
+        HEAP32[((p)>>2)]=sourceLength;
+      } else {
+        HEAP32[((p)>>2)]=GLctx.getShaderParameter(GL.shaders[shader], pname);
+      }
+    }
+
+  function _glGetUniformLocation(program, name) {
+      name = UTF8ToString(name);
+  
+      var arrayIndex = 0;
+      // If user passed an array accessor "[index]", parse the array index off the accessor.
+      if (name[name.length - 1] == ']') {
+        var leftBrace = name.lastIndexOf('[');
+        arrayIndex = name[leftBrace+1] != ']' ? parseInt(name.slice(leftBrace + 1)) : 0; // "index]", parseInt will ignore the ']' at the end; but treat "foo[]" as "foo[0]"
+        name = name.slice(0, leftBrace);
+      }
+  
+      var uniformInfo = GL.programInfos[program] && GL.programInfos[program].uniforms[name]; // returns pair [ dimension_of_uniform_array, uniform_location ]
+      if (uniformInfo && arrayIndex >= 0 && arrayIndex < uniformInfo[0]) { // Check if user asked for an out-of-bounds element, i.e. for 'vec4 colors[3];' user could ask for 'colors[10]' which should return -1.
+        return uniformInfo[1] + arrayIndex;
+      } else {
+        return -1;
+      }
+    }
+
+  function _glIsEnabled(x0) { return GLctx['isEnabled'](x0) }
+
+  function _glLinkProgram(program) {
+      GLctx.linkProgram(GL.programs[program]);
+      GL.populateUniformTable(program);
+    }
+
+  function _glScissor(x0, x1, x2, x3) { GLctx['scissor'](x0, x1, x2, x3) }
+
+  function _glShaderSource(shader, count, string, length) {
+      var source = GL.getSource(shader, count, string, length);
+  
+  
+      GLctx.shaderSource(GL.shaders[shader], source);
+    }
+
+  function _glTexImage2D(target, level, internalFormat, width, height, border, format, type, pixels) {
+      if (GL.currentContext.supportsWebGL2EntryPoints) {
+        // WebGL 2 provides new garbage-free entry points to call to WebGL. Use those always when possible.
+        if (GLctx.currentPixelUnpackBufferBinding) {
+          GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
+        } else if (pixels != 0) {
+          GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, __heapObjectForWebGLType(type), pixels >> (__heapAccessShiftForWebGLType[type]|0));
+        } else {
+          GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, null);
+        }
+        return;
+      }
+      GLctx.texImage2D(target, level, internalFormat, width, height, border, format, type, pixels ? emscriptenWebGLGetTexPixelData(type, format, width, height, pixels, internalFormat) : null);
+    }
+
+  function _glTexParameteri(x0, x1, x2) { GLctx['texParameteri'](x0, x1, x2) }
+
+  function _glUniform1i(location, v0) {
+      GLctx.uniform1i(GL.uniforms[location], v0);
+    }
+
+  function _glUniformMatrix4fv(location, count, transpose, value) {
+  
+      if (GL.currentContext.supportsWebGL2EntryPoints) { // WebGL 2 provides new garbage-free entry points to call to WebGL. Use those always when possible.
+        GLctx.uniformMatrix4fv(GL.uniforms[location], !!transpose, HEAPF32, value>>2, count*16);
+        return;
+      }
+  
+      if (16*count <= GL.MINI_TEMP_BUFFER_SIZE) {
+        // avoid allocation when uploading few enough uniforms
+        var view = GL.miniTempBufferViews[16*count-1];
+        for (var i = 0; i < 16*count; i += 16) {
+          view[i] = HEAPF32[(((value)+(4*i))>>2)];
+          view[i+1] = HEAPF32[(((value)+(4*i+4))>>2)];
+          view[i+2] = HEAPF32[(((value)+(4*i+8))>>2)];
+          view[i+3] = HEAPF32[(((value)+(4*i+12))>>2)];
+          view[i+4] = HEAPF32[(((value)+(4*i+16))>>2)];
+          view[i+5] = HEAPF32[(((value)+(4*i+20))>>2)];
+          view[i+6] = HEAPF32[(((value)+(4*i+24))>>2)];
+          view[i+7] = HEAPF32[(((value)+(4*i+28))>>2)];
+          view[i+8] = HEAPF32[(((value)+(4*i+32))>>2)];
+          view[i+9] = HEAPF32[(((value)+(4*i+36))>>2)];
+          view[i+10] = HEAPF32[(((value)+(4*i+40))>>2)];
+          view[i+11] = HEAPF32[(((value)+(4*i+44))>>2)];
+          view[i+12] = HEAPF32[(((value)+(4*i+48))>>2)];
+          view[i+13] = HEAPF32[(((value)+(4*i+52))>>2)];
+          view[i+14] = HEAPF32[(((value)+(4*i+56))>>2)];
+          view[i+15] = HEAPF32[(((value)+(4*i+60))>>2)];
+        }
+      } else
+      {
+        var view = HEAPF32.subarray((value)>>2,(value+count*64)>>2);
+      }
+      GLctx.uniformMatrix4fv(GL.uniforms[location], !!transpose, view);
+    }
+
+  function _glUseProgram(program) {
+      GLctx.useProgram(GL.programs[program]);
+    }
+
+  function _glVertexAttribPointer(index, size, type, normalized, stride, ptr) {
+      GLctx.vertexAttribPointer(index, size, type, !!normalized, stride, ptr);
+    }
+
+  function _glViewport(x0, x1, x2, x3) { GLctx['viewport'](x0, x1, x2, x3) }
+
+  
+  var ___tm_timezone=(stringToUTF8("GMT", 103248, 4), 103248);function _gmtime_r(time, tmPtr) {
       var date = new Date(HEAP32[((time)>>2)]*1000);
       HEAP32[((tmPtr)>>2)]=date.getUTCSeconds();
       HEAP32[(((tmPtr)+(4))>>2)]=date.getUTCMinutes();
@@ -11543,9 +11864,47 @@ var asmLibraryArg = {
   "_emscripten_set_wheel_callback_on_thread": _emscripten_set_wheel_callback_on_thread,
   "_getenv": _getenv,
   "_gettimeofday": _gettimeofday,
+  "_glActiveTexture": _glActiveTexture,
+  "_glAttachShader": _glAttachShader,
+  "_glBindBuffer": _glBindBuffer,
+  "_glBindTexture": _glBindTexture,
+  "_glBlendEquation": _glBlendEquation,
+  "_glBlendEquationSeparate": _glBlendEquationSeparate,
+  "_glBlendFunc": _glBlendFunc,
+  "_glBlendFuncSeparate": _glBlendFuncSeparate,
+  "_glBufferData": _glBufferData,
+  "_glCompileShader": _glCompileShader,
+  "_glCreateProgram": _glCreateProgram,
+  "_glCreateShader": _glCreateShader,
   "_glDeleteBuffers": _glDeleteBuffers,
+  "_glDeleteProgram": _glDeleteProgram,
+  "_glDeleteShader": _glDeleteShader,
   "_glDeleteTextures": _glDeleteTextures,
+  "_glDetachShader": _glDetachShader,
+  "_glDisable": _glDisable,
   "_glDrawElements": _glDrawElements,
+  "_glEnable": _glEnable,
+  "_glEnableVertexAttribArray": _glEnableVertexAttribArray,
+  "_glGenBuffers": _glGenBuffers,
+  "_glGenTextures": _glGenTextures,
+  "_glGetAttribLocation": _glGetAttribLocation,
+  "_glGetIntegerv": _glGetIntegerv,
+  "_glGetProgramInfoLog": _glGetProgramInfoLog,
+  "_glGetProgramiv": _glGetProgramiv,
+  "_glGetShaderInfoLog": _glGetShaderInfoLog,
+  "_glGetShaderiv": _glGetShaderiv,
+  "_glGetUniformLocation": _glGetUniformLocation,
+  "_glIsEnabled": _glIsEnabled,
+  "_glLinkProgram": _glLinkProgram,
+  "_glScissor": _glScissor,
+  "_glShaderSource": _glShaderSource,
+  "_glTexImage2D": _glTexImage2D,
+  "_glTexParameteri": _glTexParameteri,
+  "_glUniform1i": _glUniform1i,
+  "_glUniformMatrix4fv": _glUniformMatrix4fv,
+  "_glUseProgram": _glUseProgram,
+  "_glVertexAttribPointer": _glVertexAttribPointer,
+  "_glViewport": _glViewport,
   "_gmtime_r": _gmtime_r,
   "_llvm_stackrestore": _llvm_stackrestore,
   "_llvm_stacksave": _llvm_stacksave,
