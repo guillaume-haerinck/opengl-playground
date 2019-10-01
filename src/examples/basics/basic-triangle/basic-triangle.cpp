@@ -20,24 +20,24 @@ namespace basicExample {
 		};
 
 		// Vertex buffer
+		VertexInputDescription inputDescription = {
+			{ ShaderDataType::Float2, "Position" }
+		};
+
 		float positions[] = {
 			-1.0f, -1.0f,
 			 1.0f, -1.0f,
 			 0.0f,  1.0f
 		};
 		comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer(&positions, std::size(positions), sizeof(float));
-		comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(&positionBuffer, 1);
+		comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(inputDescription, &positionBuffer, 1);
 
 		// Index buffer
 		unsigned int indices[] = { 0, 1, 2 };
 		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices));
 
 		// Pipeline
-		VertexInputDescription inputDescription = {
-			{ ShaderDataType::Float2, "Position" }
-		};
-		inputDescription.vertexArrayId = vertexBuffer.vertexArrayId;
-		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/basic-triangle/basic-triangle.vert", inputDescription);
+		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/basic-triangle/basic-triangle.vert");
 		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/basic-triangle/basic-triangle.frag");
 		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(vs, fs);
 

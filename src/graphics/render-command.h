@@ -31,10 +31,11 @@ public:
 	comp::AttributeBuffer createAttributeBuffer(void* vertices, unsigned int count, unsigned int stride) const;
 
 	/**
+	 * @param vib - Layout of the buffers
 	 * @param attributeBuffers - Array of buffers describing positions, normals, etc.
 	 * @param count - The number of attribute buffers
 	 */
-	comp::VertexBuffer createVertexBuffer(comp::AttributeBuffer* attributeBuffers, unsigned int count) const;
+	comp::VertexBuffer createVertexBuffer(const VertexInputDescription& vib, comp::AttributeBuffer* attributeBuffers, unsigned int count) const;
 
     /**
 	 * @param indices - Array of data
@@ -44,9 +45,8 @@ public:
 
     /**
 	 * @param filepath - The relative path from the .exe to the .cso containing the shader
-	 * @param ied - The input layout, do not forget to provide the vao from the vertex buffer
 	 */
-	scomp::VertexShader createVertexShader(const char* filePath, const VertexInputDescription& vib) const;
+	scomp::VertexShader createVertexShader(const char* filePath) const;
 
 	/**
 	 * @param filePath - The relative path from the .exe to the .cso containing the shader
@@ -87,7 +87,7 @@ public:
 
 private:
 	bool hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const;
-	GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) const;
+	GLenum shaderDataTypeToOpenGLBaseType(ShaderDataType type) const;
 
 private:
 	entt::registry& m_registry;

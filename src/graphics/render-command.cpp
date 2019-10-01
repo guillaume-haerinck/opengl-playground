@@ -54,11 +54,27 @@ comp::AttributeBuffer RenderCommand::createAttributeBuffer(void* vertices, unsig
 	return buffer;
 }
 
-comp::VertexBuffer RenderCommand::createVertexBuffer(comp::AttributeBuffer* attributeBuffers, unsigned int count) const {
+comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescription& vib, comp::AttributeBuffer* attributeBuffers, unsigned int count) const {
 	GLuint va;
 	GLCall(glGenVertexArrays(1, &va));
 	GLCall(glBindVertexArray(va));
 
+	// Set layout
+	unsigned int vbIndex = 0;
+	for (const auto& element : vib) {
+		GLCall(glEnableVertexAttribArray(vbIndex));
+		GLCall(glVertexAttribPointer(
+			vbIndex,
+			element.getComponentCount(),
+			shaderDataTypeToOpenGLBaseType(element.type),
+			element.normalized ? GL_TRUE : GL_FALSE,
+			vib.getStride(),
+			(const void*)(intptr_t)element.offset
+		));
+		vbIndex++;
+	}
+
+	// Set buffers
 	for (size_t i = 0; i < count; i++) {
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, attributeBuffers[i].bufferId));
 	}
@@ -67,7 +83,6 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(comp::AttributeBuffer* attr
 
 	comp::VertexBuffer vb = {};
 	vb.vertexArrayId = va;
-		
 	return vb;
 }
 
@@ -85,7 +100,7 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int c
 }
 
 
-scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, const VertexInputDescription& vib) const {
+scomp::VertexShader RenderCommand::createVertexShader(const char* filePath) const {
 	FILE* file = fopen(filePath, "rb");
 	if (!file) {
 		spdlog::error("[createVertexShader] Cannot load file : {}", filePath);
@@ -109,29 +124,9 @@ scomp::VertexShader RenderCommand::createVertexShader(const char* filePath, cons
 	GLCall(glCompileShader(vsId));
 	hasShaderCompiled(vsId, GL_VERTEX_SHADER);
 
-	// Assign vertex input description to vao
-	assert(vib.vertexArrayId != 0 && "You must set the vertexArray with the VertexInputDescription");
-	unsigned int vbIndex = 0;
-	GLCall(glBindVertexArray(vib.vertexArrayId));
-	for (const auto& element : vib) {
-		GLCall(glEnableVertexAttribArray(vbIndex));
-		GLCall(glVertexAttribPointer(
-			vbIndex,
-			element.GetComponentCount(),
-			ShaderDataTypeToOpenGLBaseType(element.Type),
-			element.Normalized ? GL_TRUE : GL_FALSE,
-			vib.GetStride(),
-			(const void*)(intptr_t)element.Offset
-		));
-		vbIndex++;
-	}
-	GLCall(glBindVertexArray(0));
-
 	// Return result
 	scomp::VertexShader vs = {};
 	vs.shaderId = vsId;
-	vs.inputDescription = vib;
-
 	return vs;
 }
 
@@ -167,6 +162,8 @@ scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) 
 }
 
 comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs) const {
+	// TODO generate hash and check hashmap to see if pipeline already exist
+
 	// Compile pipeline
 	unsigned int programId = glCreateProgram();
 	GLCall(glAttachShader(programId, vs.shaderId));
@@ -246,7 +243,7 @@ bool RenderCommand::hasShaderCompiled(unsigned int shaderId, unsigned int shader
 	return true;
 }
 
-GLenum RenderCommand::ShaderDataTypeToOpenGLBaseType(ShaderDataType type) const {
+GLenum RenderCommand::shaderDataTypeToOpenGLBaseType(ShaderDataType type) const {
 	switch (type) {
 	case ShaderDataType::Float:    return GL_FLOAT;
 	case ShaderDataType::Float2:   return GL_FLOAT;
