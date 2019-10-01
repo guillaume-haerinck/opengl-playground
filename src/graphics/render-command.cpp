@@ -7,13 +7,15 @@
 
 #include "graphics/gl-exception.h"
 
-RenderCommand::RenderCommand(entt::registry& registry, entt::entity graphicEntity) : m_registry(registry), m_graphicEntity(graphicEntity)
-{
-	// TODO delete openGL objects m_registry.on_destroy<comp::Pipeline>().connect<&RenderCommand::MyFonction>(this)>;
-}
+RenderCommand::RenderCommand(entt::registry& registry, entt::entity graphicEntity)
+: m_registry(registry), m_graphicEntity(graphicEntity)
+{}
 
-RenderCommand::~RenderCommand()
-{
+RenderCommand::~RenderCommand() {
+	scomp::Pipelines pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
+	for (auto pipeline : pipelines.pipelines) {
+		GLCall(glDeleteProgram(pipeline.programIndex));
+	}
 }
 
 void RenderCommand::clear() const {
@@ -153,6 +155,8 @@ comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::Frag
 	GLCall(glAttachShader(programId, vs.shaderId));
 	GLCall(glAttachShader(programId, fs.shaderId));
 	GLCall(glLinkProgram(programId));
+	GLCall(glDeleteShader(vs.shaderId));
+	GLCall(glDeleteShader(fs.shaderId));
 	
 	// Check errors
 	GLCall(glValidateProgram(programId));

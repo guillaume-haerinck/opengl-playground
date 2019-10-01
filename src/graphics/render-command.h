@@ -6,7 +6,7 @@
 #include "components/graphics/mesh.h"
 #include "components/graphics/pipeline.h"
 #include "scomponents/graphics/constant-buffers.h"
-#include "scomponents/graphics/shaders.h"
+#include "scomponents/graphics/pipelines.h"
 #include "graphics/vertex-input-description.h"
 
 class RenderCommand {

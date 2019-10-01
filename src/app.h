@@ -34,6 +34,7 @@ private:
 	void resetAppTo() {
         m_isContextInit = false;
 		m_activeExemple.reset();
+        m_ctx.rcommand.reset();
         m_ctx.registry.reset();
         initGraphicsSingletonComponents();
         initIOSingletonComponents();

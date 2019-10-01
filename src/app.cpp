@@ -7,9 +7,9 @@
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include "components/graphics/pipeline.h"
-
+#include "scomponents/graphics/pipelines.h"
 #include "graphics/gl-exception.h"
+
 #include "examples/basics/basic-triangle/basic-triangle.h"
 #include "examples/basics/rotating-cube/rotating-cube.h"
 
@@ -118,10 +118,18 @@ void App::initImgui() const {
 
 void App::initGraphicsSingletonComponents() {
 	auto entity = m_ctx.registry.create();
+	m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC) = entity;
+
+	scomp::Pipelines pipelines = {};
+	m_ctx.registry.assign<scomp::Pipelines>(entity, pipelines);
+
+
 }
 
 void App::initIOSingletonComponents() {
 	auto entity = m_ctx.registry.create();
+	m_ctx.singletonComponents.at(scomp::SING_ENTITY_IO) = entity;
+
 }
 
 void App::handleSDLEvents() {
