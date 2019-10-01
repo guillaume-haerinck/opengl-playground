@@ -2,7 +2,7 @@ from conans import ConanFile, CMake
 
 class OpenGlPlaygroundWasm(ConanFile):
     settings = {"os": ["Emscripten"]}
-    requires = ["entt/3.0.0@skypjack/stable",
+    requires = ["entt/3.2.0-RC1@skypjack/stable",
       "glm/0.9.8.5@bincrafters/stable", 
       "spdlog/1.3.1@bincrafters/stable",
       "imgui/1.69@bincrafters/stable"]
