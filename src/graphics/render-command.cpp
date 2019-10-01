@@ -9,7 +9,7 @@
 
 void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
 	comp::Mesh& mesh = registry.get<comp::Mesh>(entity);
-	GLCall(glDeleteVertexArrays(1, &mesh.vb.vertexArrayId));
+	GLCall(glDeleteVertexArrays(1, &mesh.vb.vertexArrayId)); // WARNING what if the va is used by a program as an input layout ?
 	GLCall(glDeleteBuffers(1, &mesh.ib.bufferId));
 
 	for (auto ab : mesh.vb.bufferIds) {
@@ -179,14 +179,17 @@ comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::Frag
 	GLCall(glValidateProgram(programId));
 	// TODO https://github.com/TheCherno/Hazel/blob/master/Hazel/src/Platform/OpenGL/OpenGLShader.cpp
 
-	// TODO Save to singleton components
-	//pipelines.vsIndex = vs.shaderId;
-	//pipelines.fsIndex = fs.shaderId;
-	//pipelines.programIndex = programId;
+	// Save to singleton components
+	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
+	scomp::Pipeline sPipeline = {};
+	sPipeline.vs = vs;
+	sPipeline.fs = fs;
+	sPipeline.programIndex = programId;
+	pipelines.pipelines.push_back(sPipeline);
 
 	// Return result
 	comp::Pipeline pipeline = {};
-	pipeline.index = programId;
+	pipeline.index = pipelines.pipelines.size() - 1;
 	return pipeline;
 }
 
@@ -203,8 +206,8 @@ void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) 
 }
 
 void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
-	// TODO get program singleton component
-	GLCall(glUseProgram(pipeline.index));
+	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
+	GLCall(glUseProgram(pipelines.pipelines.at(pipeline.index).programIndex));
 }
 
 void RenderCommand::updateConstantBuffer(scomp::ConstantBuffer cb, void* data) const

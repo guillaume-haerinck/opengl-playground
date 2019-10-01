@@ -66,8 +66,9 @@ namespace basicExample {
 			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 
 			// Link CB to shader
-			unsigned int blockIndex = glGetUniformBlockIndex(pipeline.index, "perCustomChanges");
-			GLCall(glUniformBlockBinding(pipeline.index, blockIndex, 0));
+			scomp::Pipelines& pipelines = m_ctx.registry.get<scomp::Pipelines>(m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC));
+			unsigned int blockIndex = glGetUniformBlockIndex(pipelines.pipelines.at(pipeline.index).programIndex, "perCustomChanges");
+			GLCall(glUniformBlockBinding(pipelines.pipelines.at(pipeline.index).programIndex, blockIndex, 0));
 			GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 0, cb));
 		}
 		
