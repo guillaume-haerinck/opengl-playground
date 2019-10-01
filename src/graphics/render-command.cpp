@@ -7,8 +7,9 @@
 
 #include "graphics/gl-exception.h"
 
-RenderCommand::RenderCommand()
+RenderCommand::RenderCommand(entt::registry& registry, entt::entity graphicEntity) : m_registry(registry), m_graphicEntity(graphicEntity)
 {
+	// TODO delete openGL objects m_registry.on_destroy<comp::Pipeline>().connect<&RenderCommand::MyFonction>(this)>;
 }
 
 RenderCommand::~RenderCommand()
@@ -157,12 +158,14 @@ comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::Frag
 	GLCall(glValidateProgram(programId));
 	// TODO https://github.com/TheCherno/Hazel/blob/master/Hazel/src/Platform/OpenGL/OpenGLShader.cpp
 
+	// TODO Save to singleton components
+	//pipelines.vsIndex = vs.shaderId;
+	//pipelines.fsIndex = fs.shaderId;
+	//pipelines.programIndex = programId;
+
 	// Return result
 	comp::Pipeline pipeline = {};
-	pipeline.vsIndex = vs.shaderId;
-	pipeline.fsIndex = fs.shaderId;
 	pipeline.index = programId;
-
 	return pipeline;
 }
 
@@ -179,15 +182,12 @@ void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) 
 }
 
 void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
+	// TODO get program singleton component
 	GLCall(glUseProgram(pipeline.index));
 }
 
 void RenderCommand::updateConstantBuffer(scomp::ConstantBuffer cb, void* data) const
 {
-}
-
-void RenderCommand::draw(unsigned int count) const {
-	GLCall(glDrawArrays(GL_TRIANGLES, 0, count));
 }
 
 void RenderCommand::drawIndexed(unsigned int count) const {

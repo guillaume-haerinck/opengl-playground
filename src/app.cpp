@@ -7,6 +7,8 @@
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include "components/graphics/pipeline.h"
+
 #include "graphics/gl-exception.h"
 #include "examples/basics/basic-triangle/basic-triangle.h"
 #include "examples/basics/rotating-cube/rotating-cube.h"
@@ -24,7 +26,6 @@ App::App() : m_running(true)
 	initSDL();
     initImgui();
 
-	m_ctx.rcommand = std::make_unique<RenderCommand>();
 	resetAppTo<basicExample::RotatingCube>();
 }
 
@@ -113,6 +114,14 @@ void App::initImgui() const {
     ImGui_ImplSDL2_InitForOpenGL(m_window, m_glContext);
 	ImGui_ImplOpenGL3_Init("#version 300 es");
 	ImGui::StyleColorsDark();
+}
+
+void App::initGraphicsSingletonComponents() {
+	auto entity = m_ctx.registry.create();
+}
+
+void App::initIOSingletonComponents() {
+	auto entity = m_ctx.registry.create();
 }
 
 void App::handleSDLEvents() {

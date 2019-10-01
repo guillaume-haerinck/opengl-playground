@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <entt/entt.hpp>
 
 #include "components/graphics/mesh.h"
 #include "components/graphics/pipeline.h"
@@ -10,7 +11,7 @@
 
 class RenderCommand {
 public:
-    RenderCommand();
+    RenderCommand(entt::registry& registry, entt::entity graphicEntity);
     ~RenderCommand();
 
     /**
@@ -53,7 +54,7 @@ public:
 	scomp::FragmentShader createFragmentShader(const char* filePath) const;
 
 	/**
-	 * 
+	 *
 	 */
 	comp::Pipeline createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs) const;
 
@@ -81,10 +82,14 @@ public:
 	///////////////////////////////// DRAWING /////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-    void draw(unsigned int count) const;
 	void drawIndexed(unsigned int count) const;
+	void drawIndexedInstanced(unsigned int indexCount, unsigned int drawCount) const;
 
 private:
 	bool hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const;
 	GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type) const;
+
+private:
+	entt::registry& m_registry;
+	entt::entity m_graphicEntity;
 };
