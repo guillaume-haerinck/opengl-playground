@@ -93,3 +93,7 @@ private:
 	entt::registry& m_registry;
 	entt::entity m_graphicEntity;
 };
+
+
+// Callback function on Mesh component destruction
+void deleteMeshBuffers(entt::entity entity, entt::registry & registry);

@@ -7,9 +7,21 @@
 
 #include "graphics/gl-exception.h"
 
+void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
+	comp::Mesh& mesh = registry.get<comp::Mesh>(entity);
+	GLCall(glDeleteBuffers(1, &mesh.vb.vertexArrayId));
+	GLCall(glDeleteBuffers(1, &mesh.ib.bufferId));
+
+	for (auto ab : mesh.vb.bufferIds) {
+		GLCall(glDeleteBuffers(1, &ab));
+	}
+}
+
 RenderCommand::RenderCommand(entt::registry& registry, entt::entity graphicEntity)
 : m_registry(registry), m_graphicEntity(graphicEntity)
-{}
+{
+	registry.on_destroy<comp::Mesh>().connect<&deleteMeshBuffers>();
+}
 
 RenderCommand::~RenderCommand() {
 	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
