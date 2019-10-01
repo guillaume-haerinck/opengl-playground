@@ -14,8 +14,9 @@
 #include "components/physics/transform.h"
 
 namespace basicExample {
-	struct perCustomChanges {
+	struct perCustomChanges { // must be multiple of 16 bytes
 		glm::vec3 color;
+		char padding[2];
 	};
 
 	RotatingCube::RotatingCube(Context& context) : m_ctx(context) {
@@ -95,7 +96,7 @@ namespace basicExample {
 
 	void RotatingCube::imGuiUpdate() {
 		ImGui::Begin("Exemple properties");
-		ImGui::Text("First example window");
+		ImGui::Text("Rotating cube");
 		ImGui::End();
 	}
 }
