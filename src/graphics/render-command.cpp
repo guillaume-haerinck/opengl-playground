@@ -9,7 +9,7 @@
 
 void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
 	comp::Mesh& mesh = registry.get<comp::Mesh>(entity);
-	GLCall(glDeleteBuffers(1, &mesh.vb.vertexArrayId));
+	GLCall(glDeleteVertexArrays(1, &mesh.vb.vertexArrayId));
 	GLCall(glDeleteBuffers(1, &mesh.ib.bufferId));
 
 	for (auto ab : mesh.vb.bufferIds) {
