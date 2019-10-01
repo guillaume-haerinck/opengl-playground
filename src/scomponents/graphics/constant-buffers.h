@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <string>
 
 namespace scomp {
 	/**
@@ -9,6 +10,7 @@ namespace scomp {
 	struct ConstantBuffer {
 		unsigned int bufferId;
 		unsigned int byteWidth = 0;
+		std::string name;
 		// TODO keep track of the layout
 	};
 

@@ -81,7 +81,7 @@ Then open [your local server](http://127.0.0.1:8000/) to see the project.
 
 #### [Triangle](src/examples/basics/basic-triangle/)
 
-A simple triangle. The only example that does not use indexed drawing.
+A simple triangle.
 
 #### [Rotating cube](src/examples/basics/rotating-cube/)
 

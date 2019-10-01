@@ -42,35 +42,24 @@ namespace basicExample {
 		unsigned int indices[] = { 0, 1, 2 };
 		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices));
 
-		// Pipeline
+		// Shaders
 		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/rotating-cube/rotating-cube.vert");
 		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/rotating-cube/rotating-cube.frag");
-		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(vs, fs);
 
-		// Constant buffer
-		{
-			// Create CB
-			perCustomChanges cbData = {};
-			cbData.color = glm::vec3(1, 1, 0);
+		// Custom constant buffer
+		scomp::ConstantBuffers& cbs = m_ctx.registry.get<scomp::ConstantBuffers>(m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC));
+		scomp::ConstantBuffer cb = m_ctx.rcommand->createConstantBuffer(sizeof(perCustomChanges), "perCustomChanges");
+		cbs.constantBuffers.at(scomp::ConstantBufferIndex::PER_CUSTOM_PROP_CHANGE_0) = cb;
 
-			GLuint cb = 0;
-			GLCall(glGenBuffers(1, &cb));
-			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cb));
-			GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(perCustomChanges), &cbData, GL_DYNAMIC_COPY));
-			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+		perCustomChanges cbData = {};
+		cbData.color = glm::vec3(1, 0, 0);
+		m_ctx.rcommand->updateConstantBuffer(cb, &cbData);
 
-			// Update buffer
-			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cb));
-			cbData.color = glm::vec3(0, 0, 1);
-			GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(perCustomChanges), &cbData));
-			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
-
-			// Link CB to shader
-			scomp::Pipelines& pipelines = m_ctx.registry.get<scomp::Pipelines>(m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC));
-			unsigned int blockIndex = glGetUniformBlockIndex(pipelines.pipelines.at(pipeline.index).programIndex, "perCustomChanges");
-			GLCall(glUniformBlockBinding(pipelines.pipelines.at(pipeline.index).programIndex, blockIndex, 0));
-			GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 0, cb));
-		}
+		// Pipeline
+		scomp::ConstantBufferIndex cbIndices[] = {
+			scomp::PER_CUSTOM_PROP_CHANGE_0
+		};
+		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(vs, fs, cbIndices, std::size(cbIndices));
 		
 		// Mesh
 		comp::Mesh mesh = {};

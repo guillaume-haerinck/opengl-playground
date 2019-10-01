@@ -43,6 +43,14 @@ public:
 	 */
 	comp::IndexBuffer createIndexBuffer(void* indices, unsigned int count) const;
 
+	/**
+	 * @param byteWidth - The total size in bytes of the buffer (must be a multiple of 16)
+	 *
+	 * @note - You have to store it within a shader component, and it will be bound with it.
+	 *		   The slot will correspond to the index of the vector in the shader.
+	 */
+	scomp::ConstantBuffer createConstantBuffer(unsigned int byteWidth, const char* name) const;
+
     /**
 	 * @param filepath - The relative path from the .exe to the .cso containing the shader
 	 */
@@ -56,7 +64,10 @@ public:
 	/**
 	 *
 	 */
-	comp::Pipeline createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs) const;
+	// TODO bind cb to pipeline, send an array ?
+	comp::Pipeline createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs, scomp::ConstantBufferIndex* cbIndices = nullptr, unsigned int cbCount = 0) const;
+
+
 
     ///////////////////////////////////////////////////////////////////////////
 	////////////////////////////////// BINDING ////////////////////////////////

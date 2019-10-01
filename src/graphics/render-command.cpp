@@ -9,7 +9,7 @@
 
 void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
 	comp::Mesh& mesh = registry.get<comp::Mesh>(entity);
-	GLCall(glDeleteVertexArrays(1, &mesh.vb.vertexArrayId)); // WARNING what if the va is used by a program as an input layout ?
+	GLCall(glDeleteVertexArrays(1, &mesh.vb.vertexArrayId));
 	GLCall(glDeleteBuffers(1, &mesh.ib.bufferId));
 
 	for (auto ab : mesh.vb.bufferIds) {
@@ -100,6 +100,21 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int c
 }
 
 
+scomp::ConstantBuffer RenderCommand::createConstantBuffer(unsigned int byteWidth, const char* name) const {
+	unsigned int cbId = 0;
+	GLCall(glGenBuffers(1, &cbId));
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cbId));
+	GLCall(glBufferData(GL_UNIFORM_BUFFER, byteWidth, nullptr, GL_DYNAMIC_COPY));
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
+
+	scomp::ConstantBuffer cb = {};
+	cb.bufferId = cbId;
+	cb.byteWidth = byteWidth; // TODO assert that it is a multiple of 16
+	cb.name = name;
+
+	return cb;
+}
+
 scomp::VertexShader RenderCommand::createVertexShader(const char* filePath) const {
 	FILE* file = fopen(filePath, "rb");
 	if (!file) {
@@ -161,7 +176,7 @@ scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) 
 	return fs;
 }
 
-comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs) const {
+comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs, scomp::ConstantBufferIndex* cbIndices, unsigned int cbCount) const {
 	// TODO generate hash and check hashmap to see if pipeline already exist
 
 	// Compile pipeline
@@ -176,6 +191,15 @@ comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::Frag
 	GLCall(glValidateProgram(programId));
 	// TODO https://github.com/TheCherno/Hazel/blob/master/Hazel/src/Platform/OpenGL/OpenGLShader.cpp
 
+	// Link constant buffers
+	scomp::ConstantBuffers& cbs = m_registry.get<scomp::ConstantBuffers>(m_graphicEntity);
+	for (size_t i = 0; i < cbCount; i++) {
+		scomp::ConstantBuffer cb = cbs.constantBuffers.at(cbIndices[i]);
+		unsigned int blockIndex = glGetUniformBlockIndex(programId, cb.name.c_str());
+		GLCall(glUniformBlockBinding(programId, blockIndex, i));
+		GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, i, cb.bufferId));
+	}
+	
 	// Save to singleton components
 	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
 	scomp::Pipeline sPipeline = {};
@@ -198,8 +222,7 @@ void RenderCommand::bindIndexBuffer(comp::IndexBuffer ib) const {
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib.bufferId));
 }
 
-void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) const
-{
+void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) const {
 }
 
 void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
@@ -207,8 +230,10 @@ void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
 	GLCall(glUseProgram(pipelines.pipelines.at(pipeline.index).programIndex));
 }
 
-void RenderCommand::updateConstantBuffer(scomp::ConstantBuffer cb, void* data) const
-{
+void RenderCommand::updateConstantBuffer(scomp::ConstantBuffer cb, void* data) const {
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cb.bufferId));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, cb.byteWidth, &data));
+	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 }
 
 void RenderCommand::drawIndexed(unsigned int count) const {
