@@ -1,0 +1,30 @@
+os: linux
+language: python
+python: "3.7"
+dist: xenial
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-7']
+      env: COMPILER=g++-7
+
+before_install:
+  - sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
+
+install:
+  - pip install conan
+  - conan user
+  - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+  - export CXX=${COMPILER}
+
+script:
+  - cmake . -DCMAKE_BUILD_TYPE=Release
+  - cmake --build .
+  - rm CMakeCache.txt
+  - conan install ./wasm.recipe.py --build missing --install-folder wasm -pr ./wasm.profile
+  - conan build ./wasm.recipe.py --build-folder wasm
