@@ -53,21 +53,21 @@ namespace basicExample {
 			cbData.color = glm::vec3(1, 1, 0);
 
 			GLuint cb = 0;
-			glGenBuffers(1, &cb);
-			glBindBuffer(GL_UNIFORM_BUFFER, cb);
-			glBufferData(GL_UNIFORM_BUFFER, sizeof(perCustomChanges), &cbData, GL_DYNAMIC_COPY);
-			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+			GLCall(glGenBuffers(1, &cb));
+			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cb));
+			GLCall(glBufferData(GL_UNIFORM_BUFFER, sizeof(perCustomChanges), &cbData, GL_DYNAMIC_COPY));
+			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 
 			// Update buffer
-			glBindBuffer(GL_UNIFORM_BUFFER, cb);
+			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cb));
 			cbData.color = glm::vec3(0, 0, 1);
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(perCustomChanges), &cbData);
-			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+			GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(perCustomChanges), &cbData));
+			GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 
 			// Link CB to shader
-			unsigned int block_index = glGetUniformBlockIndex(pipeline.fsIndex, "perCustomChanges");
-			glBindBufferBase(GL_UNIFORM_BUFFER, 0, cb);
-			glUniformBlockBinding(pipeline.fsIndex, block_index, 0);
+			unsigned int blockIndex = glGetUniformBlockIndex(pipeline.index, "perCustomChanges");
+			GLCall(glUniformBlockBinding(pipeline.index, blockIndex, 0));
+			GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, 0, cb));
 		}
 		
 		// Mesh
