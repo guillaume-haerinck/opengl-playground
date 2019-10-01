@@ -177,6 +177,7 @@ scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) 
 }
 
 comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs, scomp::ConstantBufferIndex* cbIndices, unsigned int cbCount) const {
+	// TODO take an array of shader instead of individual structs
 	// TODO generate hash and check hashmap to see if pipeline already exist
 
 	// Compile pipeline
@@ -232,7 +233,7 @@ void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
 
 void RenderCommand::updateConstantBuffer(scomp::ConstantBuffer cb, void* data) const {
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cb.bufferId));
-	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, cb.byteWidth, &data));
+	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, cb.byteWidth, data));
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 }
 

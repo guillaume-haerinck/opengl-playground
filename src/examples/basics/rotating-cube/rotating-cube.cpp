@@ -52,7 +52,7 @@ namespace basicExample {
 		cbs.constantBuffers.at(scomp::ConstantBufferIndex::PER_CUSTOM_PROP_CHANGE_0) = cb;
 
 		perCustomChanges cbData = {};
-		cbData.color = glm::vec3(1, 0, 0);
+		cbData.color = glm::vec3(0, 0, 1);
 		m_ctx.rcommand->updateConstantBuffer(cb, &cbData);
 
 		// Pipeline
