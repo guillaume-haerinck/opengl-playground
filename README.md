@@ -1,8 +1,10 @@
+[![Build Status](https://travis-ci.org/guillaume-haerinck/opengl-playground.svg?branch=master)](https://travis-ci.org/guillaume-haerinck/opengl-playground)
+
 # OpenGL Playground
 
 Small opengl renderer with an Entity Component System (ECS) architecture.
 
-Supports WASM build so it can be played on any web-browser like Chrome, Firefox or safari. Just run the content of the `www` folder on a web server.
+Supports WASM build so it can be played on any web-browser like Chrome, Firefox or Safari. Just run the content of the `www` folder on a web server.
 
 ## Table of Contents
 
