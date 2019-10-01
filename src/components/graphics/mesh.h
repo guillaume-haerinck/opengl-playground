@@ -4,6 +4,8 @@
 #include <string>
 #include "scomponents/graphics/materials.h"
 
+// TODO on mesh component deletion delete opengl buffers (index, attributes & vertex array)
+
 namespace comp {
 	/**
 	 * @brief Vertex attribute buffer (points, uv mapping, normals, etc...)

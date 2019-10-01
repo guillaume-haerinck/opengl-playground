@@ -8,6 +8,7 @@
 #include <imgui/imgui_impl_opengl3.h>
 
 #include "scomponents/graphics/pipelines.h"
+#include "scomponents/graphics/constant-buffers.h"
 #include "graphics/gl-exception.h"
 
 #include "examples/basics/basic-triangle/basic-triangle.h"
@@ -30,6 +31,7 @@ App::App() : m_running(true)
 }
 
 App::~App() {
+	m_ctx.rcommand.reset();
     ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
@@ -123,7 +125,8 @@ void App::initGraphicsSingletonComponents() {
 	scomp::Pipelines pipelines = {};
 	m_ctx.registry.assign<scomp::Pipelines>(entity, pipelines);
 
-
+	scomp::ConstantBuffers cbs = {};
+	m_ctx.registry.assign<scomp::ConstantBuffers>(entity, cbs);
 }
 
 void App::initIOSingletonComponents() {

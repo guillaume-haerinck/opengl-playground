@@ -12,9 +12,14 @@ RenderCommand::RenderCommand(entt::registry& registry, entt::entity graphicEntit
 {}
 
 RenderCommand::~RenderCommand() {
-	scomp::Pipelines pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
+	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
 	for (auto pipeline : pipelines.pipelines) {
 		GLCall(glDeleteProgram(pipeline.programIndex));
+	}
+
+	scomp::ConstantBuffers& cbs = m_registry.get<scomp::ConstantBuffers>(m_graphicEntity);
+	for (auto cb : cbs.constantBuffers) {
+		GLCall(glDeleteBuffers(1, &cb.bufferId));
 	}
 }
 
