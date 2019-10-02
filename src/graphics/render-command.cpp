@@ -194,16 +194,17 @@ comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::Frag
 
 	// Link constant buffers
 	scomp::ConstantBuffers& cbs = m_registry.get<scomp::ConstantBuffers>(m_graphicEntity);
+	scomp::Pipeline sPipeline = {};
 	for (size_t i = 0; i < cbCount; i++) {
 		scomp::ConstantBuffer cb = cbs.constantBuffers.at(cbIndices[i]);
 		unsigned int blockIndex = glGetUniformBlockIndex(programId, cb.name.c_str());
 		GLCall(glUniformBlockBinding(programId, blockIndex, i));
 		GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, i, cb.bufferId));
+		sPipeline.constantBufferIndices.push_back(cbIndices[i]);
 	}
 	
 	// Save to singleton components
 	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
-	scomp::Pipeline sPipeline = {};
 	sPipeline.vs = vs;
 	sPipeline.fs = fs;
 	sPipeline.programIndex = programId;
@@ -228,7 +229,8 @@ void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) 
 
 void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
 	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
-	GLCall(glUseProgram(pipelines.pipelines.at(pipeline.index).programIndex));
+	auto sPipeline = pipelines.pipelines.at(pipeline.index);
+	GLCall(glUseProgram(sPipeline.programIndex));
 }
 
 void RenderCommand::updateConstantBuffer(scomp::ConstantBuffer cb, void* data) const {
