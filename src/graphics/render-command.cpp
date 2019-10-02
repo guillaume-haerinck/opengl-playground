@@ -137,7 +137,11 @@ scomp::VertexShader RenderCommand::createVertexShader(const char* filePath) cons
 	unsigned int vsId = glCreateShader(GL_VERTEX_SHADER);
 	GLCall(glShaderSource(vsId, 1, &src, nullptr));
 	GLCall(glCompileShader(vsId));
-	hasShaderCompiled(vsId, GL_VERTEX_SHADER);
+	if (!hasShaderCompiled(vsId, GL_VERTEX_SHADER)) {
+		spdlog::info("[Shader] {}", filePath);
+		spdlog::info("\n{}", shaderSrc);
+		debug_break();
+	}
 
 	// Return result
 	scomp::VertexShader vs = {};
@@ -167,7 +171,11 @@ scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) 
 	unsigned int fsId = glCreateShader(GL_FRAGMENT_SHADER);
 	GLCall(glShaderSource(fsId, 1, &src, nullptr));
 	GLCall(glCompileShader(fsId));
-	hasShaderCompiled(fsId, GL_FRAGMENT_SHADER);
+	if (!hasShaderCompiled(fsId, GL_FRAGMENT_SHADER)) {
+		spdlog::info("[Shader] {}", filePath);
+		spdlog::info("\n{}", shaderSrc);
+		debug_break();
+	}
 
 	// Return result
 	scomp::FragmentShader fs = {};
@@ -254,16 +262,14 @@ bool RenderCommand::hasShaderCompiled(unsigned int shaderId, unsigned int shader
 		glGetShaderInfoLog(shaderId, length, &length, message);
 		auto const typeString = [shaderType]() {
 			switch (shaderType) {
-			case GL_VERTEX_SHADER: return "fragment";
-			case GL_FRAGMENT_SHADER: return "vertex";
+			case GL_VERTEX_SHADER: return "vertex";
+			case GL_FRAGMENT_SHADER: return "fragment";
 			default: return "unknown type";
 			}
 		}();
 
 		spdlog::error("[Shader] Failed to compile {} shader", typeString);
 		spdlog::error("[Shader] {}", message);
-		debug_break();
-
 		GLCall(glDeleteShader(shaderId));
 		return false;
 	}
