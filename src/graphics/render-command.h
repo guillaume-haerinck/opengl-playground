@@ -49,7 +49,7 @@ public:
 	 * @note - You have to store it within a shader component, and it will be bound with it.
 	 *		   The slot will correspond to the index of the vector in the shader.
 	 */
-	scomp::ConstantBuffer createConstantBuffer(unsigned int byteWidth, const char* name) const;
+	scomp::ConstantBuffer createConstantBuffer(unsigned int byteWidth, const char* name, void* data = nullptr) const;
 
     /**
 	 * @param filepath - The relative path from the .exe to the .cso containing the shader

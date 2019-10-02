@@ -100,11 +100,11 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int c
 }
 
 
-scomp::ConstantBuffer RenderCommand::createConstantBuffer(unsigned int byteWidth, const char* name) const {
+scomp::ConstantBuffer RenderCommand::createConstantBuffer(unsigned int byteWidth, const char* name, void* data) const {
 	unsigned int cbId = 0;
 	GLCall(glGenBuffers(1, &cbId));
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cbId));
-	GLCall(glBufferData(GL_UNIFORM_BUFFER, byteWidth, nullptr, GL_DYNAMIC_COPY));
+	GLCall(glBufferData(GL_UNIFORM_BUFFER, byteWidth, data, GL_DYNAMIC_COPY));
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 
 	scomp::ConstantBuffer cb = {};
