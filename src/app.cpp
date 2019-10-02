@@ -27,7 +27,7 @@ App::App() : m_running(true)
 	initSDL();
     initImgui();
 
-	resetAppTo<basicExample::BasicTriangle>();
+	resetAppTo<basicExample::RotatingCube>();
 }
 
 App::~App() {
