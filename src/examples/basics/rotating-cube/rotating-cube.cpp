@@ -48,12 +48,10 @@ namespace basicExample {
 
 		// Custom constant buffer
 		scomp::ConstantBuffers& cbs = m_ctx.registry.get<scomp::ConstantBuffers>(m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC));
-		scomp::ConstantBuffer cb = m_ctx.rcommand->createConstantBuffer(sizeof(perCustomChanges), "perCustomChanges");
-		cbs.constantBuffers.at(scomp::ConstantBufferIndex::PER_CUSTOM_PROP_CHANGE_0) = cb;
-
 		perCustomChanges cbData = {};
-		cbData.color = glm::vec3(0, 0, 1);
-		m_ctx.rcommand->updateConstantBuffer(cb, &cbData);
+		cbData.color = glm::vec3(0.0f, 0.0f, 1.0f);
+		scomp::ConstantBuffer cb = m_ctx.rcommand->createConstantBuffer(sizeof(perCustomChanges), "perCustomChanges", &cbData);
+		cbs.constantBuffers.at(scomp::ConstantBufferIndex::PER_CUSTOM_PROP_CHANGE_0) = cb;
 
 		// Pipeline
 		scomp::ConstantBufferIndex cbIndices[] = {
