@@ -4,6 +4,8 @@ layout(location = 0) in vec2 position;
 void main() {
 	gl_Position = vec4(position, 0.0, 1.0);
 }
+
+
 #version 300 es
 layout(location = 0) out lowp vec4 outColor;
 
@@ -14,15 +16,21 @@ layout (std140) uniform perCustomChanges {
 void main() {
 	outColor = vec4(color, 1);
 }
+
+
 #version 300 es
 layout(location = 0) out lowp vec4 color;
 
 void main() {
 	color = vec4(1, 0, 0, 1);
 }
+
+
 #version 300 es
 layout(location = 0) in vec2 position;
 
 void main() {
 	gl_Position = vec4(position, 0.0, 1.0);
 }
+
+

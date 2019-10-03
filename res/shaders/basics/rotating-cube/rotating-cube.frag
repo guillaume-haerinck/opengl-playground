@@ -8,3 +8,5 @@ layout (std140) uniform perCustomChanges {
 void main() {
 	outColor = vec4(color, 1);
 }
+
+
