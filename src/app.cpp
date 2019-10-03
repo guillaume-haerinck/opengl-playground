@@ -177,7 +177,6 @@ void App::renderMenu() {
 		if (ImGui::Button("Rotating cube")) { resetAppTo<basicExample::RotatingCube>(); }
 	}
 
-
 	// if (ImGui::CollapsingHeader("Intermediate")) {}
 
 	// if (ImGui::CollapsingHeader("Advanced")) {}
