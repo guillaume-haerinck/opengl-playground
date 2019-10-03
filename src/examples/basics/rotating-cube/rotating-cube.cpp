@@ -47,19 +47,21 @@ namespace basicExample {
 		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/rotating-cube/rotating-cube.frag");
 
 		// Custom constant buffer
-		scomp::ConstantBuffers& cbs = m_ctx.registry.get<scomp::ConstantBuffers>(m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC));
-		scomp::ConstantBuffer cb = m_ctx.rcommand->createConstantBuffer(sizeof(perCustomChanges), "perCustomChanges");
-		cbs.constantBuffers.at(scomp::ConstantBufferIndex::PER_CUSTOM_PROP_CHANGE_0) = cb;
+		scomp::ConstantBuffer cb = m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_CUSTOM_PROP_CHANGE_0, sizeof(perCustomChanges));
 
 		perCustomChanges cbData = {};
 		cbData.color = glm::vec3(0, 0, 1);
 		m_ctx.rcommand->updateConstantBuffer(cb, &cbData);
 
 		// Pipeline
+		scomp::ShaderPipeline shaders = {};
+		shaders.fs = fs;
+		shaders.vs = vs;
+
 		scomp::ConstantBufferIndex cbIndices[] = {
 			scomp::PER_CUSTOM_PROP_CHANGE_0
 		};
-		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(vs, fs, cbIndices, std::size(cbIndices));
+		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(shaders, cbIndices, std::size(cbIndices));
 		
 		// Mesh
 		comp::Mesh mesh = {};

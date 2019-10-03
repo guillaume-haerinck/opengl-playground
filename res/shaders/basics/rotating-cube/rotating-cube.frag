@@ -1,7 +1,7 @@
 #version 300 es
 layout(location = 0) out lowp vec4 outColor;
 
-layout (std140) uniform perCustomChanges {
+layout (std140) uniform perCustomPropChange0 {
     lowp vec3 color;
 };
 

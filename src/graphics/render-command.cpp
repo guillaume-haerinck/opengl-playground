@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "graphics/gl-exception.h"
+#include "graphics/constant-buffer.h"
 
 void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
 	comp::Mesh& mesh = registry.get<comp::Mesh>(entity);
@@ -100,8 +101,23 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int c
 	return buffer;
 }
 
-
-scomp::ConstantBuffer RenderCommand::createConstantBuffer(unsigned int byteWidth, const char* name, void* data) const {
+scomp::ConstantBuffer RenderCommand::createConstantBuffer(scomp::ConstantBufferIndex index, unsigned int byteWidth, void* data) const {
+	std::string name = "";
+	switch (index) {
+		case scomp::PER_MESH: name = "perMesh"; break;
+		case scomp::PER_MESH_BATCH: name = "perMeshBatch"; break;
+		case scomp::PER_FRAME: name = "perFrame"; break;
+		case scomp::PER_PHONG_MAT_CHANGE: name = "perPhongMatChange"; break;
+		case scomp::PER_COOK_MAT_CHANGE: name = "perCookMatChange"; break;
+		case scomp::PER_LIGHT_CHANGE: name = "perLightChange"; break;
+		case scomp::PER_CUSTOM_PROP_CHANGE_0: name = "perCustomPropChange0"; break;
+		case scomp::PER_CUSTOM_PROP_CHANGE_1: name = "perCustomPropChange1"; break;
+		case scomp::PER_CUSTOM_PROP_CHANGE_2: name = "perCustomPropChange2"; break;
+		default:
+			spdlog::error("[createConstantBuffer] unknown index {}", index);
+		break;
+	}
+	
 	unsigned int cbId = 0;
 	GLCall(glGenBuffers(1, &cbId));
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cbId));
@@ -112,6 +128,10 @@ scomp::ConstantBuffer RenderCommand::createConstantBuffer(unsigned int byteWidth
 	cb.bufferId = cbId;
 	cb.byteWidth = byteWidth; // TODO assert that it is a multiple of 16
 	cb.name = name;
+
+	// Save to singleton components
+	scomp::ConstantBuffers& cbs = m_registry.get<scomp::ConstantBuffers>(m_graphicEntity);
+	cbs.constantBuffers.at(index) = cb;
 
 	return cb;
 }
@@ -155,21 +175,34 @@ scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) 
 	return fs;
 }
 
-comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::FragmentShader fs, scomp::ConstantBufferIndex* cbIndices, unsigned int cbCount) const {
-	// TODO take an array of shader instead of individual structs
+comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shaders, scomp::ConstantBufferIndex* cbIndices, unsigned int cbCount) const {
 	// TODO generate hash and check hashmap to see if pipeline already exist
 
 	// Compile pipeline
 	unsigned int programId = glCreateProgram();
-	GLCall(glAttachShader(programId, vs.shaderId));
-	GLCall(glAttachShader(programId, fs.shaderId));
+	if (shaders.hasShader.at(scomp::PipelineShaderIndex::VS)) { GLCall(glAttachShader(programId, shaders.vs.shaderId)); }
+	if (shaders.hasShader.at(scomp::PipelineShaderIndex::FS)) { GLCall(glAttachShader(programId, shaders.fs.shaderId)); }
+
 	GLCall(glLinkProgram(programId));
-	GLCall(glDeleteShader(vs.shaderId));
-	GLCall(glDeleteShader(fs.shaderId));
+
+	if (shaders.hasShader.at(scomp::PipelineShaderIndex::VS)) { GLCall(glDeleteShader(shaders.vs.shaderId)); }
+	if (shaders.hasShader.at(scomp::PipelineShaderIndex::FS)) { GLCall(glDeleteShader(shaders.fs.shaderId)); }
 	
 	// Check errors
 	GLCall(glValidateProgram(programId));
-	// TODO https://github.com/TheCherno/Hazel/blob/master/Hazel/src/Platform/OpenGL/OpenGLShader.cpp
+	GLint isLinked = 0;
+	GLCall(glGetProgramiv(programId, GL_LINK_STATUS, (int*)&isLinked));
+	if (isLinked == GL_FALSE) {
+		GLint maxLength = 0;
+		glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &maxLength);
+
+		std::vector<GLchar> infoLog(maxLength);
+		glGetProgramInfoLog(programId, maxLength, &maxLength, &infoLog[0]);
+		glDeleteProgram(programId);
+
+		spdlog::error("[createPipeline] Cannot link shader ! {}", infoLog.data());
+		assert(false);
+	}
 
 	// Link constant buffers
 	scomp::ConstantBuffers& cbs = m_registry.get<scomp::ConstantBuffers>(m_graphicEntity);
@@ -184,8 +217,7 @@ comp::Pipeline RenderCommand::createPipeline(scomp::VertexShader vs, scomp::Frag
 	
 	// Save to singleton components
 	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
-	sPipeline.vs = vs;
-	sPipeline.fs = fs;
+	sPipeline.shaders = shaders;
 	sPipeline.programIndex = programId;
 	pipelines.pipelines.push_back(sPipeline);
 

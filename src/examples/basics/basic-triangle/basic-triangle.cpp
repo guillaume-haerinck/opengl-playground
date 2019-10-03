@@ -39,7 +39,10 @@ namespace basicExample {
 		// Pipeline
 		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/basic-triangle/basic-triangle.vert");
 		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/basic-triangle/basic-triangle.frag");
-		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(vs, fs);
+		scomp::ShaderPipeline shaders = {};
+		shaders.fs = fs;
+		shaders.vs = vs;
+		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(shaders);
 
 		// Mesh
 		comp::Mesh mesh = {};

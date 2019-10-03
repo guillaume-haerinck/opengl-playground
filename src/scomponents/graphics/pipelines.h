@@ -27,13 +27,17 @@ namespace scomp {
 		_MAX_SHADER
 	};
 
+	struct ShaderPipeline {
+		std::array<bool, PipelineShaderIndex::_MAX_SHADER> hasShader = { true, true, false };
+		FragmentShader fs;
+		VertexShader vs;
+	};
+
 	/**
 	 * @brief 
 	 */
 	struct Pipeline {
-		std::array<bool, PipelineShaderIndex::_MAX_SHADER> hasShader = { true, true, false };
-		FragmentShader fs;
-		VertexShader vs;
+		ShaderPipeline shaders;
 		unsigned int programIndex = 0;
 		std::vector<scomp::ConstantBufferIndex> constantBufferIndices;
 	};
