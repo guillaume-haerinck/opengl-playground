@@ -3,7 +3,8 @@
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
 #include <debug_break/debug_break.h>
-#include <stdio.h>
+#include <sstream>
+#include <fstream>
 
 #include "graphics/gl-exception.h"
 
@@ -116,30 +117,15 @@ scomp::ConstantBuffer RenderCommand::createConstantBuffer(unsigned int byteWidth
 }
 
 scomp::VertexShader RenderCommand::createVertexShader(const char* filePath) const {
-	FILE* file = fopen(filePath, "rb");
-	if (!file) {
-		spdlog::error("[createVertexShader] Cannot load file : {}", filePath);
-		debug_break();
-		assert(false);
-	}
-
-	const unsigned int MAX_SHADER_SIZE = 1000; // Prevent dynamic allocation
-	char shaderSrc[MAX_SHADER_SIZE];
-	size_t count = fread(shaderSrc, 1, MAX_SHADER_SIZE - 1, file);
-
-    assert(count < MAX_SHADER_SIZE - 1); // File was too long
-
-    shaderSrc[count] = '\0';
-    fclose(file);
-
 	// Compile shader
-	const char* src = shaderSrc;
+	std::string shader = readTextFile(filePath);
+	const char* src = shader.c_str();
 	unsigned int vsId = glCreateShader(GL_VERTEX_SHADER);
 	GLCall(glShaderSource(vsId, 1, &src, nullptr));
 	GLCall(glCompileShader(vsId));
 	if (!hasShaderCompiled(vsId, GL_VERTEX_SHADER)) {
 		spdlog::info("[Shader] {}", filePath);
-		spdlog::info("\n{}", shaderSrc);
+		spdlog::info("\n{}", shader);
 		debug_break();
 	}
 
@@ -150,30 +136,15 @@ scomp::VertexShader RenderCommand::createVertexShader(const char* filePath) cons
 }
 
 scomp::FragmentShader RenderCommand::createFragmentShader(const char* filePath) const {
-	FILE* file = fopen(filePath, "rb");
-	if (!file) {
-		spdlog::error("[createFragmentShader] Cannot load file : {}", filePath);
-		debug_break();
-		assert(false);
-	}
-
-	const unsigned int MAX_SHADER_SIZE = 1000; // Prevent dynamic allocation
-	char shaderSrc[MAX_SHADER_SIZE];
-	size_t count = fread(shaderSrc, 1, MAX_SHADER_SIZE - 1, file);
-
-    assert(count < MAX_SHADER_SIZE - 1); // File was too long
-
-    shaderSrc[count] = '\0';
-    fclose(file);
-
 	// Compile shader
-	const char* src = shaderSrc;
+	std::string shader = readTextFile(filePath);
+	const char* src = shader.c_str();
 	unsigned int fsId = glCreateShader(GL_FRAGMENT_SHADER);
 	GLCall(glShaderSource(fsId, 1, &src, nullptr));
 	GLCall(glCompileShader(fsId));
 	if (!hasShaderCompiled(fsId, GL_FRAGMENT_SHADER)) {
 		spdlog::info("[Shader] {}", filePath);
-		spdlog::info("\n{}", shaderSrc);
+		spdlog::info("\n{}", shader);
 		debug_break();
 	}
 
@@ -294,4 +265,18 @@ GLenum RenderCommand::shaderDataTypeToOpenGLBaseType(ShaderDataType type) const 
 
 	assert(false && "Unknown ShaderDataType!");
 	return 0;
+}
+
+std::string RenderCommand::readTextFile(const char* filePath) const {
+	std::ifstream fileStream(filePath);
+	if (!fileStream) {
+		spdlog::error("[readTextFile] Cannot load file : {}", filePath);
+		debug_break();
+		assert(false);
+	}
+
+	std::stringstream shaderStream;
+	shaderStream << fileStream.rdbuf();
+	fileStream.close();
+	return shaderStream.str();
 }

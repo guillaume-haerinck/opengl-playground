@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <entt/entt.hpp>
+#include <string>
 
 #include "components/graphics/mesh.h"
 #include "components/graphics/pipeline.h"
@@ -99,6 +100,7 @@ public:
 private:
 	bool hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const;
 	GLenum shaderDataTypeToOpenGLBaseType(ShaderDataType type) const;
+	std::string readTextFile(const char* filePath) const;
 
 private:
 	entt::registry& m_registry;
