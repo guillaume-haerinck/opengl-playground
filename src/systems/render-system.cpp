@@ -3,6 +3,7 @@
 #include "components/graphics/mesh.h"
 #include "components/graphics/pipeline.h"
 #include "components/physics/transform.h"
+#include "scomponents/graphics/camera.h"
 #include "graphics/constant-buffer.h"
 
 RenderSystem::RenderSystem(Context& context) : m_ctx(context) {
@@ -20,7 +21,7 @@ void RenderSystem::update() {
 
     // Update per frame constant buffer
 	{
-		cb::perFrame cbData = {};
+		cb::perFrame cbData;
         scomp::ConstantBuffer& perFrameCB = m_ctx.registry.get<scomp::ConstantBuffers>(graphEntity)
 			.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
 

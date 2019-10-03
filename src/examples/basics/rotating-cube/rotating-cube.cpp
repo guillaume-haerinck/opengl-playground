@@ -7,6 +7,8 @@
 #include <glm/glm.hpp>
 
 #include "systems/render-system.h"
+#include "systems/camera-system.h"
+
 #include "graphics/gl-exception.h"
 #include "graphics/vertex-input-description.h"
 #include "components/graphics/mesh.h"
@@ -17,7 +19,8 @@ namespace basicExample {
 	RotatingCube::RotatingCube(Context& context) : m_ctx(context) {
         // Init
 		m_systems = {
-			std::make_shared<RenderSystem>(context)
+			std::make_shared<RenderSystem>(context),
+			std::make_shared<CameraSystem>(context)
 		};
 
 		// Vertex buffer

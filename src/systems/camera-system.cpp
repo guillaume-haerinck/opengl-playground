@@ -47,7 +47,6 @@ void CameraSystem::update() {
 
 	// Move along vertical plane
 	if (inputs.actionState.at(scomp::InputAction::CAM_PAN)) {
-
 		camera.hasToBeUpdated = true;
 	}
 

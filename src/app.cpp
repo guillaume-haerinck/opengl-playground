@@ -12,6 +12,7 @@
 
 #include "scomponents/graphics/pipelines.h"
 #include "scomponents/graphics/constant-buffers.h"
+#include "scomponents/graphics/camera.h"
 #include "scomponents/io/inputs.h"
 
 #include "examples/basics/basic-triangle/basic-triangle.h"
@@ -135,6 +136,9 @@ void App::initGraphicsSingletonComponents() {
 
 	scomp::ConstantBuffers cbs = {};
 	m_ctx.registry.assign<scomp::ConstantBuffers>(entity, cbs);
+
+	scomp::Camera camera;
+	m_ctx.registry.assign<scomp::Camera>(entity, camera);
 }
 
 void App::initIOSingletonComponents() {
@@ -167,18 +171,22 @@ void App::handleSDLEvents() {
 			inputs.actionState.at(scomp::InputAction::CAM_DOLLY) = true;
 			break;
 
-		case SDL_MOUSEMOTION:
+		case SDL_MOUSEMOTION: {
 			int newPosX = e.button.x;
 			int newPosY = e.button.y;
 			inputs.delta.x = inputs.mousePos.x - newPosX;
 			inputs.delta.y = inputs.mousePos.y - newPosY;
 			inputs.mousePos.x = newPosX;
 			inputs.mousePos.y = newPosY;
+			break;
+		}
 
-			if (e.button.state == SDL_BUTTON_LEFT) { inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = true; }
-			else if (e.button.state == SDL_BUTTON_MIDDLE) { inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = true; }
-			else if (e.button.state == SDL_BUTTON_RIGHT) { inputs.actionState.at(scomp::InputAction::CAM_PAN) = true; }
+		case SDL_MOUSEBUTTONDOWN:
+		// TODO Improve me
+			inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = true;
+			break;
 
+		default:
 			break;
 		}
 	}
