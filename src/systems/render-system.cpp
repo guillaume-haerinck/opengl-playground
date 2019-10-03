@@ -3,6 +3,7 @@
 #include "components/graphics/mesh.h"
 #include "components/graphics/pipeline.h"
 #include "components/physics/transform.h"
+#include "graphics/constant-buffer.h"
 
 RenderSystem::RenderSystem(Context& context) : m_ctx(context) {
 }
@@ -11,10 +12,39 @@ RenderSystem::~RenderSystem() {
 }
 
 void RenderSystem::Update() {
-    // TODO handle constant buffer updates
+    auto graphEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_GRAPHIC);
+
+    ///////////////////////////////////////////////////////////////////////////
+	/////////////////////////////// NON-OPTIONAL //////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+
+    // Update per frame constant buffer
+	{
+		cb::perFrame cbData = {};
+        scomp::ConstantBuffer& perFrameCB = m_ctx.registry.get<scomp::ConstantBuffers>(graphEntity)
+			.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
+
+        // Set data
+        cbData.cameraPos = glm::vec3(0, 0, 0);
+        cbData.matViewProj = glm::mat4x4(1.0f);
+
+        // Send data
+		m_ctx.rcommand->updateConstantBuffer(perFrameCB, &cbData);
+	}
+
+    // Get singleton components used for rendering
+	scomp::ConstantBuffer& perMeshCB = m_ctx.registry.get<scomp::ConstantBuffers>(graphEntity)
+		.constantBuffers.at(scomp::ConstantBufferIndex::PER_MESH);
 
     m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>()
         .each([&](comp::Mesh& mesh, comp::Pipeline& pipeline, comp::Transform& transform) {
+
+        // Update perMesh constant buffer
+        {
+            cb::perMesh cbData = {};
+            cbData.matModel = glm::mat4x4(1.0f);
+            m_ctx.rcommand->updateConstantBuffer(perMeshCB, &cbData);
+        }
 
         // Bind
         m_ctx.rcommand->bindPipeline(pipeline);

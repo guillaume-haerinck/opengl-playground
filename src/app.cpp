@@ -10,6 +10,7 @@
 #include "scomponents/graphics/pipelines.h"
 #include "scomponents/graphics/constant-buffers.h"
 #include "graphics/gl-exception.h"
+#include "graphics/constant-buffer.h"
 
 #include "examples/basics/basic-triangle/basic-triangle.h"
 #include "examples/basics/rotating-cube/rotating-cube.h"
@@ -132,7 +133,12 @@ void App::initGraphicsSingletonComponents() {
 void App::initIOSingletonComponents() {
 	auto entity = m_ctx.registry.create();
 	m_ctx.singletonComponents.at(scomp::SING_ENTITY_IO) = entity;
+}
 
+void App::initConstantBuffers() {
+	m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_MESH, sizeof(cb::perMesh));
+	m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_MESH_BATCH, sizeof(cb::perMeshBatch));
+	m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_FRAME, sizeof(cb::perFrame));
 }
 
 void App::handleSDLEvents() {

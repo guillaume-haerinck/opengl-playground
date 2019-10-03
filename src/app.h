@@ -26,6 +26,7 @@ private:
 
     void initGraphicsSingletonComponents();
     void initIOSingletonComponents();
+    void initConstantBuffers();
 
     void handleSDLEvents();
     void renderMenu();
@@ -39,6 +40,7 @@ private:
         initGraphicsSingletonComponents();
         initIOSingletonComponents();
         m_ctx.rcommand = std::make_unique<RenderCommand>(m_ctx.registry, m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC));
+        initConstantBuffers();
 		m_activeExemple = std::make_unique<T>(m_ctx);
         m_isContextInit = true;
 	}
