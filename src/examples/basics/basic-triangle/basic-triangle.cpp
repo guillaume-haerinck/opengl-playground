@@ -37,11 +37,9 @@ namespace basicExample {
 		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices));
 
 		// Pipeline
-		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/basic-triangle/basic-triangle.vert");
-		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/basic-triangle/basic-triangle.frag");
 		scomp::ShaderPipeline shaders = {};
-		shaders.fs = fs;
-		shaders.vs = vs;
+		shaders.vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/basic-triangle/basic-triangle.vert");
+		shaders.fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/basic-triangle/basic-triangle.frag");
 		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(shaders);
 
 		// Mesh

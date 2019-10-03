@@ -42,22 +42,15 @@ namespace basicExample {
 		unsigned int indices[] = { 0, 1, 2 };
 		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices));
 
-		// Shaders
-		scomp::VertexShader vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/rotating-cube/rotating-cube.vert");
-		scomp::FragmentShader fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/rotating-cube/rotating-cube.frag");
-
 		// Custom constant buffer
-		scomp::ConstantBuffer cb = m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_CUSTOM_PROP_CHANGE_0, sizeof(perCustomChanges));
-
 		perCustomChanges cbData = {};
 		cbData.color = glm::vec3(0, 0, 1);
-		m_ctx.rcommand->updateConstantBuffer(cb, &cbData);
+		scomp::ConstantBuffer cb = m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_CUSTOM_PROP_CHANGE_0, sizeof(perCustomChanges), &cbData);
 
 		// Pipeline
 		scomp::ShaderPipeline shaders = {};
-		shaders.fs = fs;
-		shaders.vs = vs;
-
+		shaders.vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/rotating-cube/rotating-cube.vert");
+		shaders.fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/rotating-cube/rotating-cube.frag");
 		scomp::ConstantBufferIndex cbIndices[] = {
 			scomp::PER_CUSTOM_PROP_CHANGE_0
 		};
