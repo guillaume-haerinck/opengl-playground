@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/constants.hpp>
 
 namespace scomp {
 	/**
@@ -25,5 +27,10 @@ namespace scomp {
 		float theta = 0;
 
 		bool hasToBeUpdated = false;
+
+		Camera() {
+			proj = glm::perspectiveFovLH(glm::quarter_pi<float>(), 500.0f, 500.0f, 0.1f, 100.0f);
+			view = glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, 0.0f, 6.0f));
+		}
 	};
 }

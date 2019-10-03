@@ -7,10 +7,12 @@
 #include <imgui/imgui_impl_sdl.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-#include "scomponents/graphics/pipelines.h"
-#include "scomponents/graphics/constant-buffers.h"
 #include "graphics/gl-exception.h"
 #include "graphics/constant-buffer.h"
+
+#include "scomponents/graphics/pipelines.h"
+#include "scomponents/graphics/constant-buffers.h"
+#include "scomponents/io/inputs.h"
 
 #include "examples/basics/basic-triangle/basic-triangle.h"
 #include "examples/basics/rotating-cube/rotating-cube.h"
@@ -65,6 +67,11 @@ void App::update() {
 	// Render imgui
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	// Reset input states
+	auto ioEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_IO);
+	scomp::Inputs& inputs = m_ctx.registry.get<scomp::Inputs>(ioEntity);
+	inputs.actionState.fill(false);
 
 	SDL_GL_SwapWindow(m_window);
 }
@@ -133,6 +140,9 @@ void App::initGraphicsSingletonComponents() {
 void App::initIOSingletonComponents() {
 	auto entity = m_ctx.registry.create();
 	m_ctx.singletonComponents.at(scomp::SING_ENTITY_IO) = entity;
+
+	scomp::Inputs inputs = {};
+	m_ctx.registry.assign<scomp::Inputs>(entity, inputs);
 }
 
 void App::initConstantBuffers() {
@@ -142,20 +152,33 @@ void App::initConstantBuffers() {
 }
 
 void App::handleSDLEvents() {
+	auto ioEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_IO);
+	scomp::Inputs& inputs = m_ctx.registry.get<scomp::Inputs>(ioEntity);
+
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
 		case SDL_QUIT:
 			exit();
 			break;
-	
-		case SDL_KEYDOWN:
+
+		case SDL_MOUSEWHEEL:
+			inputs.wheelDelta = e.button.y;
+			inputs.actionState.at(scomp::InputAction::CAM_DOLLY) = true;
 			break;
 
-		case SDL_KEYUP:
-			break;
+		case SDL_MOUSEMOTION:
+			int newPosX = e.button.x;
+			int newPosY = e.button.y;
+			inputs.delta.x = inputs.mousePos.x - newPosX;
+			inputs.delta.y = inputs.mousePos.y - newPosY;
+			inputs.mousePos.x = newPosX;
+			inputs.mousePos.y = newPosY;
 
-		case SDL_MOUSEBUTTONDOWN:
+			if (e.button.state == SDL_BUTTON_LEFT) { inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = true; }
+			else if (e.button.state == SDL_BUTTON_MIDDLE) { inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = true; }
+			else if (e.button.state == SDL_BUTTON_RIGHT) { inputs.actionState.at(scomp::InputAction::CAM_PAN) = true; }
+
 			break;
 		}
 	}
