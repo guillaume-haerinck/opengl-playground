@@ -18,19 +18,18 @@ int main(int argc, char *argv[]) {
 		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	#endif
 
-	App* app = new App();
+	App app;
 	MainLoopArg arg = {};
-	arg.app = app;
+	arg.app = &app;
 
 	#ifdef __EMSCRIPTEN__
-		emscripten_set_main_loop_arg(mainLoop, &app, 0, 1);
+		emscripten_set_main_loop_arg(mainLoop, &arg, 0, 1);
 	#else
-		while (app->isRunning()) {
-			mainLoop(&app);
+		while (app.isRunning()) {
+			mainLoop(&arg);
 		}
 	#endif
 
-	delete app;
 	return 0;
 }
 
