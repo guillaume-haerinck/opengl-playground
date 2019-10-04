@@ -8,6 +8,9 @@ out
 wasm
 CMakeFiles
 
+# Wasm debug files
+.wast
+
 # Vscode
 c_cpp_properties.json
 settings.json
