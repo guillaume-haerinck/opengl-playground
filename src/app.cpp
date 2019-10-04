@@ -131,22 +131,16 @@ void App::initGraphicsSingletonComponents() {
 	scomp::ConstantBuffers cbs = {};
 	m_ctx.registry.assign<scomp::ConstantBuffers>(entity, cbs);
 
-	#ifdef __EMSCRIPTEN__
-		assert(false);
-		// Because will crash right after this point with
-		// Assertion failed: !has(entt), at: /home/ghaerinck/.conan/data/entt/3.1.1/skypjack/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include/entt/entity/sparse_set.hpp,400,construct
-	#endif
-
-	scomp::Camera camera;
-	m_ctx.registry.assign<scomp::Camera>(entity, camera);
+	//scomp::Camera camera;
+	//m_ctx.registry.assign<scomp::Camera>(entity, camera);
 }
 
 void App::initIOSingletonComponents() {
 	entt::entity entity = m_ctx.registry.create();
 	m_ctx.singletonComponents.at(scomp::SING_ENTITY_IO) = entity;
 
-	scomp::Inputs inputs = {};
-	m_ctx.registry.assign<scomp::Inputs>(entity, inputs);
+	//scomp::Inputs inputs = {};
+	//m_ctx.registry.assign<scomp::Inputs>(entity, inputs);
 }
 
 void App::initConstantBuffers() {
@@ -156,8 +150,8 @@ void App::initConstantBuffers() {
 }
 
 void App::handleSDLEvents() {
-	auto ioEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_IO);
-	scomp::Inputs& inputs = m_ctx.registry.get<scomp::Inputs>(ioEntity);
+	// auto ioEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_IO);
+	// scomp::Inputs& inputs = m_ctx.registry.get<scomp::Inputs>(ioEntity);
 
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
@@ -167,26 +161,26 @@ void App::handleSDLEvents() {
 			break;
 
 		case SDL_MOUSEWHEEL:
-			inputs.wheelDelta = e.button.y;
-			inputs.actionState.at(scomp::InputAction::CAM_DOLLY) = true;
+			// inputs.wheelDelta = e.button.y;
+			// inputs.actionState.at(scomp::InputAction::CAM_DOLLY) = true;
 			break;
 
 		case SDL_MOUSEMOTION: {
-			int newPosX = e.button.x;
-			int newPosY = e.button.y;
-			inputs.delta.x = inputs.mousePos.x - newPosX;
-			inputs.delta.y = inputs.mousePos.y - newPosY;
-			inputs.mousePos.x = newPosX;
-			inputs.mousePos.y = newPosY;
+			//int newPosX = e.button.x;
+			//int newPosY = e.button.y;
+			//inputs.delta.x = inputs.mousePos.x - newPosX;
+			//inputs.delta.y = inputs.mousePos.y - newPosY;
+			//inputs.mousePos.x = newPosX;
+			//inputs.mousePos.y = newPosY;
 			break;
 		}
 
 		case SDL_MOUSEBUTTONDOWN:
-			inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = true;
+			//inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = true;
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = false;
+			//inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = false;
 			break;
 
 		default:
