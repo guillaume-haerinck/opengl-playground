@@ -1,5 +1,10 @@
 #version 300 es
-layout(location = 0) in vec2 position;
+layout(location = 0) in vec3 position;
+
+layout (std140) uniform perMesh {
+    lowp mat4 matModel;
+    lowp uint materialIndex;
+};
 
 layout (std140) uniform perFrame {
     lowp mat4 matViewProj;
@@ -7,5 +12,5 @@ layout (std140) uniform perFrame {
 };
 
 void main() {
-	gl_Position = vec4(position, 0.0, 1.0) * matViewProj;
+	gl_Position = matViewProj * matModel * vec4(position, 1.0);
 }

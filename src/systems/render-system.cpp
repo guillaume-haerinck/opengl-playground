@@ -26,7 +26,7 @@ void RenderSystem::update() {
 			.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
 
         // Set data
-        cbData.cameraPos = glm::vec3(1, 0, 0);
+        cbData.cameraPos = glm::vec3(1.0f, 0.0f, 0.0f);
         cbData.matViewProj = glm::mat4x4(1.0f);
 
         // Send data

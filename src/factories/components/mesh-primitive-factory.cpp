@@ -4,6 +4,11 @@
 
 MeshPrimitiveFactory::MeshPrimitiveFactory(Context& context) : m_ctx(context)
 {
+	m_vib = {
+        { ShaderDataType::Float3, "Position" },
+        //{ ShaderDataType::Float3, "Normal" },
+        //{ ShaderDataType::Float2, "TexCoord" }
+    };
 }
 
 MeshPrimitiveFactory::~MeshPrimitiveFactory()
@@ -62,20 +67,15 @@ comp::Mesh MeshPrimitiveFactory::createBox(float width, float height) {
 
     // Create buffers
 	comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer(positions, std::size(positions), sizeof(glm::vec3));
-	comp::AttributeBuffer normalBuffer = m_ctx.rcommand->createAttributeBuffer(normals, std::size(normals), sizeof(glm::vec3));
-	comp::AttributeBuffer texCoordBuffer = m_ctx.rcommand->createAttributeBuffer(texCoords, std::size(texCoords), sizeof(glm::vec2));
+	//comp::AttributeBuffer normalBuffer = m_ctx.rcommand->createAttributeBuffer(normals, std::size(normals), sizeof(glm::vec3));
+	//comp::AttributeBuffer texCoordBuffer = m_ctx.rcommand->createAttributeBuffer(texCoords, std::size(texCoords), sizeof(glm::vec2));
 	comp::IndexBuffer ib = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices));
 
     // Store buffers
     comp::AttributeBuffer attributeBuffers[] = {
-        positionBuffer, normalBuffer, texCoordBuffer
+        positionBuffer
     };
-    VertexInputDescription inputDescription = {
-        { ShaderDataType::Float3, "Position" },
-        { ShaderDataType::Float3, "Normal" },
-        { ShaderDataType::Float2, "TexCoord" }
-    };
-    comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(inputDescription, attributeBuffers, std::size(attributeBuffers));
+    comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vib, attributeBuffers, std::size(attributeBuffers));
 
     // Send result
     comp::Mesh mesh = {};

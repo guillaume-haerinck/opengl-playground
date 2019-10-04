@@ -10,6 +10,9 @@ public:
 
     comp::Mesh createBox(float width = 1, float height = 1);
 
+    VertexInputDescription getInputDescription() const { return m_vib; }
+
 private:
     Context& m_ctx;
+    VertexInputDescription m_vib;
 };
