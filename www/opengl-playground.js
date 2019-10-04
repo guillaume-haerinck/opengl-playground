@@ -1965,8 +1965,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 68096,
-    'maximum': 68096,
+    'initial': 71168,
+    'maximum': 71168,
     'element': 'anyfunc'
   });
   env['__memory_base'] = 1024; // tell the memory segments where to place themselves
@@ -10952,6 +10952,10 @@ function copyTempDouble(ptr) {
 
    
 
+  var _llvm_cos_f32=Math_cos;
+
+  var _llvm_sin_f32=Math_sin;
+
   function _llvm_stackrestore(p) {
       var self = _llvm_stacksave;
       var ret = self.LLVM_SAVEDSTACKS[p];
@@ -12137,6 +12141,8 @@ var asmLibraryArg = {
   "_glVertexAttribPointer": _glVertexAttribPointer,
   "_glViewport": _glViewport,
   "_gmtime_r": _gmtime_r,
+  "_llvm_cos_f32": _llvm_cos_f32,
+  "_llvm_sin_f32": _llvm_sin_f32,
   "_llvm_stackrestore": _llvm_stackrestore,
   "_llvm_stacksave": _llvm_stacksave,
   "_llvm_trap": _llvm_trap,

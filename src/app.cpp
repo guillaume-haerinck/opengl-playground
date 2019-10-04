@@ -69,11 +69,6 @@ void App::update() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-	// Reset input states
-	auto ioEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_IO);
-	scomp::Inputs& inputs = m_ctx.registry.get<scomp::Inputs>(ioEntity);
-	inputs.actionState.fill(false);
-
 	SDL_GL_SwapWindow(m_window);
 }
 
@@ -182,8 +177,11 @@ void App::handleSDLEvents() {
 		}
 
 		case SDL_MOUSEBUTTONDOWN:
-		// TODO Improve me
 			inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = true;
+			break;
+
+		case SDL_MOUSEBUTTONUP:
+			inputs.actionState.at(scomp::InputAction::CAM_ORBIT) = false;
 			break;
 
 		default:
