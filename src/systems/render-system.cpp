@@ -26,8 +26,10 @@ void RenderSystem::update() {
 			.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
 
         // Set data
+        glm::mat4x4 proj = glm::perspectiveFovLH(glm::quarter_pi<float>(), 500.0f, 500.0f, 0.1f, 100.0f);
+		glm::mat4x4 view = glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, 0.0f, 6.0f));
         cbData.cameraPos = glm::vec3(1.0f, 0.0f, 0.0f);
-        cbData.matViewProj = glm::mat4x4(1.0f);
+        cbData.matViewProj = proj * view;
 
         // Send data
 		m_ctx.rcommand->updateConstantBuffer(perFrameCB, &cbData);
@@ -43,7 +45,7 @@ void RenderSystem::update() {
         // Update perMesh constant buffer
         {
             cb::perMesh cbData = {};
-            cbData.matModel = glm::mat4x4(1.0f);
+            cbData.matModel =  glm::rotate(glm::mat4x4(1.0f), 2.4f, glm::vec3(0, 1, 0));
             cbData.materialIndex = 1;
             m_ctx.rcommand->updateConstantBuffer(perMeshCB, &cbData);
         }
