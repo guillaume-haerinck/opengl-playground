@@ -61,7 +61,7 @@ namespace basicExample {
 
 	void BasicTriangle::update() {
 		for (auto& system : m_systems) {
-			system->Update();
+			system->update();
 		}
 	}
 

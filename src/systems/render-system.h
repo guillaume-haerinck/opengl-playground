@@ -8,7 +8,7 @@ public:
 	RenderSystem(Context& context);
 	virtual ~RenderSystem();
 
-	void Update() override;
+	void update() override;
 
 private:
 	Context& m_ctx;

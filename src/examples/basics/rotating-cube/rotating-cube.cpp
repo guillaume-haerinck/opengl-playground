@@ -75,7 +75,7 @@ namespace basicExample {
 
 	void RotatingCube::update() {
 		for (auto& system : m_systems) {
-			system->Update();
+			system->update();
 		}
 	}
 

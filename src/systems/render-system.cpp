@@ -11,7 +11,7 @@ RenderSystem::RenderSystem(Context& context) : m_ctx(context) {
 RenderSystem::~RenderSystem() {
 }
 
-void RenderSystem::Update() {
+void RenderSystem::update() {
     auto graphEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_GRAPHIC);
 
     ///////////////////////////////////////////////////////////////////////////
