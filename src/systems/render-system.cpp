@@ -25,7 +25,7 @@ void RenderSystem::update() {
 			.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
 
         // Set data
-        cbData.cameraPos = glm::vec3(0, 0, 0);
+        cbData.cameraPos = glm::vec3(1, 0, 0);
         cbData.matViewProj = glm::mat4x4(1.0f);
 
         // Send data
@@ -43,6 +43,7 @@ void RenderSystem::update() {
         {
             cb::perMesh cbData = {};
             cbData.matModel = glm::mat4x4(1.0f);
+            cbData.materialIndex = 1;
             m_ctx.rcommand->updateConstantBuffer(perMeshCB, &cbData);
         }
 
