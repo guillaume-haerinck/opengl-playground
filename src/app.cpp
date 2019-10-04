@@ -19,7 +19,6 @@
 #include "examples/basics/rotating-cube/rotating-cube.h"
 
 bool App::m_instanciated = false;
-bool App::m_isContextInit = false;
 
 App::App() : m_running(true)
 {
@@ -123,7 +122,7 @@ void App::initImgui() const {
 }
 
 void App::initGraphicsSingletonComponents() {
-	auto entity = m_ctx.registry.create();
+	entt::entity entity = m_ctx.registry.create();
 	m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC) = entity;
 
 	scomp::Pipelines pipelines = {};
@@ -132,12 +131,18 @@ void App::initGraphicsSingletonComponents() {
 	scomp::ConstantBuffers cbs = {};
 	m_ctx.registry.assign<scomp::ConstantBuffers>(entity, cbs);
 
+	#ifdef __EMSCRIPTEN__
+		assert(false);
+		// Because will crash right after this point with
+		// Assertion failed: !has(entt), at: /home/ghaerinck/.conan/data/entt/3.1.1/skypjack/stable/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include/entt/entity/sparse_set.hpp,400,construct
+	#endif
+
 	scomp::Camera camera;
 	m_ctx.registry.assign<scomp::Camera>(entity, camera);
 }
 
 void App::initIOSingletonComponents() {
-	auto entity = m_ctx.registry.create();
+	entt::entity entity = m_ctx.registry.create();
 	m_ctx.singletonComponents.at(scomp::SING_ENTITY_IO) = entity;
 
 	scomp::Inputs inputs = {};

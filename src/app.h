@@ -33,7 +33,6 @@ private:
 
     template<typename T>
 	void resetAppTo() {
-        m_isContextInit = false;
 		m_activeExemple.reset();
         m_ctx.rcommand.reset();
         m_ctx.registry.reset();
@@ -42,7 +41,6 @@ private:
         m_ctx.rcommand = std::make_unique<RenderCommand>(m_ctx.registry, m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC));
         initConstantBuffers();
 		m_activeExemple = std::make_unique<T>(m_ctx);
-        m_isContextInit = true;
 	}
 
 private:
@@ -51,6 +49,5 @@ private:
     Context m_ctx;
     std::unique_ptr<IExample> m_activeExemple;
     static bool m_instanciated;
-    static bool m_isContextInit;
     bool m_running;
 };

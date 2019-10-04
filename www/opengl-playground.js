@@ -1965,8 +1965,8 @@ Module['asm'] = function(global, env, providedBuffer) {
   ;
   // import table
   env['table'] = wasmTable = new WebAssembly.Table({
-    'initial': 71168,
-    'maximum': 71168,
+    'initial': 70144,
+    'maximum': 70144,
     'element': 'anyfunc'
   });
   env['__memory_base'] = 1024; // tell the memory segments where to place themselves
