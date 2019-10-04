@@ -164,11 +164,8 @@ Module['FS_createPath']('/res/shaders/basics', 'basic-triangle', true, true);
       var byteArray = new Uint8Array(arrayBuffer);
       var curr;
       
-        // copy the entire loaded file into a spot in the heap. Files will refer to slices in that. They cannot be freed though
-        // (we may be allocating before malloc is ready, during startup).
-        var ptr = Module['getMemory'](byteArray.length);
-        Module['HEAPU8'].set(byteArray, ptr);
-        DataRequest.prototype.byteArray = Module['HEAPU8'].subarray(ptr, ptr+byteArray.length);
+        // Reuse the bytearray from the XHR as the source for file reads.
+        DataRequest.prototype.byteArray = byteArray;
   
           var files = metadata.files;
           for (var i = 0; i < files.length; ++i) {
@@ -198,7 +195,7 @@ Module['FS_createPath']('/res/shaders/basics', 'basic-triangle', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 113, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.vert"}, {"start": 113, "audio": 0, "end": 405, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.frag"}, {"start": 405, "audio": 0, "end": 507, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.frag"}, {"start": 507, "audio": 0, "end": 620, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.vert"}], "remote_package_size": 620, "package_uuid": "8e64fc43-a496-463c-ad18-44105b9e56b5"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 113, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.vert"}, {"start": 113, "audio": 0, "end": 405, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.frag"}, {"start": 405, "audio": 0, "end": 507, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.frag"}, {"start": 507, "audio": 0, "end": 620, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.vert"}], "remote_package_size": 620, "package_uuid": "c089326e-bc25-4ccb-a580-3f5cd41203eb"});
 
 })();
 
@@ -451,7 +448,8 @@ function dynamicAlloc(size) {
   if (end <= _emscripten_get_heap_size()) {
     HEAP32[DYNAMICTOP_PTR>>2] = end;
   } else {
-    return 0;
+    var success = _emscripten_resize_heap(end);
+    if (!success) return 0;
   }
   return ret;
 }
@@ -1547,7 +1545,7 @@ if (Module['buffer']) {
   // Use a WebAssembly memory where available
   if (typeof WebAssembly === 'object' && typeof WebAssembly.Memory === 'function') {
     assert(TOTAL_MEMORY % WASM_PAGE_SIZE === 0);
-    wasmMemory = new WebAssembly.Memory({ 'initial': TOTAL_MEMORY / WASM_PAGE_SIZE, 'maximum': TOTAL_MEMORY / WASM_PAGE_SIZE });
+    wasmMemory = new WebAssembly.Memory({ 'initial': TOTAL_MEMORY / WASM_PAGE_SIZE });
     buffer = wasmMemory.buffer;
   } else
   {
@@ -2762,6 +2760,17 @@ function copyTempDouble(ptr) {
           }
           return size;
         },write:function(stream, buffer, offset, length, position, canOwn) {
+          // If memory can grow, we don't want to hold on to references of
+          // the memory Buffer, as they may get invalidated. That means
+          // we need to do a copy here.
+          // FIXME: this is inefficient as the file packager may have
+          //        copied the data into memory already - we may want to
+          //        integrate more there and let the file packager loading
+          //        code be able to query if memory growth is on or off.
+          if (canOwn) {
+            warnOnce('file packager has copied file data into memory, but in memory growth we are forced to copy it again (see --no-heap-copy)');
+          }
+          canOwn = false;
   
           if (!length) return 0;
           var node = stream.node;
@@ -9918,8 +9927,76 @@ function copyTempDouble(ptr) {
   
   function abortOnCannotGrowMemory(requestedSize) {
       abort('Cannot enlarge memory arrays to size ' + requestedSize + ' bytes (OOM). Either (1) compile with  -s TOTAL_MEMORY=X  with X higher than the current value ' + TOTAL_MEMORY + ', (2) compile with  -s ALLOW_MEMORY_GROWTH=1  which allows increasing the size at runtime, or (3) if you want malloc to return NULL (0) instead of this abort, compile with  -s ABORTING_MALLOC=0 ');
+    }
+  
+  function emscripten_realloc_buffer(size) {
+      var PAGE_MULTIPLE = 65536;
+      size = alignUp(size, PAGE_MULTIPLE); // round up to wasm page size
+      var old = Module['buffer'];
+      var oldSize = old.byteLength;
+      // native wasm support
+      try {
+        var result = wasmMemory.grow((size - oldSize) / 65536); // .grow() takes a delta compared to the previous size
+        if (result !== (-1 | 0)) {
+          // success in native wasm memory growth, get the buffer from the memory
+          return Module['buffer'] = wasmMemory.buffer;
+        } else {
+          return null;
+        }
+      } catch(e) {
+        console.error('emscripten_realloc_buffer: Attempted to grow from ' + oldSize  + ' bytes to ' + size + ' bytes, but got error: ' + e);
+        return null;
+      }
     }function _emscripten_resize_heap(requestedSize) {
-      abortOnCannotGrowMemory(requestedSize);
+      var oldSize = _emscripten_get_heap_size();
+      // TOTAL_MEMORY is the current size of the actual array, and DYNAMICTOP is the new top.
+      assert(requestedSize > oldSize); // This function should only ever be called after the ceiling of the dynamic heap has already been bumped to exceed the current total size of the asm.js heap.
+  
+  
+      var PAGE_MULTIPLE = 65536;
+      var LIMIT = 2147483648 - PAGE_MULTIPLE; // We can do one page short of 2GB as theoretical maximum.
+  
+      if (requestedSize > LIMIT) {
+        err('Cannot enlarge memory, asked to go up to ' + requestedSize + ' bytes, but the limit is ' + LIMIT + ' bytes!');
+        return false;
+      }
+  
+      var MIN_TOTAL_MEMORY = 16777216;
+      var newSize = Math.max(oldSize, MIN_TOTAL_MEMORY); // So the loop below will not be infinite, and minimum asm.js memory size is 16MB.
+  
+      while (newSize < requestedSize) { // Keep incrementing the heap size as long as it's less than what is requested.
+        if (newSize <= 536870912) {
+          newSize = alignUp(2 * newSize, PAGE_MULTIPLE); // Simple heuristic: double until 1GB...
+        } else {
+          // ..., but after that, add smaller increments towards 2GB, which we cannot reach
+          newSize = Math.min(alignUp((3 * newSize + 2147483648) / 4, PAGE_MULTIPLE), LIMIT);
+          if (newSize === oldSize) {
+            warnOnce('Cannot ask for more memory since we reached the practical limit in browsers (which is just below 2GB), so the request would have failed. Requesting only ' + TOTAL_MEMORY);
+          }
+        }
+      }
+  
+  
+      var start = Date.now();
+  
+      var replacement = emscripten_realloc_buffer(newSize);
+      if (!replacement || replacement.byteLength != newSize) {
+        err('Failed to grow the heap from ' + oldSize + ' bytes to ' + newSize + ' bytes, not enough memory!');
+        if (replacement) {
+          err('Expected to get back a buffer of size ' + newSize + ' bytes, but instead got back a buffer of size ' + replacement.byteLength);
+        }
+        return false;
+      }
+  
+      // everything worked
+      updateGlobalBuffer(replacement);
+      updateGlobalBufferViews();
+  
+      TOTAL_MEMORY = newSize;
+  
+  
+  
+      return true;
     }
 
   function _emscripten_sample_gamepad_data() {
@@ -12085,6 +12162,7 @@ var asmLibraryArg = {
   "emscriptenWebGLGetTexPixelData": emscriptenWebGLGetTexPixelData,
   "emscriptenWebGLGetUniform": emscriptenWebGLGetUniform,
   "emscriptenWebGLGetVertexAttrib": emscriptenWebGLGetVertexAttrib,
+  "emscripten_realloc_buffer": emscripten_realloc_buffer,
   "stringToNewUTF8": stringToNewUTF8,
   "tempDoublePtr": tempDoublePtr,
   "DYNAMICTOP_PTR": DYNAMICTOP_PTR
@@ -12277,6 +12355,10 @@ var _emscripten_GetProcAddress = Module["_emscripten_GetProcAddress"] = function
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["_emscripten_GetProcAddress"].apply(null, arguments) };
+var _emscripten_replace_memory = Module["_emscripten_replace_memory"] = function() {
+  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+  return Module["asm"]["_emscripten_replace_memory"].apply(null, arguments) };
 var _fflush = Module["_fflush"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
