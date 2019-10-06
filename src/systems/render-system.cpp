@@ -23,10 +23,8 @@ void RenderSystem::update() {
         scomp::ConstantBuffer& perFrameCB = m_ctx.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
 
         // Set data
-        glm::mat4x4 proj = glm::perspectiveFovLH(glm::quarter_pi<float>(), 500.0f, 500.0f, 0.1f, 100.0f);
-		glm::mat4x4 view = glm::translate(glm::mat4x4(1.0f), glm::vec3(0.0f, 0.0f, 6.0f));
-        cbData.cameraPos = glm::vec3(1.0f, 0.0f, 0.0f);
-        cbData.matViewProj = proj * view;
+        cbData.cameraPos = m_ctx.camera.position;
+        cbData.matViewProj =  m_ctx.camera.proj * m_ctx.camera.view;
 
         // Send data
 		m_ctx.rcommand->updateConstantBuffer(perFrameCB, &cbData);

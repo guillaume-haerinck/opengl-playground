@@ -10,7 +10,7 @@
 #include "scomponents/graphics/pipelines.h"
 #include "graphics/vertex-input-description.h"
 
-class Context;
+class Context; // Forward declaration to prevent circular inclusion
 
 class RenderCommand {
 public:

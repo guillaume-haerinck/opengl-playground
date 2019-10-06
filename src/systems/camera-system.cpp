@@ -17,10 +17,9 @@ CameraSystem::~CameraSystem()
 
 void CameraSystem::update() {
     // Get singleton components
-	// scomp::Inputs& inputs = m_ctx.registry.get<scomp::Inputs>(ioEntity);
-	//scomp::Camera& camera = m_ctx.registry.get<scomp::Camera>(graphicEntity);
+	scomp::Inputs& inputs = m_ctx.inputs;
+	scomp::Camera& camera = m_ctx.camera;
 
-    /*
 	// ArcBall rotation
 	if (inputs.actionState.at(scomp::InputAction::CAM_ORBIT)) {
 		camera.theta -= inputs.delta.x * 0.01;
@@ -83,5 +82,4 @@ void CameraSystem::update() {
         camera.view = glm::lookAtLH(eye, target, up);
 		camera.hasToBeUpdated = false;
 	}
-    */
 }

@@ -13,6 +13,10 @@ namespace scomp {
 	};
 
 	struct Inputs {
+		Inputs() {
+			actionState.fill(false);
+		}
+
 		std::array<bool, InputAction::_ACTION_MAX> actionState;
 		glm::vec2 mousePos = { 0, 0 };
 		glm::vec2 delta = { 0, 0 };
