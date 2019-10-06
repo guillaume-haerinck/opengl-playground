@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/guillaume-haerinck/opengl-playground.svg?branch=master)](https://travis-ci.org/guillaume-haerinck/opengl-playground)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Try online](https://img.shields.io/badge/try-online-brightgreen)](http://lucasisawesome.eu/)
 
 # OpenGL Playground
 
