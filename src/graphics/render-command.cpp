@@ -26,11 +26,11 @@ RenderCommand::RenderCommand(Context& context) : m_ctx(context)
 }
 
 RenderCommand::~RenderCommand() {
-	for (auto pipeline : m_ctx.pipelines.pipelines) {
+	for (auto pipeline : m_ctx.pipelines) {
 		GLCall(glDeleteProgram(pipeline.programIndex));
 	}
 
-	for (auto cb : m_ctx.cbs.constantBuffers) {
+	for (auto cb : m_ctx.constantBuffers) {
 		GLCall(glDeleteBuffers(1, &cb.bufferId));
 	}
 }
@@ -128,7 +128,7 @@ scomp::ConstantBuffer RenderCommand::createConstantBuffer(scomp::ConstantBufferI
 	cb.name = name;
 
 	// Save to singleton components
-	m_ctx.cbs.constantBuffers.at(index) = cb;
+	m_ctx.constantBuffers.at(index) = cb;
 
 	return cb;
 }
@@ -204,7 +204,7 @@ comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shader
 	// Link constant buffers
 	scomp::Pipeline sPipeline = {};
 	for (size_t i = 0; i < cbCount; i++) {
-		scomp::ConstantBuffer& cb = m_ctx.cbs.constantBuffers.at(cbIndices[i]);
+		scomp::ConstantBuffer& cb = m_ctx.constantBuffers.at(cbIndices[i]);
 		unsigned int blockIndex = glGetUniformBlockIndex(programId, cb.name.c_str());
 		GLCall(glUniformBlockBinding(programId, blockIndex, i));
 		GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, i, cb.bufferId));
@@ -214,11 +214,11 @@ comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shader
 	// Save to singleton components
 	sPipeline.shaders = shaders;
 	sPipeline.programIndex = programId;
-	m_ctx.pipelines.pipelines.push_back(sPipeline);
+	m_ctx.pipelines.push_back(sPipeline);
 
 	// Return result
 	comp::Pipeline pipeline = {};
-	pipeline.index = m_ctx.pipelines.pipelines.size() - 1;
+	pipeline.index = m_ctx.pipelines.size() - 1;
 	return pipeline;
 }
 
@@ -234,7 +234,7 @@ void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) 
 }
 
 void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
-	scomp::Pipeline sPipeline = m_ctx.pipelines.pipelines.at(pipeline.index);
+	scomp::Pipeline sPipeline = m_ctx.pipelines.at(pipeline.index);
 	GLCall(glUseProgram(sPipeline.programIndex));
 }
 

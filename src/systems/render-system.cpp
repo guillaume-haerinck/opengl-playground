@@ -20,7 +20,7 @@ void RenderSystem::update() {
     // Update per frame constant buffer
 	{
 		cb::perFrame cbData;
-        scomp::ConstantBuffer& perFrameCB = m_ctx.cbs.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
+        scomp::ConstantBuffer& perFrameCB = m_ctx.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
 
         // Set data
         glm::mat4x4 proj = glm::perspectiveFovLH(glm::quarter_pi<float>(), 500.0f, 500.0f, 0.1f, 100.0f);
@@ -33,7 +33,7 @@ void RenderSystem::update() {
 	}
 
     // Get singleton components used for rendering
-	scomp::ConstantBuffer& perMeshCB = m_ctx.cbs.constantBuffers.at(scomp::ConstantBufferIndex::PER_MESH);
+	scomp::ConstantBuffer& perMeshCB = m_ctx.constantBuffers.at(scomp::ConstantBufferIndex::PER_MESH);
 
     m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>()
         .each([&](comp::Mesh& mesh, comp::Pipeline& pipeline, comp::Transform& transform) {

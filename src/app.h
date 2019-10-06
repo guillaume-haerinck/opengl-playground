@@ -36,6 +36,7 @@ private:
 		m_activeExemple.reset();
         m_ctx.rcommand.reset();
         m_ctx.registry.reset();
+        m_ctx.pipelines.clear();
         m_ctx.rcommand = std::make_unique<RenderCommand>(m_ctx);
         initConstantBuffers();
 		m_activeExemple = std::make_unique<T>(m_ctx);

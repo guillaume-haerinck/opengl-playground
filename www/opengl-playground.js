@@ -195,7 +195,7 @@ Module['FS_createPath']('/res/shaders/basics', 'basic-triangle', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 312, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.vert"}, {"start": 312, "audio": 0, "end": 513, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.frag"}, {"start": 513, "audio": 0, "end": 615, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.frag"}, {"start": 615, "audio": 0, "end": 728, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.vert"}], "remote_package_size": 728, "package_uuid": "82c6a86e-2193-4f35-b466-e58a3871601e"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 312, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.vert"}, {"start": 312, "audio": 0, "end": 513, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.frag"}, {"start": 513, "audio": 0, "end": 615, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.frag"}, {"start": 615, "audio": 0, "end": 728, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.vert"}], "remote_package_size": 728, "package_uuid": "d66aae22-844d-4022-bb8a-90987b5a65bf"});
 
 })();
 

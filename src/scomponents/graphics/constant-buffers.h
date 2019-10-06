@@ -29,9 +29,4 @@ namespace scomp {
 		PER_CUSTOM_PROP_CHANGE_2, // Updated by example
 		_CONST_BUFFER_MAX
 	};
-
-	// Stored here only for updates. The shaders store them only for bindings.
-	struct ConstantBuffers {
-		std::array<ConstantBuffer, ConstantBufferIndex::_CONST_BUFFER_MAX> constantBuffers;
-	};
 }

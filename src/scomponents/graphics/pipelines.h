@@ -41,8 +41,4 @@ namespace scomp {
 		unsigned int programIndex = 0;
 		std::vector<scomp::ConstantBufferIndex> constantBufferIndices;
 	};
-
-	struct Pipelines {
-		std::vector<Pipeline> pipelines;
-	};
 };
