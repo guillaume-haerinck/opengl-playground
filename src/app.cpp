@@ -10,11 +10,6 @@
 #include "graphics/gl-exception.h"
 #include "graphics/constant-buffer.h"
 
-#include "scomponents/graphics/pipelines.h"
-#include "scomponents/graphics/constant-buffers.h"
-#include "scomponents/graphics/camera.h"
-#include "scomponents/io/inputs.h"
-
 #include "examples/basics/basic-triangle/basic-triangle.h"
 #include "examples/basics/rotating-cube/rotating-cube.h"
 
@@ -119,22 +114,6 @@ void App::initImgui() const {
     ImGui_ImplSDL2_InitForOpenGL(m_window, m_glContext);
 	ImGui_ImplOpenGL3_Init("#version 300 es");
 	ImGui::StyleColorsDark();
-}
-
-void App::initGraphicsSingletonComponents() {
-	scomp::Pipelines pipelines = {};
-	m_ctx.registry.set<scomp::Pipelines>(pipelines);
-
-	scomp::ConstantBuffers cbs = {};
-	m_ctx.registry.set<scomp::ConstantBuffers>(cbs);
-
-	//scomp::Camera camera;
-	//m_ctx.registry.assign<scomp::Camera>(entity, camera);
-}
-
-void App::initIOSingletonComponents() {
-	//scomp::Inputs inputs = {};
-	//m_ctx.registry.assign<scomp::Inputs>(entity, inputs);
 }
 
 void App::initConstantBuffers() {

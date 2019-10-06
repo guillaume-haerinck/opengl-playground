@@ -10,9 +10,11 @@
 #include "scomponents/graphics/pipelines.h"
 #include "graphics/vertex-input-description.h"
 
+class Context;
+
 class RenderCommand {
 public:
-    RenderCommand(entt::registry& registry);
+    RenderCommand(Context& context);
     ~RenderCommand();
 
     /**
@@ -98,7 +100,7 @@ private:
 	std::string readTextFile(const char* filePath) const;
 
 private:
-	entt::registry& m_registry;
+	Context& m_ctx;
 };
 
 

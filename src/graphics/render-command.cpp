@@ -8,6 +8,7 @@
 
 #include "graphics/gl-exception.h"
 #include "graphics/constant-buffer.h"
+#include "core/context.h"
 
 void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
 	comp::Mesh& mesh = registry.get<comp::Mesh>(entity);
@@ -19,19 +20,17 @@ void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
 	}
 }
 
-RenderCommand::RenderCommand(entt::registry& registry) : m_registry(registry)
+RenderCommand::RenderCommand(Context& context) : m_ctx(context)
 {
-	registry.on_destroy<comp::Mesh>().connect<&deleteMeshBuffers>();
+	m_ctx.registry.on_destroy<comp::Mesh>().connect<&deleteMeshBuffers>();
 }
 
 RenderCommand::~RenderCommand() {
-	scomp::Pipelines& pipelines = m_registry.ctx<scomp::Pipelines>();
-	for (auto pipeline : pipelines.pipelines) {
+	for (auto pipeline : m_ctx.pipelines.pipelines) {
 		GLCall(glDeleteProgram(pipeline.programIndex));
 	}
 
-	scomp::ConstantBuffers& cbs = m_registry.ctx<scomp::ConstantBuffers>();
-	for (auto cb : cbs.constantBuffers) {
+	for (auto cb : m_ctx.cbs.constantBuffers) {
 		GLCall(glDeleteBuffers(1, &cb.bufferId));
 	}
 }
@@ -129,8 +128,7 @@ scomp::ConstantBuffer RenderCommand::createConstantBuffer(scomp::ConstantBufferI
 	cb.name = name;
 
 	// Save to singleton components
-	scomp::ConstantBuffers& cbs = m_registry.ctx<scomp::ConstantBuffers>();
-	cbs.constantBuffers.at(index) = cb;
+	m_ctx.cbs.constantBuffers.at(index) = cb;
 
 	return cb;
 }
@@ -204,10 +202,9 @@ comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shader
 	}
 
 	// Link constant buffers
-	scomp::ConstantBuffers& cbs = m_registry.ctx<scomp::ConstantBuffers>();
 	scomp::Pipeline sPipeline = {};
 	for (size_t i = 0; i < cbCount; i++) {
-		scomp::ConstantBuffer cb = cbs.constantBuffers.at(cbIndices[i]);
+		scomp::ConstantBuffer& cb = m_ctx.cbs.constantBuffers.at(cbIndices[i]);
 		unsigned int blockIndex = glGetUniformBlockIndex(programId, cb.name.c_str());
 		GLCall(glUniformBlockBinding(programId, blockIndex, i));
 		GLCall(glBindBufferBase(GL_UNIFORM_BUFFER, i, cb.bufferId));
@@ -215,14 +212,13 @@ comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shader
 	}
 	
 	// Save to singleton components
-	scomp::Pipelines& pipelines = m_registry.ctx<scomp::Pipelines>();
 	sPipeline.shaders = shaders;
 	sPipeline.programIndex = programId;
-	pipelines.pipelines.push_back(sPipeline);
+	m_ctx.pipelines.pipelines.push_back(sPipeline);
 
 	// Return result
 	comp::Pipeline pipeline = {};
-	pipeline.index = pipelines.pipelines.size() - 1;
+	pipeline.index = m_ctx.pipelines.pipelines.size() - 1;
 	return pipeline;
 }
 
@@ -238,8 +234,7 @@ void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) 
 }
 
 void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
-	scomp::Pipelines& pipelines = m_registry.ctx<scomp::Pipelines>();
-	auto sPipeline = pipelines.pipelines.at(pipeline.index);
+	scomp::Pipeline sPipeline = m_ctx.pipelines.pipelines.at(pipeline.index);
 	GLCall(glUseProgram(sPipeline.programIndex));
 }
 
