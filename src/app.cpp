@@ -122,23 +122,17 @@ void App::initImgui() const {
 }
 
 void App::initGraphicsSingletonComponents() {
-	entt::entity entity = m_ctx.registry.create();
-	m_ctx.singletonComponents.at(scomp::SING_ENTITY_GRAPHIC) = entity;
-
 	scomp::Pipelines pipelines = {};
-	m_ctx.registry.assign<scomp::Pipelines>(entity, pipelines);
+	m_ctx.registry.set<scomp::Pipelines>(pipelines);
 
 	scomp::ConstantBuffers cbs = {};
-	m_ctx.registry.assign<scomp::ConstantBuffers>(entity, cbs);
+	m_ctx.registry.set<scomp::ConstantBuffers>(cbs);
 
 	//scomp::Camera camera;
 	//m_ctx.registry.assign<scomp::Camera>(entity, camera);
 }
 
 void App::initIOSingletonComponents() {
-	entt::entity entity = m_ctx.registry.create();
-	m_ctx.singletonComponents.at(scomp::SING_ENTITY_IO) = entity;
-
 	//scomp::Inputs inputs = {};
 	//m_ctx.registry.assign<scomp::Inputs>(entity, inputs);
 }

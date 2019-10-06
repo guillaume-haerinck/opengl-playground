@@ -19,19 +19,18 @@ void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
 	}
 }
 
-RenderCommand::RenderCommand(entt::registry& registry, entt::entity graphicEntity)
-: m_registry(registry), m_graphicEntity(graphicEntity)
+RenderCommand::RenderCommand(entt::registry& registry) : m_registry(registry)
 {
 	registry.on_destroy<comp::Mesh>().connect<&deleteMeshBuffers>();
 }
 
 RenderCommand::~RenderCommand() {
-	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
+	scomp::Pipelines& pipelines = m_registry.ctx<scomp::Pipelines>();
 	for (auto pipeline : pipelines.pipelines) {
 		GLCall(glDeleteProgram(pipeline.programIndex));
 	}
 
-	scomp::ConstantBuffers& cbs = m_registry.get<scomp::ConstantBuffers>(m_graphicEntity);
+	scomp::ConstantBuffers& cbs = m_registry.ctx<scomp::ConstantBuffers>();
 	for (auto cb : cbs.constantBuffers) {
 		GLCall(glDeleteBuffers(1, &cb.bufferId));
 	}
@@ -130,7 +129,7 @@ scomp::ConstantBuffer RenderCommand::createConstantBuffer(scomp::ConstantBufferI
 	cb.name = name;
 
 	// Save to singleton components
-	scomp::ConstantBuffers& cbs = m_registry.get<scomp::ConstantBuffers>(m_graphicEntity);
+	scomp::ConstantBuffers& cbs = m_registry.ctx<scomp::ConstantBuffers>();
 	cbs.constantBuffers.at(index) = cb;
 
 	return cb;
@@ -205,7 +204,7 @@ comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shader
 	}
 
 	// Link constant buffers
-	scomp::ConstantBuffers& cbs = m_registry.get<scomp::ConstantBuffers>(m_graphicEntity);
+	scomp::ConstantBuffers& cbs = m_registry.ctx<scomp::ConstantBuffers>();
 	scomp::Pipeline sPipeline = {};
 	for (size_t i = 0; i < cbCount; i++) {
 		scomp::ConstantBuffer cb = cbs.constantBuffers.at(cbIndices[i]);
@@ -216,7 +215,7 @@ comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shader
 	}
 	
 	// Save to singleton components
-	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
+	scomp::Pipelines& pipelines = m_registry.ctx<scomp::Pipelines>();
 	sPipeline.shaders = shaders;
 	sPipeline.programIndex = programId;
 	pipelines.pipelines.push_back(sPipeline);
@@ -239,7 +238,7 @@ void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) 
 }
 
 void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
-	scomp::Pipelines& pipelines = m_registry.get<scomp::Pipelines>(m_graphicEntity);
+	scomp::Pipelines& pipelines = m_registry.ctx<scomp::Pipelines>();
 	auto sPipeline = pipelines.pipelines.at(pipeline.index);
 	GLCall(glUseProgram(sPipeline.programIndex));
 }

@@ -13,8 +13,6 @@ RenderSystem::~RenderSystem() {
 }
 
 void RenderSystem::update() {
-    auto graphEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_GRAPHIC);
-
     ///////////////////////////////////////////////////////////////////////////
 	/////////////////////////////// NON-OPTIONAL //////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
@@ -22,7 +20,7 @@ void RenderSystem::update() {
     // Update per frame constant buffer
 	{
 		cb::perFrame cbData;
-        scomp::ConstantBuffer& perFrameCB = m_ctx.registry.get<scomp::ConstantBuffers>(graphEntity)
+        scomp::ConstantBuffer& perFrameCB = m_ctx.registry.ctx<scomp::ConstantBuffers>()
 			.constantBuffers.at(scomp::ConstantBufferIndex::PER_FRAME);
 
         // Set data
@@ -36,7 +34,7 @@ void RenderSystem::update() {
 	}
 
     // Get singleton components used for rendering
-	scomp::ConstantBuffer& perMeshCB = m_ctx.registry.get<scomp::ConstantBuffers>(graphEntity)
+	scomp::ConstantBuffer& perMeshCB = m_ctx.registry.ctx<scomp::ConstantBuffers>()
 		.constantBuffers.at(scomp::ConstantBufferIndex::PER_MESH);
 
     m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>()

@@ -12,7 +12,7 @@
 
 class RenderCommand {
 public:
-    RenderCommand(entt::registry& registry, entt::entity graphicEntity);
+    RenderCommand(entt::registry& registry);
     ~RenderCommand();
 
     /**
@@ -99,7 +99,6 @@ private:
 
 private:
 	entt::registry& m_registry;
-	entt::entity m_graphicEntity;
 };
 
 

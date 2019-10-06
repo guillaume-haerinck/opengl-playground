@@ -17,9 +17,7 @@ CameraSystem::~CameraSystem()
 
 void CameraSystem::update() {
     // Get singleton components
-	entt::entity ioEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_IO);
 	// scomp::Inputs& inputs = m_ctx.registry.get<scomp::Inputs>(ioEntity);
-	entt::entity graphicEntity = m_ctx.singletonComponents.at(scomp::SingletonEntities::SING_ENTITY_GRAPHIC);
 	//scomp::Camera& camera = m_ctx.registry.get<scomp::Camera>(graphicEntity);
 
     /*
