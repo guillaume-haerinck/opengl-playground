@@ -12,6 +12,8 @@
 
 #include "examples/basics/basic-triangle/basic-triangle.h"
 #include "examples/basics/rotating-cube/rotating-cube.h"
+#include "examples/basics/textured-primitives/textured-primitives.h"
+#include "examples/basics/model-loading/model-loading.h"
 
 bool App::m_instanciated = false;
 
@@ -179,6 +181,8 @@ void App::renderMenu() {
 	if (ImGui::CollapsingHeader("Basic")) {
 		if (ImGui::Button("Basic triangle")) { resetAppTo<basicExample::BasicTriangle>(); }
 		if (ImGui::Button("Rotating cube")) { resetAppTo<basicExample::RotatingCube>(); }
+		if (ImGui::Button("Textured primitives")) { resetAppTo<basicExample::TexturedPrimitives>(); }
+		if (ImGui::Button("Model loading")) { resetAppTo<basicExample::ModelLoading>(); }
 	}
 
 	// if (ImGui::CollapsingHeader("Intermediate")) {}
