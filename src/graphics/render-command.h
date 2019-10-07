@@ -35,10 +35,9 @@ public:
 
 	/**
 	 * @param vib - Layout of the buffers
-	 * @param attributeBuffers - Array of buffers describing positions, normals, etc.
-	 * @param count - The number of attribute buffers
+	 * @param attributeBuffers - Array of buffers describing positions, normals, etc. The count is defined by the vib size.
 	 */
-	comp::VertexBuffer createVertexBuffer(const VertexInputDescription& vib, comp::AttributeBuffer* attributeBuffers, unsigned int count) const;
+	comp::VertexBuffer createVertexBuffer(const VertexInputDescription& vib, comp::AttributeBuffer* attributeBuffers) const;
 
     /**
 	 * @param indices - Array of data

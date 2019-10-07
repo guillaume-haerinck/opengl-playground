@@ -1,6 +1,8 @@
 #pragma once
 
 #include <assert.h>
+#include <string>
+#include <vector>
 
 enum class ShaderDataType {
 	None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
@@ -36,8 +38,7 @@ struct BufferElement {
 
 	BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
 		: name(name), type(type), size(shaderDataTypeSize(type)), offset(0), normalized(normalized)
-	{
-	}
+	{}
 
 	uint32_t getComponentCount() const
 	{
@@ -65,12 +66,8 @@ class VertexInputDescription {
 public:
 	VertexInputDescription() {}
 
-	VertexInputDescription(const std::initializer_list<BufferElement>& elements) : m_element(elements)
-	{
-		calculateOffsetsAndStride();
-	}
+	VertexInputDescription(const std::initializer_list<BufferElement>& elements) : m_element(elements) {}
 
-	inline uint32_t getStride() const { return m_stride; }
 	inline const std::vector<BufferElement>& getElements() const { return m_element; }
 
 	std::vector<BufferElement>::iterator begin() { return m_element.begin(); }
@@ -79,18 +76,5 @@ public:
 	std::vector<BufferElement>::const_iterator end() const { return m_element.end(); }
 
 private:
-	void calculateOffsetsAndStride() {
-		uint32_t offset = 0;
-		m_stride = 0;
-		for (auto& element : m_element)
-		{
-			element.offset = offset;
-			offset += element.size;
-			m_stride += element.size;
-		}
-	}
-
-private:
 	std::vector<BufferElement> m_element;
-	uint32_t m_stride = 0;
 };

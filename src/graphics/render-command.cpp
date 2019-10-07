@@ -54,7 +54,7 @@ comp::AttributeBuffer RenderCommand::createAttributeBuffer(void* vertices, unsig
 	return buffer;
 }
 
-comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescription& vib, comp::AttributeBuffer* attributeBuffers, unsigned int count) const {
+comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescription& vib, comp::AttributeBuffer* attributeBuffers) const {
 	GLuint va;
 	GLCall(glGenVertexArrays(1, &va));
 	GLCall(glBindVertexArray(va));
@@ -62,21 +62,17 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 	// Set layout
 	unsigned int vbIndex = 0;
 	for (const auto& element : vib) {
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, attributeBuffers[vbIndex].bufferId));
 		GLCall(glEnableVertexAttribArray(vbIndex));
 		GLCall(glVertexAttribPointer(
 			vbIndex,
 			element.getComponentCount(),
 			shaderDataTypeToOpenGLBaseType(element.type),
 			element.normalized ? GL_TRUE : GL_FALSE,
-			vib.getStride(),
+			element.size,
 			(const void*)(intptr_t)element.offset
 		));
 		vbIndex++;
-	}
-
-	// Set buffers
-	for (size_t i = 0; i < count; i++) {
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, attributeBuffers[i].bufferId));
 	}
 
 	GLCall(glBindVertexArray(0));
