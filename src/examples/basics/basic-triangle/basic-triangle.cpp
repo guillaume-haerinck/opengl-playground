@@ -30,7 +30,7 @@ namespace basicExample {
 			 0.0f,  1.0f
 		};
 		comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer(&positions, std::size(positions), sizeof(float));
-		comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(inputDescription, &positionBuffer, 1);
+		comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(inputDescription, &positionBuffer);
 
 		// Index buffer
 		unsigned int indices[] = { 0, 1, 2 };
