@@ -5,6 +5,7 @@
 #include <debug_break/debug_break.h>
 #include <sstream>
 #include <fstream>
+#include <stb_image/stb_image.h>
 
 #include "graphics/gl-exception.h"
 #include "graphics/constant-buffer.h"
@@ -33,10 +34,51 @@ RenderCommand::~RenderCommand() {
 	for (auto cb : m_ctx.constantBuffers) {
 		GLCall(glDeleteBuffers(1, &cb.bufferId));
 	}
+
+	for (auto material : m_ctx.phongMaterials.materials) {
+		for (auto texture : material.textures) {
+			GLCall(glDeleteTextures(1, &texture.id));
+		}
+	}
 }
 
 void RenderCommand::clear() const {
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+}
+
+scomp::Texture RenderCommand::createTexture(unsigned int slot, const char* filepath) const {
+	int width, height, bpp;
+	stbi_set_flip_vertically_on_load(true); // Because 0,0 is bottom left in OpenGL
+	unsigned char* localBuffer = stbi_load(filepath, &width, &height, &bpp, 4);
+	if (!localBuffer) {
+		spdlog::critical("[Texture] Unable to open texture {}", filepath);
+		debug_break();
+	}
+
+	unsigned int id;
+	GLCall(glGenTextures(1, &id));
+	GLCall(glActiveTexture(GL_TEXTURE0));
+	GLCall(glBindTexture(GL_TEXTURE_2D, id));
+
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer));
+	GLCall(glBindTexture(GL_TEXTURE_2D, 0)); // unbind
+
+	if (localBuffer) {
+		stbi_image_free(localBuffer);
+	}
+
+	// Return result
+	scomp::Texture texture = {};
+	texture.id = id;
+	texture.samplerSlot = 0;
+	texture.slot = slot;
+
+	return texture;
 }
 
 comp::AttributeBuffer RenderCommand::createAttributeBuffer(void* vertices, unsigned int count, unsigned int stride) const {
@@ -226,7 +268,9 @@ void RenderCommand::bindIndexBuffer(comp::IndexBuffer ib) const {
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib.bufferId));
 }
 
-void RenderCommand::bindTextures(unsigned int* texturesIds, unsigned int count) const {
+void RenderCommand::bindTexture(scomp::Texture texture) const {
+	GLCall(glActiveTexture(GL_TEXTURE0 + texture.slot));
+	GLCall(glBindTexture(GL_TEXTURE_2D, texture.id));
 }
 
 void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {

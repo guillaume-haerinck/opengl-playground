@@ -27,6 +27,14 @@ public:
 	///////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * @note Must be added to a material, it will create a memory leak if it is not
+	 * 
+	 * @param slot - texture slot that the texture will be bound to
+	 * @param filepath
+	 */
+	scomp::Texture createTexture(unsigned int slot, const char* filepath) const;
+
+	/**
 	 * @param vertices - Array of data
 	 * @param count - The number of elements in the array
 	 * @param stride - Size in bytes of one element of the array
@@ -73,7 +81,7 @@ public:
     void bindVertexBuffer(comp::VertexBuffer vb) const;
 	void bindIndexBuffer(comp::IndexBuffer ib) const;
 
-	void bindTextures(unsigned int* texturesIds, unsigned int count) const;
+	void bindTexture(scomp::Texture texture) const;
 
 	/**
 	 * @brief Will bind all the shaders of the said pipeline

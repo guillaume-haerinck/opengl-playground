@@ -19,7 +19,7 @@ namespace scomp {
 	 * @brief An image accessible by shaders
 	 */
 	struct Texture {
-		unsigned int textureId;
+		unsigned int id;
 		unsigned int samplerSlot = 0;
 		unsigned int slot = 0;
 	};
