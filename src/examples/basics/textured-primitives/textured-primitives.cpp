@@ -1,16 +1,10 @@
 #include "textured-primitives.h"
 
 #include <imgui.h>
-#include <glad/glad.h>
-#include <spdlog/spdlog.h>
-#include <debug_break/debug_break.h>
-#include <glm/glm.hpp>
 
 #include "systems/render-system.h"
 #include "systems/camera-system.h"
 
-#include "graphics/gl-exception.h"
-#include "graphics/vertex-input-description.h"
 #include "components/graphics/mesh.h"
 #include "components/graphics/pipeline.h"
 #include "components/physics/transform.h"

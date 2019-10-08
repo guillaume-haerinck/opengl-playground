@@ -232,11 +232,13 @@ comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shader
 		GLint maxLength = 0;
 		glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &maxLength);
 
+		// FIMXE
 		std::vector<GLchar> infoLog(maxLength);
 		glGetProgramInfoLog(programId, maxLength, &maxLength, &infoLog[0]);
 		glDeleteProgram(programId);
 
-		spdlog::error("[createPipeline] Cannot link shader ! {}", infoLog.data());
+		spdlog::error("[createPipeline] Cannot link shader !");
+		debug_break();
 		assert(false);
 	}
 
