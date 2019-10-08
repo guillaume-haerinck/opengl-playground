@@ -52,6 +52,20 @@ void RenderSystem::update() {
         // TODO check instance count to do instanced drawing
         // TODO update perMesh if instance == 1, else if > 1 update perMeshBatch (where to store this data ? Use singleton component and an index to it ?)
 
+        // Bind textures
+		switch (mesh.materialType) {
+		case scomp::MaterialType::PHONG: {
+            const auto& material = m_ctx.phongMaterials.materials.at(mesh.materialIndex);
+			for (const auto& texture : material.textures) {
+				m_ctx.rcommand->bindTexture(texture);
+			}
+			break;
+		}
+
+		default:
+			break;
+		}
+
         // Draw call
         m_ctx.rcommand->drawIndexed(mesh.ib.count);
     });

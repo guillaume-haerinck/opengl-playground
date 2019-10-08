@@ -38,6 +38,15 @@ namespace basicExample {
 		// Mesh
 		comp::Mesh mesh = primFactory.createBox();
 
+		// Material
+		scomp::PhongMaterial material = {};
+		scomp::Texture texture = m_ctx.rcommand->createTexture(scomp::PhongTexSlot::DIFFUSE, "res/textures/uv-grid.jpg");
+		material.textures.push_back(texture);
+		m_ctx.phongMaterials.materials.push_back(material);
+		m_ctx.phongMaterials.hasToBeUpdated = true;
+		mesh.materialType = scomp::MaterialType::PHONG;
+		mesh.materialIndex = m_ctx.phongMaterials.materials.size() - 1;
+
 		// Transform
 		comp::Transform transform = {};
 
