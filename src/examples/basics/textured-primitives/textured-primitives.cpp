@@ -27,8 +27,8 @@ namespace basicExample {
 
 		// Pipeline
 		scomp::ShaderPipeline shaders = {};
-		shaders.vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/rotating-cube/rotating-cube.vert");
-		shaders.fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/rotating-cube/rotating-cube.frag");
+		shaders.vs = m_ctx.rcommand->createVertexShader("res/shaders/basics/textured-primitives/textured-primitives.vert");
+		shaders.fs = m_ctx.rcommand->createFragmentShader("res/shaders/basics/textured-primitives/textured-primitives.frag");
 		scomp::ConstantBufferIndex cbIndices[] = {
 			scomp::PER_MESH,
 			scomp::PER_FRAME
