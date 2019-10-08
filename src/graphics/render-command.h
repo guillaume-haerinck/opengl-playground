@@ -78,21 +78,21 @@ public:
 	////////////////////////////////// BINDING ////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-    void bindVertexBuffer(comp::VertexBuffer vb) const;
-	void bindIndexBuffer(comp::IndexBuffer ib) const;
+    void bindVertexBuffer(const comp::VertexBuffer& vb) const;
+	void bindIndexBuffer(const comp::IndexBuffer& ib) const;
 
-	void bindTexture(scomp::Texture texture) const;
+	void bindTexture(const scomp::Texture& texture) const;
 
 	/**
 	 * @brief Will bind all the shaders of the said pipeline
 	 */
-	void bindPipeline(comp::Pipeline pipeline) const;
+	void bindPipeline(const comp::Pipeline& pipeline) const;
 
     ///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////// UPDATING ////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-    void updateConstantBuffer(scomp::ConstantBuffer cb, void* data) const;
+    void updateConstantBuffer(const scomp::ConstantBuffer& cb, void* data) const;
 
     ///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////// DRAWING /////////////////////////////////

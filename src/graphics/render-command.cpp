@@ -260,25 +260,25 @@ comp::Pipeline RenderCommand::createPipeline(const scomp::ShaderPipeline& shader
 	return pipeline;
 }
 
-void RenderCommand::bindVertexBuffer(comp::VertexBuffer vb) const {
+void RenderCommand::bindVertexBuffer(const comp::VertexBuffer& vb) const {
 	GLCall(glBindVertexArray(vb.vertexArrayId));
 }
 
-void RenderCommand::bindIndexBuffer(comp::IndexBuffer ib) const {
+void RenderCommand::bindIndexBuffer(const comp::IndexBuffer& ib) const {
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib.bufferId));
 }
 
-void RenderCommand::bindTexture(scomp::Texture texture) const {
+void RenderCommand::bindTexture(const scomp::Texture& texture) const {
 	GLCall(glActiveTexture(GL_TEXTURE0 + texture.slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, texture.id));
 }
 
-void RenderCommand::bindPipeline(comp::Pipeline pipeline) const {
+void RenderCommand::bindPipeline(const comp::Pipeline& pipeline) const {
 	scomp::Pipeline sPipeline = m_ctx.pipelines.at(pipeline.index);
 	GLCall(glUseProgram(sPipeline.programIndex));
 }
 
-void RenderCommand::updateConstantBuffer(scomp::ConstantBuffer cb, void* data) const {
+void RenderCommand::updateConstantBuffer(const scomp::ConstantBuffer& cb, void* data) const {
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, cb.bufferId));
 	GLCall(glBufferSubData(GL_UNIFORM_BUFFER, 0, cb.byteWidth, data));
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
