@@ -4,9 +4,14 @@
 #include <debug_break/debug_break.h>
 
 #include "scomponents/graphics/materials.h"
-#include "components/graphics/mesh.h"
 
-ModelFactory::ModelFactory(Context& context) : m_ctx(context) {}
+ModelFactory::ModelFactory(Context& context) : m_ctx(context) {
+	m_vib = {
+		{ ShaderDataType::Float3, "Position" },
+		{ ShaderDataType::Float3, "Normal" },
+        { ShaderDataType::Float2, "TexCoord" },
+    };
+}
 
 ModelFactory::~ModelFactory() {}
 
@@ -42,8 +47,31 @@ std::vector<entt::entity> ModelFactory::createEntitiesFromGltf(const char* gltfF
 				} 
 			}
 
-            // TODO save data
-            spdlog::info("Here");
+			// Create attribute buffers
+			comp::AttributeBuffer positionBuffer = m_ctx.rcommand->createAttributeBuffer((void*) positionBufferInfo.data, positionBufferInfo.vertexCount, positionBufferInfo.dataStride);
+			comp::AttributeBuffer normalBuffer = m_ctx.rcommand->createAttributeBuffer((void*) normalBufferInfo.data, normalBufferInfo.vertexCount, normalBufferInfo.dataStride);
+			comp::AttributeBuffer texCoordBuffer = m_ctx.rcommand->createAttributeBuffer((void*) texCoord0BufferInfo.data, texCoord0BufferInfo.vertexCount, texCoord0BufferInfo.dataStride);
+
+			// Create vertex buffer
+			comp::AttributeBuffer attributeBuffers[] = {
+				positionBuffer, normalBuffer, texCoordBuffer
+			};
+			comp::VertexBuffer vb = m_ctx.rcommand->createVertexBuffer(m_vib, attributeBuffers);
+
+			// Get and create index buffer
+			GltfBufferInfo indexBufferInfo = {};
+			indexBufferInfo = getGltfBufferInfo(doc, doc.accessors[primitive.indices]);
+			comp::IndexBuffer ib = m_ctx.rcommand->createIndexBuffer((void*) indexBufferInfo.data, indexBufferInfo.vertexCount);
+
+			// Create the mesh
+			comp::Mesh mesh = {};
+			mesh.vb = vb;
+			mesh.ib = ib;
+
+			// Create new entity
+			auto entity = m_ctx.registry.create();
+			entities.push_back(entity);
+			m_ctx.registry.assign<comp::Mesh>(entity, mesh);
         }
     }
 

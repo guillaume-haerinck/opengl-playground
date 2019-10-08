@@ -36,4 +36,5 @@ private:
 
 private:
     Context& m_ctx;
+    VertexInputDescription m_vib;
 };
