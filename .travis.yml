@@ -10,8 +10,8 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-7']
-      env: COMPILER=g++-7
+          packages: ['g++-8']
+      env: COMPILER=g++-8
 
 before_install:
   - sudo apt-get install -y libglu1-mesa-dev mesa-common-dev
