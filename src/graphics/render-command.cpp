@@ -82,7 +82,7 @@ scomp::Texture RenderCommand::createTexture(unsigned int slot, const char* filep
 	return texture;
 }
 
-comp::AttributeBuffer RenderCommand::createAttributeBuffer(void* vertices, unsigned int count, unsigned int stride) const {
+comp::AttributeBuffer RenderCommand::createAttributeBuffer(const void* vertices, unsigned int count, unsigned int stride) const {
 	unsigned int id;
 	GLCall(glGenBuffers(1, &id));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, id));
@@ -125,7 +125,7 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 	return vb;
 }
 
-comp::IndexBuffer RenderCommand::createIndexBuffer(void* indices, unsigned int count) const {
+comp::IndexBuffer RenderCommand::createIndexBuffer(const void* indices, unsigned int count) const {
 	unsigned int id;
 	GLCall(glGenBuffers(1, &id));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id));

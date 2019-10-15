@@ -39,7 +39,7 @@ public:
 	 * @param count - The number of elements in the array
 	 * @param stride - Size in bytes of one element of the array
 	 */
-	comp::AttributeBuffer createAttributeBuffer(void* vertices, unsigned int count, unsigned int stride) const;
+	comp::AttributeBuffer createAttributeBuffer(const void* vertices, unsigned int count, unsigned int stride) const;
 
 	/**
 	 * @param vib - Layout of the buffers
@@ -51,7 +51,7 @@ public:
 	 * @param indices - Array of data
 	 * @param count - The number of elements in the array
 	 */
-	comp::IndexBuffer createIndexBuffer(void* indices, unsigned int count) const;
+	comp::IndexBuffer createIndexBuffer(const void* indices, unsigned int count) const;
 
 	/**
 	 * @param index 
