@@ -27,6 +27,8 @@ App::App() : m_running(true)
 	initSDL();
     initImgui();
 
+	GLCall(glEnable(GL_DEPTH_TEST));
+
 	resetAppTo<basicExample::TexturedPrimitives>();
 }
 
