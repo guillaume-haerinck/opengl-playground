@@ -61,7 +61,7 @@ std::vector<entt::entity> ModelFactory::createEntitiesFromGltf(const char* gltfF
 			// Get and create index buffer
 			GltfBufferInfo indexBufferInfo = {};
 			indexBufferInfo = getGltfBufferInfo(doc, doc.accessors[primitive.indices]);
-			comp::IndexBuffer ib = m_ctx.rcommand->createIndexBuffer((void*) indexBufferInfo.data, indexBufferInfo.vertexCount);
+			comp::IndexBuffer ib = m_ctx.rcommand->createIndexBuffer((void*) indexBufferInfo.data, indexBufferInfo.vertexCount, comp::IndexBuffer::dataType::UNSIGNED_SHORT);
 
 			// Create the mesh
 			comp::Mesh mesh = {};

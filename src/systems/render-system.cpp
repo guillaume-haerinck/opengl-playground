@@ -67,6 +67,6 @@ void RenderSystem::update() {
 		}
 
         // Draw call
-        m_ctx.rcommand->drawIndexed(mesh.ib.count);
+        m_ctx.rcommand->drawIndexed(mesh.ib.count, mesh.ib.type);
     });
 }

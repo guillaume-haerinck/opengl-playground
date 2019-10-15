@@ -31,7 +31,7 @@ namespace basicExample {
 
 		// Index buffer
 		unsigned short indices[] = { 0, 1, 2 };
-		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices));
+		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices), comp::IndexBuffer::dataType::UNSIGNED_SHORT);
 
 		// Pipeline
 		scomp::ShaderPipeline shaders = {};

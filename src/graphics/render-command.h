@@ -51,7 +51,7 @@ public:
 	 * @param indices - Array of data
 	 * @param count - The number of elements in the array
 	 */
-	comp::IndexBuffer createIndexBuffer(const void* indices, unsigned int count) const;
+	comp::IndexBuffer createIndexBuffer(const void* indices, unsigned int count, comp::IndexBuffer::dataType type) const;
 
 	/**
 	 * @param index 
@@ -98,13 +98,14 @@ public:
 	///////////////////////////////// DRAWING /////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
-	void drawIndexed(unsigned int count) const;
+	void drawIndexed(unsigned int count, comp::IndexBuffer::dataType type) const;
 	void drawIndexedInstanced(unsigned int indexCount, unsigned int drawCount) const;
 
 private:
 	bool hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const;
 	GLenum shaderDataTypeToOpenGLBaseType(ShaderDataType type) const;
 	std::string readTextFile(const char* filePath) const;
+	GLenum indexBufferDataTypeToOpenGLBaseType(comp::IndexBuffer::dataType) const;
 
 private:
 	Context& m_ctx;

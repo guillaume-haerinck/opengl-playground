@@ -125,7 +125,7 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 	return vb;
 }
 
-comp::IndexBuffer RenderCommand::createIndexBuffer(const void* indices, unsigned int count) const {
+comp::IndexBuffer RenderCommand::createIndexBuffer(const void* indices, unsigned int count, comp::IndexBuffer::dataType type) const {
 	unsigned int id;
 	GLCall(glGenBuffers(1, &id));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id));
@@ -134,6 +134,7 @@ comp::IndexBuffer RenderCommand::createIndexBuffer(const void* indices, unsigned
 	comp::IndexBuffer buffer = {};
 	buffer.bufferId = id;
 	buffer.count = count;
+	buffer.type = type;
 
 	return buffer;
 }
@@ -287,8 +288,8 @@ void RenderCommand::updateConstantBuffer(const scomp::ConstantBuffer& cb, void* 
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 }
 
-void RenderCommand::drawIndexed(unsigned int count) const {
-	GLCall(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, (void*) 0));
+void RenderCommand::drawIndexed(unsigned int count, comp::IndexBuffer::dataType type) const {
+	GLCall(glDrawElements(GL_TRIANGLES, count, indexBufferDataTypeToOpenGLBaseType(type), (void*) 0));
 }
 
 bool RenderCommand::hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const {
@@ -333,6 +334,17 @@ GLenum RenderCommand::shaderDataTypeToOpenGLBaseType(ShaderDataType type) const 
 	}
 
 	assert(false && "Unknown ShaderDataType!");
+	return 0;
+}
+
+GLenum RenderCommand::indexBufferDataTypeToOpenGLBaseType(comp::IndexBuffer::dataType type) const {
+	switch (type) {
+	case comp::IndexBuffer::dataType::UNSIGNED_BYTE : return GL_UNSIGNED_BYTE;
+	case comp::IndexBuffer::dataType::UNSIGNED_SHORT : return GL_UNSIGNED_SHORT; 
+	case comp::IndexBuffer::dataType::UNSIGNED_INT : return GL_UNSIGNED_INT; 
+	}
+
+	assert(false && "Unknown indexBufferDataType!");
 	return 0;
 }
 

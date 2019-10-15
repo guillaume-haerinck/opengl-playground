@@ -43,6 +43,14 @@ namespace comp {
 	struct IndexBuffer {
 		unsigned int bufferId;
 		unsigned int count = 0;
+	
+		enum class dataType {
+			UNSIGNED_BYTE, 
+			UNSIGNED_SHORT,
+			UNSIGNED_INT,
+			NONE
+		};
+		dataType type = dataType::NONE;
 	};
 
 	/**
