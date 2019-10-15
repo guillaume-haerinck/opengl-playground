@@ -4,6 +4,7 @@
 #include "core/context.h"
 
 #include <vector>
+#include <filesystem>
 #include <fx/gltf.h>
 
 class ModelFactory {
@@ -14,7 +15,7 @@ public:
     /**
 	 * @brief
 	 */
-	std::vector<entt::entity> createEntitiesFromGltf(const char* gltfFilePath);
+	std::vector<entt::entity> createEntitiesFromGltf(std::filesystem::path gltfFilePath);
 
 private:
     struct GltfBufferInfo {

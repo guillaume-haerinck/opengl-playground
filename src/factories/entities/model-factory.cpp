@@ -15,10 +15,10 @@ ModelFactory::ModelFactory(Context& context) : m_ctx(context) {
 
 ModelFactory::~ModelFactory() {}
 
-std::vector<entt::entity> ModelFactory::createEntitiesFromGltf(const char* gltfFilePath) {
+std::vector<entt::entity> ModelFactory::createEntitiesFromGltf(std::filesystem::path gltfFilePath) {
     fx::gltf::Document doc;
     try {
-        doc = fx::gltf::LoadFromText(gltfFilePath);
+        doc = fx::gltf::LoadFromText(gltfFilePath.string());
     } catch(const std::exception& e) {
         spdlog::error("[ModelFactory] {} ", e.what());
         debug_break();
@@ -67,6 +67,28 @@ std::vector<entt::entity> ModelFactory::createEntitiesFromGltf(const char* gltfF
 			comp::Mesh mesh = {};
 			mesh.vb = vb;
 			mesh.ib = ib;
+
+			// Get material
+			if (primitive.material >= 0) {
+				fx::gltf::Material gltfMaterial = doc.materials[primitive.material];
+
+				// Base color texture
+				int32_t baseColorTexIndex = gltfMaterial.pbrMetallicRoughness.baseColorTexture.index;
+				std::string textureName = doc.images.at(baseColorTexIndex).uri;
+				std::filesystem::path texturePath = gltfFilePath.parent_path().append(textureName);
+				
+				// Material
+				scomp::PhongMaterial material = {};
+				scomp::Texture texture = m_ctx.rcommand->createTexture(scomp::PhongTexSlot::DIFFUSE, texturePath.string().c_str());
+				material.textures.push_back(texture);
+				m_ctx.phongMaterials.materials.push_back(material);
+				m_ctx.phongMaterials.hasToBeUpdated = true;
+				mesh.materialType = scomp::MaterialType::PHONG;
+				mesh.materialIndex = m_ctx.phongMaterials.materials.size() - 1;
+
+			} else {
+				mesh.materialType = scomp::MaterialType::NO_MATERIAL;
+			}
 
 			// Create new entity
 			auto entity = m_ctx.registry.create();
