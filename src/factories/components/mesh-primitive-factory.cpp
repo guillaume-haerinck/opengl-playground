@@ -56,7 +56,7 @@ comp::Mesh MeshPrimitiveFactory::createBox(float width, float height) {
 		glm::vec2(0, 1), glm::vec2(1, 1), glm::vec2(1, 0), glm::vec2(0, 0)
 	};
 
-	unsigned int indices[] = {
+	unsigned short indices[] = {
 		0, 1, 2,   2, 3, 0,       // front
 		4, 5, 6,   6, 7, 4,       // right
 		8, 9, 10,  10,11, 8,      // top

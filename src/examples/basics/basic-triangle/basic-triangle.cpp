@@ -30,7 +30,7 @@ namespace basicExample {
 		comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(inputDescription, &positionBuffer);
 
 		// Index buffer
-		unsigned int indices[] = { 0, 1, 2 };
+		unsigned short indices[] = { 0, 1, 2 };
 		comp::IndexBuffer indexBuffer = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices));
 
 		// Pipeline

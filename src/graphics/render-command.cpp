@@ -288,7 +288,7 @@ void RenderCommand::updateConstantBuffer(const scomp::ConstantBuffer& cb, void* 
 }
 
 void RenderCommand::drawIndexed(unsigned int count) const {
-	GLCall(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*) 0));
+	GLCall(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_SHORT, (void*) 0));
 }
 
 bool RenderCommand::hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const {
