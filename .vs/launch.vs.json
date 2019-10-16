@@ -1,0 +1,12 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "out\\build\\x64-Debug\\bin\\opengl-playground.exe",
+      "name": "opengl-playground.exe",
+      "currentDir": "${workspaceRoot}"
+    }
+  ]
+}
