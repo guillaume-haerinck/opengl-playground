@@ -2,6 +2,7 @@
 
 #include <spdlog/spdlog.h>
 #include <debug_break/debug_break.h>
+#include <string.h>
 
 #include "scomponents/graphics/materials.h"
 
@@ -15,10 +16,18 @@ ModelFactory::ModelFactory(Context& context) : m_ctx(context) {
 
 ModelFactory::~ModelFactory() {}
 
-std::vector<entt::entity> ModelFactory::createEntitiesFromGltf(std::filesystem::path gltfFilePath) {
+std::vector<entt::entity> ModelFactory::createEntitiesFromGltf(const std::string& gltfFilePath) {
     fx::gltf::Document doc;
+
+	// Get directory
+	std::string directory;
+	const size_t last_slash_idx = gltfFilePath.rfind('/');
+	if (std::string::npos != last_slash_idx) {
+		directory = gltfFilePath.substr(0, last_slash_idx);
+	}
+
     try {
-        doc = fx::gltf::LoadFromText(gltfFilePath.string());
+        doc = fx::gltf::LoadFromText(gltfFilePath);
     } catch(const std::exception& e) {
         spdlog::error("[ModelFactory] {} ", e.what());
         debug_break();
@@ -75,11 +84,11 @@ std::vector<entt::entity> ModelFactory::createEntitiesFromGltf(std::filesystem::
 				// Base color texture
 				int32_t baseColorTexIndex = gltfMaterial.pbrMetallicRoughness.baseColorTexture.index;
 				std::string textureName = doc.images.at(baseColorTexIndex).uri;
-				std::filesystem::path texturePath = gltfFilePath.parent_path().append(textureName);
+				std::string texturePath = directory + "/" + textureName;
 				
 				// Material
 				scomp::PhongMaterial material = {};
-				scomp::Texture texture = m_ctx.rcommand->createTexture(scomp::PhongTexSlot::DIFFUSE, texturePath.string().c_str());
+				scomp::Texture texture = m_ctx.rcommand->createTexture(scomp::PhongTexSlot::DIFFUSE, texturePath.c_str());
 				material.textures.push_back(texture);
 				m_ctx.phongMaterials.materials.push_back(material);
 				m_ctx.phongMaterials.hasToBeUpdated = true;
