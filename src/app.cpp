@@ -67,6 +67,10 @@ void App::update() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+	// Reset input deltas
+	m_ctx.inputs.delta = glm::vec2(0.0f);
+	m_ctx.inputs.wheelDelta = 0;
+
 	SDL_GL_SwapWindow(m_window);
 }
 
