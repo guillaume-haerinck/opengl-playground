@@ -140,7 +140,7 @@ void App::handleSDLEvents() {
 			break;
 
 		case SDL_MOUSEWHEEL:
-			m_ctx.inputs.wheelDelta = e.button.y;
+			m_ctx.inputs.wheelDelta = e.wheel.y;
 			m_ctx.inputs.actionState.at(scomp::InputAction::CAM_DOLLY) = true;
 			break;
 
