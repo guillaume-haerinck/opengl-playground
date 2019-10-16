@@ -166,6 +166,10 @@ void App::handleSDLEvents() {
 			break;
 		}
 	}
+
+	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+		m_ctx.inputs.actionState.fill(false);
+	}
 }
 
 
