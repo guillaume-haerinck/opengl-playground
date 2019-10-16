@@ -83,17 +83,33 @@ Then open [your local server](http://127.0.0.1:8000/) to see the project.
 
 #### [Triangle](src/examples/basics/basic-triangle/)
 
+<p align="left">
+<img src="doc/img/basic/triangle.png?raw=true" alt="Triangle exemple" height="160px">
+</p>
+
 A simple triangle.
 
 #### [Rotating cube](src/examples/basics/rotating-cube/)
+
+<p align="left">
+<img src="doc/img/basic/cube.png?raw=true" alt="Rotating cube exemple" height="160px">
+</p>
 
 A rotating colored cube. Each face is independant so that the colors can be applied without smearing.
 
 #### [Textured primitives](src/examples/basics/textured-primitives/)
 
+<p align="left">
+<img src="doc/img/basic/textured-primitives.png?raw=true" alt="Textured primitive exemple" height="160px">
+</p>
+
 Show some procedurally-generated primitives with their UV maps.
 
 #### [Model loading](src/examples/basics/model-loading/)
+
+<p align="left">
+<img src="doc/img/basic/model.png?raw=true" alt="Model loading exemple" height="160px">
+</p>
 
 Loads a GLTF model with its texture.
 
@@ -107,7 +123,7 @@ Display a grid, some icons for the lights and a dynamic gizmo to always know the
 
 ### Blinn-Phong shading
 
-#### [Directional light](src/examples/blinn-phong/point-light/)
+####  [WIC] [Directional light](src/examples/blinn-phong/point-light/)
 
 Setup a simple scene with a directional light and no material.
 A menu is available to edit ambient, diffuse and specular properties.

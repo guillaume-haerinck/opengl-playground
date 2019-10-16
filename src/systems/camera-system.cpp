@@ -22,8 +22,8 @@ void CameraSystem::update() {
 
 	// ArcBall rotation
 	if (inputs.actionState.at(scomp::InputAction::CAM_ORBIT)) {
-		camera.theta -= inputs.delta.x * 0.01;
-		camera.phi += inputs.delta.y * 0.01;
+		camera.theta -= inputs.delta.x * 0.01f;
+		camera.phi += inputs.delta.y * 0.01f;
 
 		// Keep phi within -2PI to +2PI for easy 'up' comparison
 		if (camera.phi > glm::two_pi<float>())   {
