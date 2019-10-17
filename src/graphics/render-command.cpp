@@ -57,16 +57,19 @@ scomp::Texture RenderCommand::createTexture(unsigned int slot, const char* filep
 
 	unsigned int id;
 	GLCall(glGenTextures(1, &id));
-	GLCall(glActiveTexture(GL_TEXTURE0));
+	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, id));
+	
+	const unsigned int numMipMap = 3; 
+	GLCall(glTexStorage2D(GL_TEXTURE_2D, numMipMap, GL_RGBA8, width, height));
+	GLCall(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer));
+	GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
-	// TODO remove and use sampler instead
-	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT));
 
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, localBuffer));
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0)); // unbind
 
 	if (localBuffer) {

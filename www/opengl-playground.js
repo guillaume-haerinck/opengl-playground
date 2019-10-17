@@ -200,7 +200,7 @@ Module['FS_createPath']('/res/shaders/basics', 'basic-triangle', true, true);
   }
 
  }
- loadPackage({"files": [{"start": 0, "audio": 0, "end": 650948, "filename": "/res/textures/uv-grid.jpg"}, {"start": 650948, "audio": 0, "end": 1209452, "filename": "/res/models/damaged-helmet/DamagedHelmet.bin"}, {"start": 1209452, "audio": 0, "end": 2145081, "filename": "/res/models/damaged-helmet/Default_albedo.jpg"}, {"start": 2145081, "audio": 0, "end": 2506759, "filename": "/res/models/damaged-helmet/Default_AO.jpg"}, {"start": 2506759, "audio": 0, "end": 3807420, "filename": "/res/models/damaged-helmet/Default_metalRoughness.jpg"}, {"start": 3807420, "audio": 0, "end": 3904919, "filename": "/res/models/damaged-helmet/Default_emissive.jpg"}, {"start": 3904919, "audio": 0, "end": 3909456, "filename": "/res/models/damaged-helmet/DamagedHelmet.gltf"}, {"start": 3909456, "audio": 0, "end": 4427213, "filename": "/res/models/damaged-helmet/Default_normal.jpg"}, {"start": 4427213, "audio": 0, "end": 4427601, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.vert"}, {"start": 4427601, "audio": 0, "end": 4427805, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.frag"}, {"start": 4427805, "audio": 0, "end": 4428074, "filename": "/res/shaders/basics/textured-primitives/textured-primitives.frag"}, {"start": 4428074, "audio": 0, "end": 4428516, "filename": "/res/shaders/basics/textured-primitives/textured-primitives.vert"}, {"start": 4428516, "audio": 0, "end": 4428715, "filename": "/res/shaders/basics/model-loading/model-loading.frag"}, {"start": 4428715, "audio": 0, "end": 4429104, "filename": "/res/shaders/basics/model-loading/model-loading.vert"}, {"start": 4429104, "audio": 0, "end": 4429206, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.frag"}, {"start": 4429206, "audio": 0, "end": 4429319, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.vert"}], "remote_package_size": 4429319, "package_uuid": "2fdaec7b-62df-45e3-87aa-9ecd22745102"});
+ loadPackage({"files": [{"start": 0, "audio": 0, "end": 650948, "filename": "/res/textures/uv-grid.jpg"}, {"start": 650948, "audio": 0, "end": 1209452, "filename": "/res/models/damaged-helmet/DamagedHelmet.bin"}, {"start": 1209452, "audio": 0, "end": 2145081, "filename": "/res/models/damaged-helmet/Default_albedo.jpg"}, {"start": 2145081, "audio": 0, "end": 2506759, "filename": "/res/models/damaged-helmet/Default_AO.jpg"}, {"start": 2506759, "audio": 0, "end": 3807420, "filename": "/res/models/damaged-helmet/Default_metalRoughness.jpg"}, {"start": 3807420, "audio": 0, "end": 3904919, "filename": "/res/models/damaged-helmet/Default_emissive.jpg"}, {"start": 3904919, "audio": 0, "end": 3909456, "filename": "/res/models/damaged-helmet/DamagedHelmet.gltf"}, {"start": 3909456, "audio": 0, "end": 4427213, "filename": "/res/models/damaged-helmet/Default_normal.jpg"}, {"start": 4427213, "audio": 0, "end": 4427601, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.vert"}, {"start": 4427601, "audio": 0, "end": 4427805, "filename": "/res/shaders/basics/rotating-cube/rotating-cube.frag"}, {"start": 4427805, "audio": 0, "end": 4428074, "filename": "/res/shaders/basics/textured-primitives/textured-primitives.frag"}, {"start": 4428074, "audio": 0, "end": 4428516, "filename": "/res/shaders/basics/textured-primitives/textured-primitives.vert"}, {"start": 4428516, "audio": 0, "end": 4428785, "filename": "/res/shaders/basics/model-loading/model-loading.frag"}, {"start": 4428785, "audio": 0, "end": 4429228, "filename": "/res/shaders/basics/model-loading/model-loading.vert"}, {"start": 4429228, "audio": 0, "end": 4429330, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.frag"}, {"start": 4429330, "audio": 0, "end": 4429443, "filename": "/res/shaders/basics/basic-triangle/basic-triangle.vert"}], "remote_package_size": 4429443, "package_uuid": "90f7e2ca-def7-4675-a5cb-7888fac4206b"});
 
 })();
 
@@ -1514,11 +1514,11 @@ function updateGlobalBufferViews() {
 
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 123056,
+    STACK_BASE = 123296,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 5365936,
-    DYNAMIC_BASE = 5365936,
-    DYNAMICTOP_PTR = 122800;
+    STACK_MAX = 5366176,
+    DYNAMIC_BASE = 5366176,
+    DYNAMICTOP_PTR = 123040;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -2029,7 +2029,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 
-// STATICTOP = STATIC_BASE + 122032;
+// STATICTOP = STATIC_BASE + 122272;
 /* global initializers */  __ATINIT__.push({ func: function() { globalCtors() } });
 
 
@@ -2040,7 +2040,7 @@ function _emscripten_asm_const_iiii(code, a0, a1, a2) {
 
 
 /* no memory initializer */
-var tempDoublePtr = 123040
+var tempDoublePtr = 123280
 assert(tempDoublePtr % 8 == 0);
 
 function copyTempFloat(ptr) { // functions, because inlining this code increases code size too much
@@ -3542,11 +3542,11 @@ function copyTempDouble(ptr) {
   
   var ERRNO_CODES={EPERM:1,ENOENT:2,ESRCH:3,EINTR:4,EIO:5,ENXIO:6,E2BIG:7,ENOEXEC:8,EBADF:9,ECHILD:10,EAGAIN:11,EWOULDBLOCK:11,ENOMEM:12,EACCES:13,EFAULT:14,ENOTBLK:15,EBUSY:16,EEXIST:17,EXDEV:18,ENODEV:19,ENOTDIR:20,EISDIR:21,EINVAL:22,ENFILE:23,EMFILE:24,ENOTTY:25,ETXTBSY:26,EFBIG:27,ENOSPC:28,ESPIPE:29,EROFS:30,EMLINK:31,EPIPE:32,EDOM:33,ERANGE:34,ENOMSG:42,EIDRM:43,ECHRNG:44,EL2NSYNC:45,EL3HLT:46,EL3RST:47,ELNRNG:48,EUNATCH:49,ENOCSI:50,EL2HLT:51,EDEADLK:35,ENOLCK:37,EBADE:52,EBADR:53,EXFULL:54,ENOANO:55,EBADRQC:56,EBADSLT:57,EDEADLOCK:35,EBFONT:59,ENOSTR:60,ENODATA:61,ETIME:62,ENOSR:63,ENONET:64,ENOPKG:65,EREMOTE:66,ENOLINK:67,EADV:68,ESRMNT:69,ECOMM:70,EPROTO:71,EMULTIHOP:72,EDOTDOT:73,EBADMSG:74,ENOTUNIQ:76,EBADFD:77,EREMCHG:78,ELIBACC:79,ELIBBAD:80,ELIBSCN:81,ELIBMAX:82,ELIBEXEC:83,ENOSYS:38,ENOTEMPTY:39,ENAMETOOLONG:36,ELOOP:40,EOPNOTSUPP:95,EPFNOSUPPORT:96,ECONNRESET:104,ENOBUFS:105,EAFNOSUPPORT:97,EPROTOTYPE:91,ENOTSOCK:88,ENOPROTOOPT:92,ESHUTDOWN:108,ECONNREFUSED:111,EADDRINUSE:98,ECONNABORTED:103,ENETUNREACH:101,ENETDOWN:100,ETIMEDOUT:110,EHOSTDOWN:112,EHOSTUNREACH:113,EINPROGRESS:115,EALREADY:114,EDESTADDRREQ:89,EMSGSIZE:90,EPROTONOSUPPORT:93,ESOCKTNOSUPPORT:94,EADDRNOTAVAIL:99,ENETRESET:102,EISCONN:106,ENOTCONN:107,ETOOMANYREFS:109,EUSERS:87,EDQUOT:122,ESTALE:116,ENOTSUP:95,ENOMEDIUM:123,EILSEQ:84,EOVERFLOW:75,ECANCELED:125,ENOTRECOVERABLE:131,EOWNERDEAD:130,ESTRPIPE:86};
   
-  var _stdin=122816;
+  var _stdin=123056;
   
-  var _stdout=122832;
+  var _stdout=123072;
   
-  var _stderr=122848;var FS={root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,trackingDelegate:{},tracking:{openFlags:{READ:1,WRITE:2}},ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,handleFSError:function(e) {
+  var _stderr=123088;var FS={root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,trackingDelegate:{},tracking:{openFlags:{READ:1,WRITE:2}},ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,handleFSError:function(e) {
         if (!(e instanceof FS.ErrnoError)) throw e + ' : ' + stackTrace();
         return ___setErrNo(e.errno);
       },lookupPath:function(path, opts) {
@@ -10946,7 +10946,7 @@ function copyTempDouble(ptr) {
   function _glViewport(x0, x1, x2, x3) { GLctx['viewport'](x0, x1, x2, x3) }
 
   
-  var ___tm_timezone=(stringToUTF8("GMT", 122944, 4), 122944);function _gmtime_r(time, tmPtr) {
+  var ___tm_timezone=(stringToUTF8("GMT", 123184, 4), 123184);function _gmtime_r(time, tmPtr) {
       var date = new Date(((SAFE_HEAP_LOAD(((time)|0), 4, 0))|0)*1000);
       SAFE_HEAP_STORE(((tmPtr)|0), ((date.getUTCSeconds())|0), 4);
       SAFE_HEAP_STORE((((tmPtr)+(4))|0), ((date.getUTCMinutes())|0), 4);
