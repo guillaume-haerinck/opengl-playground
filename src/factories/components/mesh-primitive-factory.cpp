@@ -7,7 +7,8 @@ MeshPrimitiveFactory::MeshPrimitiveFactory(Context& context) : m_ctx(context)
 	m_vib = {
 		{ ShaderDataType::Float3, "Normal" },
         { ShaderDataType::Float2, "TexCoord" },
-		{ ShaderDataType::Float3, "Position" }
+		{ ShaderDataType::Float3, "Position" },
+		{ ShaderDataType::Float2, "Test", BufferElementUsage::PerInstance }
     };
 }
 
@@ -15,7 +16,7 @@ MeshPrimitiveFactory::~MeshPrimitiveFactory()
 {
 }
 
-comp::Mesh MeshPrimitiveFactory::createBox(float width, float height) {
+comp::Mesh MeshPrimitiveFactory::createBox(unsigned int instanceCount, float width, float height) {
     //    v6----- v5
 	//   /|      /|
 	//  v1------v0|
@@ -70,16 +71,30 @@ comp::Mesh MeshPrimitiveFactory::createBox(float width, float height) {
 	comp::AttributeBuffer normalBuffer = m_ctx.rcommand->createAttributeBuffer(normals, std::size(normals), sizeof(glm::vec3));
 	comp::AttributeBuffer texCoordBuffer = m_ctx.rcommand->createAttributeBuffer(texCoords, std::size(texCoords), sizeof(glm::vec2));
 	comp::IndexBuffer ib = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices), comp::IndexBuffer::dataType::UNSIGNED_SHORT);
+	
+	// Store buffers
+	comp::VertexBuffer vertexBuffer = {};
+	if (instanceCount > 1) {
+		glm::vec2 testData[]{ glm::vec2(1, 1), glm::vec2(0, 0) };
+		comp::AttributeBuffer testBuffer = m_ctx.rcommand->createAttributeBuffer(testData, std::size(testData), sizeof(glm::vec2));
+		comp::AttributeBuffer attributeBuffers[] = {
+			normalBuffer, texCoordBuffer, positionBuffer, testBuffer
+		};
+		vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vib, attributeBuffers);
 
-    // Store buffers
-    comp::AttributeBuffer attributeBuffers[] = {
-        normalBuffer, texCoordBuffer, positionBuffer
-    };
-    comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vib, attributeBuffers);
+	} else {
+		comp::AttributeBuffer attributeBuffers[] = {
+			normalBuffer, texCoordBuffer, positionBuffer
+		};
+		vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vib, attributeBuffers);
+	}
 
     // Send result
     comp::Mesh mesh = {};
     mesh.vb = vertexBuffer;
     mesh.ib = ib;
+	if (instanceCount > 1)
+		mesh.isInstanced = true;
+
     return mesh;
 }

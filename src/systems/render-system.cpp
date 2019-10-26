@@ -70,6 +70,11 @@ void RenderSystem::update() {
 		}
 
         // Draw call
-        m_ctx.rcommand->drawIndexed(mesh.ib.count, mesh.ib.type);
+		if (!mesh.isInstanced) {
+			m_ctx.rcommand->drawIndexed(mesh.ib.count, mesh.ib.type);
+		} else {
+			// TEMP
+			m_ctx.rcommand->drawIndexedInstances(mesh.ib.count, mesh.ib.type, 2);
+		}
     });
 }

@@ -2,9 +2,7 @@
 
 layout(location = 0) out lowp vec4 outColor;
 
-in lowp vec2 v_texCoord;
-
-uniform sampler2D u_texture;
+in lowp vec2 v_test;
 
 layout (std140) uniform perFrame {
     lowp mat4 matViewProj;
@@ -12,5 +10,5 @@ layout (std140) uniform perFrame {
 };
 
 void main() {
-	outColor = texture(u_texture, v_texCoord);
+	outColor = vec4(v_test, 1.0f, 1.0f);
 }
