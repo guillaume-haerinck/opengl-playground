@@ -99,7 +99,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////
 
 	void drawIndexed(unsigned int count, comp::IndexBuffer::dataType type) const;
-	void drawIndexedInstanced(unsigned int indexCount, unsigned int drawCount) const;
+	void drawIndexedInstances(unsigned int indexCount, comp::IndexBuffer::dataType type, unsigned int drawCount) const;
 
 private:
 	bool hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const;

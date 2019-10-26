@@ -89,7 +89,7 @@ comp::AttributeBuffer RenderCommand::createAttributeBuffer(const void* vertices,
 	unsigned int id;
 	GLCall(glGenBuffers(1, &id));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, id));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, stride * count, vertices, GL_STATIC_DRAW));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, stride * count, vertices, GL_STATIC_DRAW)); // TODO set usage, because need dynamic for instanced draw
 
 	comp::AttributeBuffer buffer = {};
 	buffer.bufferId = id;
@@ -113,11 +113,14 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 		GLCall(glVertexAttribPointer(
 			vbIndex,
 			element.getComponentCount(),
-			shaderDataTypeToOpenGLBaseType(element.type),
+			shaderDataTypeToOpenGLBaseType(element.type), // TODO handle mat3 and mat4 with multiple vertexAttribPointer https://stackoverflow.com/questions/17355051/using-a-matrix-as-vertex-attribute-in-opengl3-core-profile
 			element.normalized ? GL_TRUE : GL_FALSE,
 			element.size,
 			(const void*)(intptr_t)element.offset
 		));
+		if (element.usage == BufferElementUsage::PerInstance) {
+			GLCall(glVertexAttribDivisor(vbIndex, 1));
+		}
 		vbIndex++;
 	}
 
@@ -146,7 +149,6 @@ scomp::ConstantBuffer RenderCommand::createConstantBuffer(scomp::ConstantBufferI
 	std::string name = "";
 	switch (index) {
 		case scomp::PER_MESH: name = "perMesh"; break;
-		case scomp::PER_MESH_BATCH: name = "perMeshBatch"; break;
 		case scomp::PER_FRAME: name = "perFrame"; break;
 		case scomp::PER_PHONG_MAT_CHANGE: name = "perPhongMatChange"; break;
 		case scomp::PER_COOK_MAT_CHANGE: name = "perCookMatChange"; break;
@@ -293,6 +295,10 @@ void RenderCommand::updateConstantBuffer(const scomp::ConstantBuffer& cb, void* 
 
 void RenderCommand::drawIndexed(unsigned int count, comp::IndexBuffer::dataType type) const {
 	GLCall(glDrawElements(GL_TRIANGLES, count, indexBufferDataTypeToOpenGLBaseType(type), (void*) 0));
+}
+
+void RenderCommand::drawIndexedInstances(unsigned int indexCount, comp::IndexBuffer::dataType type, unsigned int drawCount) const {
+	GLCall(glDrawElementsInstanced(GL_TRIANGLES, indexCount, indexBufferDataTypeToOpenGLBaseType(type), (void*)0, drawCount));
 }
 
 bool RenderCommand::hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const {

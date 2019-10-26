@@ -8,6 +8,10 @@ enum class ShaderDataType {
 	None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
 };
 
+enum class BufferElementUsage {
+	PerVertex = 0, PerInstance
+};
+
 static uint32_t shaderDataTypeSize(ShaderDataType type) {
 	switch (type) {
 	case ShaderDataType::Float:    return 4;
@@ -33,11 +37,12 @@ struct BufferElement {
 	uint32_t size;
 	uint32_t offset;
 	bool normalized;
+	BufferElementUsage usage;
 
 	BufferElement() {}
 
-	BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
-		: name(name), type(type), size(shaderDataTypeSize(type)), offset(0), normalized(normalized)
+	BufferElement(ShaderDataType type, const std::string& name, BufferElementUsage usage = BufferElementUsage::PerVertex, bool normalized = false)
+		: name(name), type(type), size(shaderDataTypeSize(type)), offset(0), usage(usage), normalized(normalized)
 	{}
 
 	uint32_t getComponentCount() const

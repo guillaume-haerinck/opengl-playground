@@ -62,7 +62,6 @@ namespace comp {
 		IndexBuffer ib;
 		unsigned int materialIndex = 0;
 		scomp::MaterialType materialType = scomp::MaterialType::NO_MATERIAL;
-		unsigned int instanceCount = 1; // If > 1 use batch rendering
-		unsigned int instanceDataIndex = 0; // Index of PerMeshBatch Constant Buffer inside of singleton component
+		bool isInstanced = false; // If true use batch rendering. Need a special attribute buffer to store instance data.
 	};
 }

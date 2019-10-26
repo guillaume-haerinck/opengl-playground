@@ -36,6 +36,12 @@ void RenderSystem::update() {
     m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>()
         .each([&](comp::Mesh& mesh, comp::Pipeline& pipeline, comp::Transform& transform) {
 
+        // TODO check boolean to see if instanced. Entities needs to be sorted by mesh hash.
+        // If same than before, add position inside a vector, and skip draw call.
+        // If different, update the vertex attribute buffer for instanced entities and send the draw call
+
+        // How to know which buffer id to use ? Add a vector in VertexBuffer of enum (PerVertexAny / PerInstancePosition / PerInstanceColor / ...)
+
         // Update perMesh constant buffer
         {
             cb::perMesh cbData = {};
@@ -48,9 +54,6 @@ void RenderSystem::update() {
         m_ctx.rcommand->bindPipeline(pipeline);
         m_ctx.rcommand->bindVertexBuffer(mesh.vb);
         m_ctx.rcommand->bindIndexBuffer(mesh.ib);
-
-        // TODO check instance count to do instanced drawing
-        // TODO update perMesh if instance == 1, else if > 1 update perMeshBatch (where to store this data ? Use singleton component and an index to it ?)
 
         // Bind textures
 		switch (mesh.materialType) {
