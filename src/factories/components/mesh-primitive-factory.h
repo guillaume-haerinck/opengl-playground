@@ -11,9 +11,10 @@ public:
     comp::Mesh createBox(unsigned int instanceCount = 1, float width = 1, float height = 1);
 
     VertexInputDescription getInputDescription() const { return m_vib; }
-	// TODO getInputDescriptionInstanced
+	VertexInputDescription getInputDescriptionInstanced() const { return m_vibInstanced; }
 
 private:
     Context& m_ctx;
     VertexInputDescription m_vib;
+	VertexInputDescription m_vibInstanced;
 };

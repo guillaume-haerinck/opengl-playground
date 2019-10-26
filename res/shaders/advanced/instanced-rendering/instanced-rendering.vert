@@ -1,11 +1,7 @@
 #version 300 es
 
-layout(location = 0) in vec3 normal;
-layout(location = 1) in vec2 texCoord;
-layout(location = 2) in vec3 position;
-layout(location = 3) in vec2 test;
-
-out lowp vec2 v_test;
+layout(location = 0) in vec3 position;
+layout(location = 1) in mat4 test;
 
 layout (std140) uniform perMesh {
     lowp mat4 matModel;
@@ -18,6 +14,5 @@ layout (std140) uniform perFrame {
 };
 
 void main() {
-	v_test = test;
-	gl_Position = matViewProj * matModel * vec4(position.x, position.y, test.y, 1.0);
+	gl_Position = matViewProj * test * vec4(position, 1.0);
 }

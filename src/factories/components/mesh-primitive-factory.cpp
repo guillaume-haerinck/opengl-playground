@@ -7,9 +7,13 @@ MeshPrimitiveFactory::MeshPrimitiveFactory(Context& context) : m_ctx(context)
 	m_vib = {
 		{ ShaderDataType::Float3, "Normal" },
         { ShaderDataType::Float2, "TexCoord" },
-		{ ShaderDataType::Float3, "Position" },
-		{ ShaderDataType::Float2, "Test", BufferElementUsage::PerInstance }
+		{ ShaderDataType::Float3, "Position" }
     };
+
+	m_vibInstanced = {
+		{ ShaderDataType::Float3, "Position" },
+		{ ShaderDataType::Mat4, "Test", BufferElementUsage::PerInstance }
+	};
 }
 
 MeshPrimitiveFactory::~MeshPrimitiveFactory()
@@ -75,12 +79,12 @@ comp::Mesh MeshPrimitiveFactory::createBox(unsigned int instanceCount, float wid
 	// Store buffers
 	comp::VertexBuffer vertexBuffer = {};
 	if (instanceCount > 1) {
-		glm::vec2 testData[]{ glm::vec2(1, 1), glm::vec2(0, 0) };
-		comp::AttributeBuffer testBuffer = m_ctx.rcommand->createAttributeBuffer(testData, std::size(testData), sizeof(glm::vec2));
+		glm::mat4 testData[]{ glm::mat4(1.0f), glm::mat4(1.0f) };
+		comp::AttributeBuffer testBuffer = m_ctx.rcommand->createAttributeBuffer(testData, std::size(testData), sizeof(glm::mat4));
 		comp::AttributeBuffer attributeBuffers[] = {
-			normalBuffer, texCoordBuffer, positionBuffer, testBuffer
+			positionBuffer, testBuffer
 		};
-		vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vib, attributeBuffers);
+		vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vibInstanced, attributeBuffers);
 
 	} else {
 		comp::AttributeBuffer attributeBuffers[] = {

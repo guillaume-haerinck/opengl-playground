@@ -18,8 +18,8 @@ static uint32_t shaderDataTypeSize(ShaderDataType type) {
 	case ShaderDataType::Float2:   return 4 * 2;
 	case ShaderDataType::Float3:   return 4 * 3;
 	case ShaderDataType::Float4:   return 4 * 4;
-	case ShaderDataType::Mat3:     return 4 * 3 * 3;
-	case ShaderDataType::Mat4:     return 4 * 4 * 4;
+	case ShaderDataType::Mat3:     return 4 * 3; // In reality * 3
+	case ShaderDataType::Mat4:     return 4 * 4; // In reality * 4
 	case ShaderDataType::Int:      return 4;
 	case ShaderDataType::Int2:     return 4 * 2;
 	case ShaderDataType::Int3:     return 4 * 3;
@@ -35,14 +35,13 @@ struct BufferElement {
 	std::string name;
 	ShaderDataType type;
 	uint32_t size;
-	uint32_t offset;
 	bool normalized;
 	BufferElementUsage usage;
 
 	BufferElement() {}
 
 	BufferElement(ShaderDataType type, const std::string& name, BufferElementUsage usage = BufferElementUsage::PerVertex, bool normalized = false)
-		: name(name), type(type), size(shaderDataTypeSize(type)), offset(0), usage(usage), normalized(normalized)
+		: name(name), type(type), size(shaderDataTypeSize(type)), usage(usage), normalized(normalized)
 	{}
 
 	uint32_t getComponentCount() const
@@ -53,8 +52,8 @@ struct BufferElement {
 		case ShaderDataType::Float2:  return 2;
 		case ShaderDataType::Float3:  return 3;
 		case ShaderDataType::Float4:  return 4;
-		case ShaderDataType::Mat3:    return 3 * 3;
-		case ShaderDataType::Mat4:    return 4 * 4;
+		case ShaderDataType::Mat3:    return 3; // In reality * 3
+		case ShaderDataType::Mat4:    return 4; // In reality * 4
 		case ShaderDataType::Int:     return 1;
 		case ShaderDataType::Int2:    return 2;
 		case ShaderDataType::Int3:    return 3;

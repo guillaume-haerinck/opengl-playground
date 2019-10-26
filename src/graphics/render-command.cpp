@@ -109,19 +109,28 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 	unsigned int vbIndex = 0;
 	for (const auto& element : vib) {
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, attributeBuffers[vbIndex].bufferId));
-		GLCall(glEnableVertexAttribArray(vbIndex));
-		GLCall(glVertexAttribPointer(
-			vbIndex,
-			element.getComponentCount(),
-			shaderDataTypeToOpenGLBaseType(element.type), // TODO handle mat3 and mat4 with multiple vertexAttribPointer https://stackoverflow.com/questions/17355051/using-a-matrix-as-vertex-attribute-in-opengl3-core-profile
-			element.normalized ? GL_TRUE : GL_FALSE,
-			element.size,
-			(const void*)(intptr_t)element.offset
-		));
-		if (element.usage == BufferElementUsage::PerInstance) {
-			GLCall(glVertexAttribDivisor(vbIndex, 1));
+
+		unsigned int iter = 1;
+		if (element.type == ShaderDataType::Mat3)
+			iter = 3;
+		else if (element.type == ShaderDataType::Mat4)
+			iter = 4;
+
+		for (int i = 0; i < iter; i++) {
+			GLCall(glEnableVertexAttribArray(vbIndex + i));
+			GLCall(glVertexAttribPointer(
+				vbIndex + i,
+				element.getComponentCount(),
+				shaderDataTypeToOpenGLBaseType(element.type),
+				element.normalized ? GL_TRUE : GL_FALSE,
+				element.size,
+				(const void*) (element.size * i)
+			));
+			if (element.usage == BufferElementUsage::PerInstance) {
+				GLCall(glVertexAttribDivisor(vbIndex + i, 1));
+			}
 		}
-		vbIndex++;
+		vbIndex += iter;
 	}
 
 	GLCall(glBindVertexArray(0));
