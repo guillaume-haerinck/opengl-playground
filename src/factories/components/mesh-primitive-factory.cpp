@@ -79,7 +79,7 @@ comp::Mesh MeshPrimitiveFactory::createBox(unsigned int instanceCount, float wid
 	// Store buffers
 	comp::VertexBuffer vertexBuffer = {};
 	if (instanceCount > 1) {
-		glm::mat4 testData[]{ glm::mat4(1.0f), glm::mat4(1.0f) };
+		glm::mat4 testData[]{ glm::mat4(1.0f),  glm::translate(glm::mat4(1.0f), glm::vec3(2.0f)),  glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f)) };
 		comp::AttributeBuffer testBuffer = m_ctx.rcommand->createAttributeBuffer(testData, std::size(testData), sizeof(glm::mat4));
 		comp::AttributeBuffer attributeBuffers[] = {
 			positionBuffer, testBuffer

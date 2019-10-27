@@ -120,11 +120,11 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 			GLCall(glEnableVertexAttribArray(vbIndex + i));
 			GLCall(glVertexAttribPointer(
 				vbIndex + i,
-				element.getComponentCount(),
+				element.getComponentCount() / iter,
 				shaderDataTypeToOpenGLBaseType(element.type),
 				element.normalized ? GL_TRUE : GL_FALSE,
 				element.size,
-				(const void*) (element.size * i)
+				(const void*) ((element.size / iter) * i)
 			));
 			if (element.usage == BufferElementUsage::PerInstance) {
 				GLCall(glVertexAttribDivisor(vbIndex + i, 1));

@@ -30,7 +30,7 @@ App::App() : m_running(true)
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 
-	resetAppTo<basicExample::TexturedPrimitives>();
+	resetAppTo<advancedExample::InstancedRendering>();
 }
 
 App::~App() {

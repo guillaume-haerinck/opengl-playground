@@ -74,7 +74,7 @@ void RenderSystem::update() {
 			m_ctx.rcommand->drawIndexed(mesh.ib.count, mesh.ib.type);
 		} else {
 			// TEMP
-			m_ctx.rcommand->drawIndexedInstances(mesh.ib.count, mesh.ib.type, 2);
+			m_ctx.rcommand->drawIndexedInstances(mesh.ib.count, mesh.ib.type, 3);
 		}
     });
 }
