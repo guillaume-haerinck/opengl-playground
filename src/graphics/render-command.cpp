@@ -317,6 +317,12 @@ void RenderCommand::updateConstantBuffer(const scomp::ConstantBuffer& cb, void* 
 	GLCall(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 }
 
+void RenderCommand::updateAttributeBuffer(const comp::AttributeBuffer& buffer, void* data, unsigned int dataByteWidth) const {
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer.bufferId));
+	GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, dataByteWidth, data));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+}
+
 void RenderCommand::drawIndexed(unsigned int count, comp::IndexBuffer::dataType type) const {
 	GLCall(glDrawElements(GL_TRIANGLES, count, indexBufferDataTypeToOpenGLBaseType(type), (void*) 0));
 }
