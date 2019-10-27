@@ -38,8 +38,10 @@ public:
 	 * @param vertices - Array of data
 	 * @param count - The number of elements in the array
 	 * @param stride - Size in bytes of one element of the array
+	 * @param usage - (Optional) Used to know if the buffer is going to be updated or not
+	 * @param type - (Optional) Used by instanced rendering to know which buffer to update
 	 */
-	comp::AttributeBuffer createAttributeBuffer(const void* vertices, unsigned int count, unsigned int stride) const;
+	comp::AttributeBuffer createAttributeBuffer(const void* vertices, unsigned int count, unsigned int stride, comp::AttributeBufferUsage usage = comp::AttributeBufferUsage::STATIC_DRAW, comp::AttributeBufferType type = comp::AttributeBufferType::PER_VERTEX_ANY) const;
 
 	/**
 	 * @param vib - Layout of the buffers
@@ -110,7 +112,6 @@ private:
 private:
 	Context& m_ctx;
 };
-
 
 // Callback function on Mesh component destruction
 void deleteMeshBuffers(entt::entity entity, entt::registry & registry);

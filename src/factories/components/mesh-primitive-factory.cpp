@@ -20,7 +20,7 @@ MeshPrimitiveFactory::~MeshPrimitiveFactory()
 {
 }
 
-comp::Mesh MeshPrimitiveFactory::createBox(unsigned int instanceCount, float width, float height) {
+comp::Mesh MeshPrimitiveFactory::createBox(unsigned int maxInstanceCount, float width, float height) {
     //    v6----- v5
 	//   /|      /|
 	//  v1------v0|
@@ -64,7 +64,7 @@ comp::Mesh MeshPrimitiveFactory::createBox(unsigned int instanceCount, float wid
 	unsigned short indices[] = {
 		0, 1, 2,   2, 3, 0,       // front
 		4, 5, 6,   6, 7, 4,       // right
-		8, 9, 10,  10,11, 8,      // top
+		8, 9, 10,  10,11,8,       // top
 		12,13,14,  14,15,12,      // left
 		16,17,18,  18,19,16,      // bottom
 		20,21,22,  22,23,20		  // back
@@ -78,15 +78,21 @@ comp::Mesh MeshPrimitiveFactory::createBox(unsigned int instanceCount, float wid
 	
 	// Store buffers
 	comp::VertexBuffer vertexBuffer = {};
-	if (instanceCount > 1) {
-		glm::mat4 testData[]{ glm::mat4(1.0f),  glm::translate(glm::mat4(1.0f), glm::vec3(2.0f)),  glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f)) };
-		comp::AttributeBuffer testBuffer = m_ctx.rcommand->createAttributeBuffer(testData, std::size(testData), sizeof(glm::mat4));
+	if (maxInstanceCount > 1) {
+		// Model matrices
+		std::vector<glm::mat4> modelMatrices;
+		modelMatrices.resize(maxInstanceCount);
+		std::fill(modelMatrices.begin(), modelMatrices.end(), glm::mat4(1.0f));
+		comp::AttributeBuffer modelInstanceBuffer = m_ctx.rcommand->createAttributeBuffer(modelMatrices.data(), modelMatrices.size(), sizeof(glm::mat4), comp::AttributeBufferUsage::DYNAMIC_DRAW, comp::AttributeBufferType::PER_INSTANCE_MODEL_MAT);
+
+		// Create vertex buffer for instanced rendering
 		comp::AttributeBuffer attributeBuffers[] = {
-			positionBuffer, testBuffer
+			positionBuffer, modelInstanceBuffer
 		};
 		vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vibInstanced, attributeBuffers);
 
 	} else {
+		// Create vertex buffer for non-instanced rendering
 		comp::AttributeBuffer attributeBuffers[] = {
 			normalBuffer, texCoordBuffer, positionBuffer
 		};
@@ -97,7 +103,7 @@ comp::Mesh MeshPrimitiveFactory::createBox(unsigned int instanceCount, float wid
     comp::Mesh mesh = {};
     mesh.vb = vertexBuffer;
     mesh.ib = ib;
-	if (instanceCount > 1)
+	if (maxInstanceCount > 1)
 		mesh.isInstanced = true;
 
     return mesh;

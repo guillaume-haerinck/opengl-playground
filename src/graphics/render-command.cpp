@@ -16,8 +16,8 @@ void deleteMeshBuffers(entt::entity entity, entt::registry & registry) {
 	GLCall(glDeleteVertexArrays(1, &mesh.vb.vertexArrayId));
 	GLCall(glDeleteBuffers(1, &mesh.ib.bufferId));
 
-	for (auto ab : mesh.vb.bufferIds) {
-		GLCall(glDeleteBuffers(1, &ab));
+	for (const auto& buffer : mesh.vb.buffers) {
+		GLCall(glDeleteBuffers(1, &buffer.bufferId));
 	}
 }
 
@@ -85,17 +85,29 @@ scomp::Texture RenderCommand::createTexture(unsigned int slot, const char* filep
 	return texture;
 }
 
-comp::AttributeBuffer RenderCommand::createAttributeBuffer(const void* vertices, unsigned int count, unsigned int stride) const {
+comp::AttributeBuffer RenderCommand::createAttributeBuffer(const void* vertices, unsigned int count, unsigned int stride, comp::AttributeBufferUsage usage, comp::AttributeBufferType type) const {
 	unsigned int id;
 	GLCall(glGenBuffers(1, &id));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, id));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, stride * count, vertices, GL_STATIC_DRAW)); // TODO set usage, because need dynamic for instanced draw
+	GLenum glUsage;
+
+	switch (usage) {
+	case comp::AttributeBufferUsage::STATIC_DRAW: glUsage = GL_STATIC_DRAW; break;
+	case comp::AttributeBufferUsage::DYNAMIC_DRAW:  glUsage = GL_DYNAMIC_DRAW; break;
+	default:
+		debug_break();
+		assert(false && "[createAttributeBuffer] Unknow usage");
+	}
+
+	GLCall(glBufferData(GL_ARRAY_BUFFER, stride * count, vertices, glUsage));
 
 	comp::AttributeBuffer buffer = {};
 	buffer.bufferId = id;
 	buffer.byteWidth = stride * count;
 	buffer.count = count;
 	buffer.stride = stride;
+	buffer.type = type;
+	buffer.usage = usage;
 
 	return buffer;
 }
@@ -107,8 +119,9 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 
 	// Set layout
 	unsigned int vbIndex = 0;
+	unsigned int elementId = 0;
 	for (const auto& element : vib) {
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, attributeBuffers[vbIndex].bufferId));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, attributeBuffers[elementId].bufferId));
 
 		unsigned int iter = 1;
 		if (element.type == ShaderDataType::Mat3)
@@ -130,6 +143,7 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 				GLCall(glVertexAttribDivisor(vbIndex + i, 1));
 			}
 		}
+		elementId++;
 		vbIndex += iter;
 	}
 
@@ -137,6 +151,7 @@ comp::VertexBuffer RenderCommand::createVertexBuffer(const VertexInputDescriptio
 
 	comp::VertexBuffer vb = {};
 	vb.vertexArrayId = va;
+	vb.buffers.assign(attributeBuffers, attributeBuffers + vib.size());
 	return vb;
 }
 
