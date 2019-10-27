@@ -39,6 +39,11 @@ namespace advancedExample {
 		m_ctx.registry.assign<comp::Mesh>(entity, mesh);
 		m_ctx.registry.assign<comp::Pipeline>(entity, pipeline);
 		m_ctx.registry.assign<comp::Transform>(entity, transform);
+
+		auto entity2 = m_ctx.registry.create();
+		m_ctx.registry.assign<comp::Mesh>(entity2, mesh);
+		m_ctx.registry.assign<comp::Pipeline>(entity2, pipeline);
+		m_ctx.registry.assign<comp::Transform>(entity2, transform);
 	}
 
 	InstancedRendering::~InstancedRendering()

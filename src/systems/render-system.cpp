@@ -1,12 +1,9 @@
 #include "render-system.h"
 
-#include "components/graphics/mesh.h"
-#include "components/graphics/pipeline.h"
-#include "components/physics/transform.h"
 #include "scomponents/graphics/camera.h"
 #include "graphics/constant-buffer.h"
 
-RenderSystem::RenderSystem(Context& context) : m_ctx(context) {
+RenderSystem::RenderSystem(Context& context) : m_ctx(context), m_instanceCount(0) {
 }
 
 RenderSystem::~RenderSystem() {
@@ -33,32 +30,35 @@ void RenderSystem::update() {
     // Get singleton components used for rendering
 	scomp::ConstantBuffer& perMeshCB = m_ctx.constantBuffers.at(scomp::ConstantBufferIndex::PER_MESH);
 
-    m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>()
-        .each([&](comp::Mesh& mesh, comp::Pipeline& pipeline, comp::Transform& transform) {
+	// Loop data
+	auto view = m_ctx.registry.view<comp::Mesh, comp::Pipeline, comp::Transform>();
+	unsigned int i = 0;
+	unsigned int iMax = view.size();
+	unsigned int lastVAbound = 0;
+	bool lastEntityWasInstanced = false;
 
-        // TODO check boolean to see if instanced. Entities needs to be sorted by mesh hash.
-        // If same than before, add position inside a vector, and skip draw call.
-        // If different, update the vertex attribute buffer for instanced entities and send the draw call
+    view.each([&](comp::Mesh& mesh, comp::Pipeline& pipeline, comp::Transform& transform) {
+		const bool isFirstInstance = m_instanceCount == 0 && mesh.isInstanced;
+		if (isFirstInstance) {
+			addTempInstanceData(transform);
+		} else if (lastEntityWasInstanced) {
+			if (lastVAbound == mesh.vb.vertexArrayId) { // The last entity used the same mesh	
+				addTempInstanceData(transform);
+			} else { // The last entity used a different mesh. Last of its kind. Time to draw it.
+				updateAndDrawInstance(mesh, pipeline);
+			}
+		}
 
-        // How to know which buffer id to use ? Add a vector in VertexBuffer of enum (PerVertexAny / PerInstancePosition / PerInstanceColor / ...)
+		// Bind
+		m_ctx.rcommand->bindPipeline(pipeline);
+		m_ctx.rcommand->bindVertexBuffer(mesh.vb);
+		m_ctx.rcommand->bindIndexBuffer(mesh.ib);
+		lastVAbound = mesh.vb.vertexArrayId;
 
-        // Update perMesh constant buffer
-        {
-            cb::perMesh cbData = {};
-            cbData.matModel =  glm::rotate(glm::mat4x4(1.0f), 2.4f, glm::vec3(0, 1, 0));
-            cbData.materialIndex = 1;
-            m_ctx.rcommand->updateConstantBuffer(perMeshCB, &cbData);
-        }
-
-        // Bind
-        m_ctx.rcommand->bindPipeline(pipeline);
-        m_ctx.rcommand->bindVertexBuffer(mesh.vb);
-        m_ctx.rcommand->bindIndexBuffer(mesh.ib);
-
-        // Bind textures
+		// Bind textures
 		switch (mesh.materialType) {
 		case scomp::MaterialType::PHONG: {
-            const auto& material = m_ctx.phongMaterials.materials.at(mesh.materialIndex);
+			const auto& material = m_ctx.phongMaterials.materials.at(mesh.materialIndex);
 			for (const auto& texture : material.textures) {
 				m_ctx.rcommand->bindTexture(texture);
 			}
@@ -69,12 +69,46 @@ void RenderSystem::update() {
 			break;
 		}
 
-        // Draw call
-		if (!mesh.isInstanced) {
-			m_ctx.rcommand->drawIndexed(mesh.ib.count, mesh.ib.type);
+		if (mesh.isInstanced) {
+			lastEntityWasInstanced = true;
+			if (i == iMax - 1) { // Last entity of the frame, need to draw it now
+				updateAndDrawInstance(mesh, pipeline);
+			}
 		} else {
-			// TEMP
-			m_ctx.rcommand->drawIndexedInstances(mesh.ib.count, mesh.ib.type, 3);
+			lastEntityWasInstanced = false;
+
+			// Update perMesh constant buffer
+			{
+				cb::perMesh cbData = {};
+				cbData.matModel = glm::rotate(glm::mat4x4(1.0f), 2.4f, glm::vec3(0, 1, 0));
+				cbData.materialIndex = 1;
+				m_ctx.rcommand->updateConstantBuffer(perMeshCB, &cbData);
+			}
+
+			// Draw call
+			m_ctx.rcommand->drawIndexed(mesh.ib.count, mesh.ib.type);
 		}
+		i++;
     });
+}
+
+void RenderSystem::addTempInstanceData(const comp::Transform& transform) {
+	m_instanceCount++;
+
+	// Prepare data for instanced draw call
+	{
+		m_tempModelMats.push_back(glm::mat4(1.0f));
+	}
+}
+
+void RenderSystem::updateAndDrawInstance(const comp::Mesh& mesh, const comp::Pipeline& pipeline) {
+	// Update modelMat instance buffer
+	{
+		// TODO
+	}
+	m_tempModelMats.clear();
+
+	// Draw call
+	m_ctx.rcommand->drawIndexedInstances(mesh.ib.count, mesh.ib.type, m_instanceCount);
+	m_instanceCount = 0;
 }
