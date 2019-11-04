@@ -103,7 +103,7 @@ void RenderSystem::addTempInstanceData(const comp::Transform& transform) {
 }
 
 void RenderSystem::updateAndDrawInstance(const comp::Mesh& mesh, const comp::Pipeline& pipeline) {
-	for (auto& const buffer : mesh.vb.buffers) {
+	for (const auto& buffer : mesh.vb.buffers) {
 		switch (buffer.type) {
 		case comp::AttributeBufferType::PER_INSTANCE_MODEL_MAT:
 			m_ctx.rcommand->updateAttributeBuffer(buffer, m_tempModelMats.data(), sizeof(glm::mat4) * m_tempModelMats.size());
