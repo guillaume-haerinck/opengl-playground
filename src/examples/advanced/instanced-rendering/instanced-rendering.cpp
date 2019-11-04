@@ -29,7 +29,7 @@ namespace advancedExample {
 		comp::Pipeline pipeline = m_ctx.rcommand->createPipeline(shaders, cbIndices, std::size(cbIndices));
 
 		// Mesh
-		comp::Mesh mesh = primFactory.createBox(3);
+		comp::Mesh mesh = primFactory.createBox(2);
 
 		// Transform
 		comp::Transform transform = {};

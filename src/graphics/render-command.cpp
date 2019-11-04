@@ -318,6 +318,7 @@ void RenderCommand::updateConstantBuffer(const scomp::ConstantBuffer& cb, void* 
 }
 
 void RenderCommand::updateAttributeBuffer(const comp::AttributeBuffer& buffer, void* data, unsigned int dataByteWidth) const {
+	assert(dataByteWidth <= buffer.byteWidth && "New attribute buffer data exceed the size of the allocated buffer");
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer.bufferId));
 	GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, dataByteWidth, data));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));

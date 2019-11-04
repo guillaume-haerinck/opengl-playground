@@ -98,7 +98,7 @@ void RenderSystem::addTempInstanceData(const comp::Transform& transform) {
 	// Prepare data for instanced draw call
 	// TODO only update if it needs to be
 	{
-		m_tempModelMats.push_back(glm::translate(glm::mat4(1.0f), glm::vec3(m_instanceCount * 2)));
+		m_tempModelMats.push_back(glm::mat4(1.0f));
 	}
 }
 
@@ -106,7 +106,7 @@ void RenderSystem::updateAndDrawInstance(const comp::Mesh& mesh, const comp::Pip
 	for (auto& const buffer : mesh.vb.buffers) {
 		switch (buffer.type) {
 		case comp::AttributeBufferType::PER_VERTEX_ANY:
-			m_ctx.rcommand->updateAttributeBuffer(buffer, m_tempModelMats.data(), sizeof(glm::vec4) * m_tempModelMats.size());
+			m_ctx.rcommand->updateAttributeBuffer(buffer, m_tempModelMats.data(), sizeof(glm::mat4) * m_tempModelMats.size());
 			m_tempModelMats.clear();
 			break;
 
