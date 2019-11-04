@@ -14,6 +14,9 @@
 #include "examples/basics/rotating-cube/rotating-cube.h"
 #include "examples/basics/textured-primitives/textured-primitives.h"
 #include "examples/basics/model-loading/model-loading.h"
+
+#include "examples/blinn-phong-shading/directional-light/directional-light.h"
+
 #include "examples/advanced/instanced-rendering/instanced-rendering.h"
 
 bool App::m_instanciated = false;
@@ -196,13 +199,15 @@ void App::renderMenu() {
 		if (ImGui::Button("Model loading")) { resetAppTo<basicExample::ModelLoading>(); }
 	}
 
+	if (ImGui::CollapsingHeader("Blinn Phong shading")) {
+		if (ImGui::Button("Directional light")) { resetAppTo<blinnPhongShadingExample::DirectionalLight>(); }
+	}
+
 	// if (ImGui::CollapsingHeader("Intermediate")) {}
 
 	if (ImGui::CollapsingHeader("Advanced")) {
 		if (ImGui::Button("Instanced rendering")) { resetAppTo<advancedExample::InstancedRendering>(); }
 	}
-
-	// if (ImGui::CollapsingHeader("Blinn Phong shading")) { }
 
 	// if (ImGui::CollapsingHeader("Toon shading")) {}
 
