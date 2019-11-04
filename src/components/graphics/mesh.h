@@ -4,9 +4,17 @@
 #include <string>
 #include "scomponents/graphics/materials.h"
 
-// TODO on mesh component deletion delete opengl buffers (index, attributes & vertex array)
-
 namespace comp {
+	enum class AttributeBufferType {
+		PER_VERTEX_ANY = 0,
+		PER_INSTANCE_MODEL_MAT
+	};
+
+	enum class AttributeBufferUsage {
+		STATIC_DRAW = 0,
+		DYNAMIC_DRAW
+	};
+
 	/**
 	 * @brief Vertex attribute buffer (points, uv mapping, normals, etc...)
 	 */
@@ -15,6 +23,8 @@ namespace comp {
 		unsigned int stride = 0;
 		unsigned int count = 0;
 		unsigned int byteWidth = 0;
+		AttributeBufferUsage usage = AttributeBufferUsage::STATIC_DRAW;
+		AttributeBufferType type = AttributeBufferType::PER_VERTEX_ANY;
 	};
 
 	/**
@@ -24,17 +34,8 @@ namespace comp {
 	 *		 This instead of interleaved (PTNPTNPTN) or packed (PPPTTTNNN).
 	 */
 	struct VertexBuffer {
-		std::vector<unsigned int> bufferIds;
-		std::vector<unsigned int> strides;
-		std::vector<unsigned int> counts;
-		std::vector<unsigned int> byteWidths;
-		std::vector<unsigned int> offsets;
-		std::vector<std::string> names;
+		std::vector<AttributeBuffer> buffers;
 		unsigned int vertexArrayId;
-	};
-
-	struct VertexArray {
-		unsigned int bufferId;
 	};
 
 	/**
@@ -62,7 +63,6 @@ namespace comp {
 		IndexBuffer ib;
 		unsigned int materialIndex = 0;
 		scomp::MaterialType materialType = scomp::MaterialType::NO_MATERIAL;
-		unsigned int instanceCount = 1; // If > 1 use batch rendering
-		unsigned int instanceDataIndex = 0; // Index of PerMeshBatch Constant Buffer inside of singleton component
+		bool isInstanced = false; // If true use batch rendering. Need a special attribute buffer to store instance data.
 	};
 }

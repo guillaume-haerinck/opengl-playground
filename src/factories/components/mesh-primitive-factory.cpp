@@ -9,13 +9,18 @@ MeshPrimitiveFactory::MeshPrimitiveFactory(Context& context) : m_ctx(context)
         { ShaderDataType::Float2, "TexCoord" },
 		{ ShaderDataType::Float3, "Position" }
     };
+
+	m_vibInstanced = {
+		{ ShaderDataType::Float3, "Position" },
+		{ ShaderDataType::Mat4, "Test", BufferElementUsage::PerInstance }
+	};
 }
 
 MeshPrimitiveFactory::~MeshPrimitiveFactory()
 {
 }
 
-comp::Mesh MeshPrimitiveFactory::createBox(float width, float height) {
+comp::Mesh MeshPrimitiveFactory::createBox(unsigned int maxInstanceCount, float width, float height) {
     //    v6----- v5
 	//   /|      /|
 	//  v1------v0|
@@ -59,7 +64,7 @@ comp::Mesh MeshPrimitiveFactory::createBox(float width, float height) {
 	unsigned short indices[] = {
 		0, 1, 2,   2, 3, 0,       // front
 		4, 5, 6,   6, 7, 4,       // right
-		8, 9, 10,  10,11, 8,      // top
+		8, 9, 10,  10,11,8,       // top
 		12,13,14,  14,15,12,      // left
 		16,17,18,  18,19,16,      // bottom
 		20,21,22,  22,23,20		  // back
@@ -70,16 +75,36 @@ comp::Mesh MeshPrimitiveFactory::createBox(float width, float height) {
 	comp::AttributeBuffer normalBuffer = m_ctx.rcommand->createAttributeBuffer(normals, std::size(normals), sizeof(glm::vec3));
 	comp::AttributeBuffer texCoordBuffer = m_ctx.rcommand->createAttributeBuffer(texCoords, std::size(texCoords), sizeof(glm::vec2));
 	comp::IndexBuffer ib = m_ctx.rcommand->createIndexBuffer(indices, std::size(indices), comp::IndexBuffer::dataType::UNSIGNED_SHORT);
+	
+	// Store buffers
+	comp::VertexBuffer vertexBuffer = {};
+	if (maxInstanceCount > 1) {
+		// Model matrices
+		std::vector<glm::mat4> modelMatrices;
+		modelMatrices.resize(maxInstanceCount);
+		std::fill(modelMatrices.begin(), modelMatrices.end(), glm::mat4(1.0f));
+		comp::AttributeBuffer modelInstanceBuffer = m_ctx.rcommand->createAttributeBuffer(modelMatrices.data(), modelMatrices.size(), sizeof(glm::mat4), comp::AttributeBufferUsage::DYNAMIC_DRAW, comp::AttributeBufferType::PER_INSTANCE_MODEL_MAT);
 
-    // Store buffers
-    comp::AttributeBuffer attributeBuffers[] = {
-        normalBuffer, texCoordBuffer, positionBuffer
-    };
-    comp::VertexBuffer vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vib, attributeBuffers);
+		// Create vertex buffer for instanced rendering
+		comp::AttributeBuffer attributeBuffers[] = {
+			positionBuffer, modelInstanceBuffer
+		};
+		vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vibInstanced, attributeBuffers);
+
+	} else {
+		// Create vertex buffer for non-instanced rendering
+		comp::AttributeBuffer attributeBuffers[] = {
+			normalBuffer, texCoordBuffer, positionBuffer
+		};
+		vertexBuffer = m_ctx.rcommand->createVertexBuffer(m_vib, attributeBuffers);
+	}
 
     // Send result
     comp::Mesh mesh = {};
     mesh.vb = vertexBuffer;
     mesh.ib = ib;
+	if (maxInstanceCount > 1)
+		mesh.isInstanced = true;
+
     return mesh;
 }

@@ -20,16 +20,6 @@ namespace cb {
 		char padding[12];
 	};
 
-    /**
-     * @brief Constant buffer updated when a new batch rendering draw call is issued (so a few times a frame)
-     * @note Is sent as an array. When used, overrides perMesh data.
-     */
-    struct perMeshBatch {
-        glm::mat4x4 matModel;
-		uint32_t materialIndex;
-        char padding[12];
-    };
-
 	/**
 	 * @brief Constant buffer updated once per frame
 	 */

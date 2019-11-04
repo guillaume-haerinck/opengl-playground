@@ -14,6 +14,7 @@
 #include "examples/basics/rotating-cube/rotating-cube.h"
 #include "examples/basics/textured-primitives/textured-primitives.h"
 #include "examples/basics/model-loading/model-loading.h"
+#include "examples/advanced/instanced-rendering/instanced-rendering.h"
 
 bool App::m_instanciated = false;
 
@@ -29,7 +30,7 @@ App::App() : m_running(true)
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 
-	resetAppTo<basicExample::TexturedPrimitives>();
+	resetAppTo<advancedExample::InstancedRendering>();
 }
 
 App::~App() {
@@ -126,7 +127,6 @@ void App::initImgui() const {
 
 void App::initConstantBuffers() {
 	m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_MESH, sizeof(cb::perMesh));
-	m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_MESH_BATCH, sizeof(cb::perMeshBatch));
 	m_ctx.rcommand->createConstantBuffer(scomp::ConstantBufferIndex::PER_FRAME, sizeof(cb::perFrame));
 }
 
@@ -198,7 +198,9 @@ void App::renderMenu() {
 
 	// if (ImGui::CollapsingHeader("Intermediate")) {}
 
-	// if (ImGui::CollapsingHeader("Advanced")) {}
+	if (ImGui::CollapsingHeader("Advanced")) {
+		if (ImGui::Button("Instanced rendering")) { resetAppTo<advancedExample::InstancedRendering>(); }
+	}
 
 	// if (ImGui::CollapsingHeader("Blinn Phong shading")) { }
 

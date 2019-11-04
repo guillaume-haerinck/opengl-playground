@@ -38,8 +38,10 @@ public:
 	 * @param vertices - Array of data
 	 * @param count - The number of elements in the array
 	 * @param stride - Size in bytes of one element of the array
+	 * @param usage - (Optional) Used to know if the buffer is going to be updated or not
+	 * @param type - (Optional) Used by instanced rendering to know which buffer to update
 	 */
-	comp::AttributeBuffer createAttributeBuffer(const void* vertices, unsigned int count, unsigned int stride) const;
+	comp::AttributeBuffer createAttributeBuffer(const void* vertices, unsigned int count, unsigned int stride, comp::AttributeBufferUsage usage = comp::AttributeBufferUsage::STATIC_DRAW, comp::AttributeBufferType type = comp::AttributeBufferType::PER_VERTEX_ANY) const;
 
 	/**
 	 * @param vib - Layout of the buffers
@@ -94,12 +96,14 @@ public:
 
     void updateConstantBuffer(const scomp::ConstantBuffer& cb, void* data) const;
 
+	void updateAttributeBuffer(const comp::AttributeBuffer& buffer, void* data, unsigned int dataByteWidth) const;
+
     ///////////////////////////////////////////////////////////////////////////
 	///////////////////////////////// DRAWING /////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////
 
 	void drawIndexed(unsigned int count, comp::IndexBuffer::dataType type) const;
-	void drawIndexedInstanced(unsigned int indexCount, unsigned int drawCount) const;
+	void drawIndexedInstances(unsigned int indexCount, comp::IndexBuffer::dataType type, unsigned int drawCount) const;
 
 private:
 	bool hasShaderCompiled(unsigned int shaderId, unsigned int shaderType) const;
@@ -110,7 +114,6 @@ private:
 private:
 	Context& m_ctx;
 };
-
 
 // Callback function on Mesh component destruction
 void deleteMeshBuffers(entt::entity entity, entt::registry & registry);

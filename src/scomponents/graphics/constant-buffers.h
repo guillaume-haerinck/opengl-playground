@@ -19,7 +19,6 @@ namespace scomp {
 	 */
 	enum ConstantBufferIndex {
 		PER_MESH = 0,
-		PER_MESH_BATCH,
 		PER_FRAME,
 		PER_LIGHT_CHANGE,
 		PER_COOK_MAT_CHANGE,
