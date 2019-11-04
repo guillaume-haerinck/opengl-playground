@@ -43,6 +43,7 @@ namespace advancedExample {
 		auto entity2 = m_ctx.registry.create();
 		m_ctx.registry.assign<comp::Mesh>(entity2, mesh);
 		m_ctx.registry.assign<comp::Pipeline>(entity2, pipeline);
+		transform.position = glm::vec3(1);
 		m_ctx.registry.assign<comp::Transform>(entity2, transform);
 	}
 

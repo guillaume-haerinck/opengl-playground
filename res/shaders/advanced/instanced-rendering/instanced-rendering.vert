@@ -1,7 +1,7 @@
 #version 300 es
 
 layout(location = 0) in vec3 position;
-layout(location = 1) in mat4 test;
+layout(location = 1) in mat4 matModelInstance;
 
 layout (std140) uniform perMesh {
     lowp mat4 matModel;
@@ -14,5 +14,5 @@ layout (std140) uniform perFrame {
 };
 
 void main() {
-	gl_Position = matViewProj * test * vec4(position, 1.0);
+	gl_Position = matViewProj * matModelInstance * vec4(position, 1.0);
 }

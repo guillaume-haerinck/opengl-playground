@@ -98,7 +98,7 @@ void RenderSystem::addTempInstanceData(const comp::Transform& transform) {
 	// Prepare data for instanced draw call
 	// TODO only update if it needs to be
 	{
-		m_tempModelMats.push_back(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, m_instanceCount * 4)));
+		m_tempModelMats.push_back(glm::translate(glm::mat4(1.0f), transform.position));
 	}
 }
 
