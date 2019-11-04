@@ -42,7 +42,7 @@ void RenderSystem::update() {
 		if (isFirstInstance) {
 			addTempInstanceData(transform);
 		} else if (lastEntityWasInstanced) {
-			if (lastVAbound == mesh.vb.vertexArrayId) { // The last entity used the same mesh	
+			if (lastVAbound == mesh.vb.vertexArrayId) { // The last entity used the same mesh. TODO use hash based on VA and textures
 				addTempInstanceData(transform);
 			} else { // The last entity used a different mesh. Last of its kind. Time to draw it.
 				updateAndDrawInstance(mesh, pipeline);
@@ -96,10 +96,7 @@ void RenderSystem::addTempInstanceData(const comp::Transform& transform) {
 	m_instanceCount++;
 
 	// Prepare data for instanced draw call
-	// TODO only update if it needs to be
-	{
-		m_tempModelMats.push_back(glm::translate(glm::mat4(1.0f), transform.position));
-	}
+	m_tempModelMats.push_back(glm::translate(glm::mat4(1.0f), transform.position));
 }
 
 void RenderSystem::updateAndDrawInstance(const comp::Mesh& mesh, const comp::Pipeline& pipeline) {
