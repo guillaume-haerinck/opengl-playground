@@ -3,7 +3,7 @@
 # /////////////////////////////////////////////////////////////////////////////
 
 # Set standards
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 2.8)
 project(opengl-playground C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(default_build_type "Release")
